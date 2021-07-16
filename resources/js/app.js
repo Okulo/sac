@@ -57,6 +57,7 @@ Vue.component('product-charts-component', require('./components/ProductChartsCom
 Vue.component('product-additionals-component', require('./components/ProductAdditionalsComponent.vue').default);
 Vue.component('product-users-component', require('./components/ProductUserComponent.vue').default);
 Vue.component('users-bonuses-component', require('./components/UsersBonusesComponent.vue').default);
+Vue.component('manager-bonuses-component', require('./components/ManagerBonusesComponent.vue').default);
 Vue.component('thank-you-carousel-component', require('./components/ThankYouCarousel.vue').default);
 
 Vue.component('phone-component', require('./components/PhoneComponent.vue').default);

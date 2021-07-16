@@ -313,14 +313,20 @@ class UsersBonusesController extends Controller
         $managerBonuses = $graph->statistics()
             ->where('period_type', $period)
             ->get()
-            ->pluck('value', 'key');
+            ->groupBy('key')
+            ->transform(function($statistics) {
+                return $statistics->sum('value');
+            });
 
         $managerBonusesGroupByProducts = $graph->statistics()
             ->where('period_type', $period)
             ->get()
-            ->groupBy('product_id')
+            ->groupBy('key')
             ->transform(function ($managerBonuses) {
-                return $managerBonuses->pluck('value', 'key');
+                return $managerBonuses->groupBy('product_id')
+                ->transform(function ($managerBonuses) {
+                    return $managerBonuses->sum('value');
+                });
             })
             ->toArray();
 

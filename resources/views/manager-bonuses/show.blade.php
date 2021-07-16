@@ -12,9 +12,10 @@ $data = [
 
 @endphp
 <manager-bonuses-component 
+    route-prop="{{ route(\Request::route()->getName()) }}"
+    :data-prop="{{ json_encode($data) }}"
     :products-prop="{{ json_encode($products) }}"
     :periods-prop="{{ json_encode(\App\Models\Bonus::PERIODS) }}"
-    :data-prop="{{ json_encode($data) }}"
     :chart-prop="{{ json_encode($chart) }}"
     :manager-bonuses-group-by-products-prop="{{ json_encode($managerBonusesGroupByProducts) }}"
 ></manager-bonuses-component>
