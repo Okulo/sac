@@ -88,6 +88,21 @@ class StatisticsModel extends Model
     // График: Общий оборот
     const SEVENTEENTH_STATISTICS = 17;
 
+    // Страница: Количественные
+    // Диаграмма: Конверсия подключении к WhatsApp
+    // График: Конверсия подключении к WhatsApp
+    const EIGHTEENTH_STATISTICS = 18;
+
+    // Страница: Количественные
+    // Диаграмма: Конверсия из пробных в клиенты
+    // График: Конверсия из пробных в клиенты
+    const NINETEENTH_STATISTICS = 19;
+
+    // Страница: Бонусы менеджера
+    // Диаграмма: Бонусы менеджера
+    // График: Бонусы менеджера
+    const TWENTIETH_STATISTICS = 20;
+
     const PERIOD_TYPE_WEEK = 'week';
     const PERIOD_TYPE_MONTH = 'month';
 

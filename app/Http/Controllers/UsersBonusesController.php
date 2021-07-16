@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductWithUsersResource;
 use App\Models\Bonus;
+use App\Models\Graph;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\StatisticsModel;
@@ -267,6 +268,95 @@ class UsersBonusesController extends Controller
             'usersBonusesForChart',
             'recordsBonuses',
             'usersBonusesGroupByUnixDate'
+        ));
+    }
+
+    public function showManagerBonuses(Request $request)
+    {
+        access(['can-head', 'can-host']);
+        $user = User::whereId(Auth::id())->firstOrFail();
+        $teams = $user->isOperator() ? Team::select('id', 'name')->whereHas('users', function ($query) use ($user) {
+            $query->where('id', $user->id);
+        })->get()->toArray() : Team::select('id', 'name')->get()->toArray();
+        $getCurrentAndLastPeriod = $this->getCurrentAndLastPeriod($request->input('period', 'week'));
+        $data = [];
+        $products = Product::get()->pluck('title', 'id')->toArray();
+
+        if (
+            ! $request->has('currentPoint') ||
+            ! $request->has('lastPoint') ||
+            ! $request->has('period') ||
+            ! $request->has('from') || 
+            ! $request->has('to')
+        ) {
+            $data['currentPoint']   = $request->input('point') ?? $getCurrentAndLastPeriod['current'];
+            $data['lastPoint']      = $request->input('point') ?? $getCurrentAndLastPeriod['last'];
+            $data['period']         = $request->input('period') ?? 'week';
+            $data['from']           = $request->input('from') ?? Carbon::now()->subMonths(3)->format('Y-m-d');
+            $data['to']             = $request->input('to') ?? Carbon::now()->format('Y-m-d');
+
+            return redirect()->route('manager_bonuses.show', $data);
+        }
+
+        $request->validate([
+            "from"      => "required|date_format:Y-m-d",
+            "to"        => "required|date_format:Y-m-d",
+            "period"    => "required",
+        ]);
+
+        $period     = $request->input('period');
+        $from       = Carbon::createFromFormat('Y-m-d', $request->input('from'), 'Asia/Almaty')->startOfDay()->setTimezone('Asia/Almaty');
+        $to         = Carbon::createFromFormat('Y-m-d', $request->input('to'), 'Asia/Almaty')->endOfDay()->setTimezone('Asia/Almaty');
+        $categories = $this->getPeriods($period, $from, $to);
+        $graph = Graph::whereType(StatisticsModel::TWENTIETH_STATISTICS)->firstOrFail();
+
+        $managerBonuses = $graph->statistics()
+            ->where('period_type', $period)
+            ->get()
+            ->pluck('value', 'key');
+
+        $managerBonusesGroupByProducts = $graph->statistics()
+            ->where('period_type', $period)
+            ->get()
+            ->groupBy('product_id')
+            ->transform(function ($managerBonuses) {
+                return $managerBonuses->pluck('value', 'key');
+            })
+            ->toArray();
+
+        $chart = [
+            'type' => 'highchart',
+            'chart' => [
+                'type' => 'area',
+            ],
+            "title" => ["text" => 'Бонусы менеджера'],
+            'xAxis' => [
+                'type' => 'datetime',
+            ],
+            "series" => [
+                [
+                    'editable' => false,
+                    "name" => "Бонусы менеджера",
+                    "data" => array_values(collect($categories)->map(function ($category, $key) use ($managerBonuses) {
+                        return ['name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 'x' => $category, 'y' => (int) ($managerBonuses[$category] ?? 0)];
+                    })->toArray()),
+                    "color" => "#c2de80",
+                ],
+            ],
+            'plotOptions' => [
+                'area' => [
+                    'fillOpacity' => 0.5,
+                    'dataLabels' => [
+                        'enabled' => true,
+                    ],
+                ],
+            ],
+        ];
+
+        return view('manager-bonuses.show', compact(
+            'products',
+            'chart',
+            'managerBonusesGroupByProducts',
         ));
     }
 }

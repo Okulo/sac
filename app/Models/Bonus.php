@@ -9,6 +9,8 @@ class Bonus extends Model
 {
     use HasFactory, ModelBase;
 
+    const MANAGER_BONUS_PERCENT = 7;
+
     const PERIOD_TYPE_WEEK = 'week';
     const PERIOD_TYPE_MONTH = 'month';
 

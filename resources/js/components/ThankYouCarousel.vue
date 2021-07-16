@@ -7,7 +7,7 @@
                     <img :src="product.image" alt="" >
                 </div>
                 <div style="font-size: 13px; color: #48403e; margin-bottom: 15px" v-html="product.description"></div>
-                <a class="btn btn-success" :href="'https://wa.me/' + product.phone">
+                <a class="btn btn-success" :href="'https://wa.me/' + phone">
                     Написать оператору в Whatsapp <i class="fab fa-whatsapp"></i>
                 </a>
             </div> 
@@ -25,9 +25,11 @@ export default {
     },
     props: [
         'productsProp',
+        'phoneProp',
     ],
     data() {
         return {
+            phone: this.phoneProp,
             products: this.productsProp,
             options: {
                 rewind : true,

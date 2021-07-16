@@ -358,6 +358,19 @@ return [
                 'can-host',
             ],
         ],
+
+        // manager-bonuses
+        [
+            'key'  => 'manager-bonuses',
+            'text' => 'Бонусы менеджера',
+            'url'  => '/manager-bonuses',
+            'icon' => 'fa fa-bold',
+            "can"  => [
+                // 'can-operator',
+                'can-head',
+                'can-host',
+            ],
+        ],
     ],
 
     /*

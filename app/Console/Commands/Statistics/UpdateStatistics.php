@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands\Statistics;
 
+use App\Models\Bonus;
 use App\Models\Graph;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\StatisticsModel;
 use Illuminate\Console\Command;
@@ -148,6 +150,68 @@ class UpdateStatistics extends Command
         //         $this->updateSeventeenthStatistics($graph, $productIds);
         //     }
         // }
+
+        $graph = Graph::whereType(StatisticsModel::EIGHTEENTH_STATISTICS)->first();
+        if (isset($graph)) {
+            $productIds = $graph->products->pluck('id')->toArray();
+            if (! empty($productIds)) {
+                $this->updateEighteenthStatistics($graph, $productIds);
+            }
+        }
+
+        $graph = Graph::whereType(StatisticsModel::NINETEENTH_STATISTICS)->first();
+        if (isset($graph)) {
+            $productIds = $graph->products->pluck('id')->toArray();
+            if (! empty($productIds)) {
+                $this->updateNineteenthStatistics($graph, $productIds);
+            }
+        }
+
+        $graph = Graph::whereType(StatisticsModel::TWENTIETH_STATISTICS)->first();
+        if (isset($graph)) {
+            $productIds = Product::get()->pluck('id')->toArray();
+            if (! empty($productIds)) {
+                $this->updateTwentiethStatistics($graph, $productIds);
+            }
+        }
+    }
+
+    private function updateTwentiethStatistics(Graph $graph, array $productIds)
+    {
+        $period = $this->period;
+
+        $products = Payment::
+            select('payments.*' ,\DB::raw('quantity * amount as total'))
+            ->where('status', 'Completed')
+            ->whereIn('product_id', $productIds)
+            ->get()
+            ->groupBy('product_id')
+            ->transform(function($items, $k) use ($period) {
+                return $items->groupBy(function($payment) use ($period) {
+                    if ($period === StatisticsModel::PERIOD_TYPE_MONTH) {
+                        return (int) Carbon::parse($payment->paided_at)->endOfMonth()->startOfDay()->valueOf();
+                    } else if ($period === StatisticsModel::PERIOD_TYPE_WEEK) {
+                        return (int) Carbon::parse($payment->paided_at)->endOfWeek()->startOfDay()->valueOf();
+                    }
+                })->transform(function($items, $k) {
+                    return (int) round(($items->sum('total') ?? 0) * Bonus::MANAGER_BONUS_PERCENT / 100, 0);
+                });
+            })->toArray();
+
+
+        foreach($products as $productId => $paymentGroups) {
+            foreach ($paymentGroups as $key => $value) {
+                StatisticsModel::updateOrCreate([
+                    'graph_id' => $graph->id,
+                    'period_type' => $period,
+                    // 'type' => StatisticsModel::SECOND_STATISTICS,
+                    'product_id' => $productId,
+                    'key' => $key,
+                ], [
+                    'value' => $value ?? 0,
+                ]);
+            }
+        }
     }
 
     private function updateSecondStatistics(Graph $graph, array $productIds)
@@ -598,7 +662,6 @@ class UpdateStatistics extends Command
             })->toArray();
 
         foreach($products as $productId => $turnover) {
-            dd($turnover);
             StatisticsModel::updateOrCreate([
                 'period_type' => $period,
                 // 'type' => StatisticsModel::SIXTEENTH_STATISTICS,
@@ -608,6 +671,108 @@ class UpdateStatistics extends Command
             ], [
                 'value' => $turnover,
             ]);
+        }
+    }
+
+    /**
+     * Конверсия подключении к Whatsapp
+     *
+     * @param Graph $graph
+     * @param array $productIds
+     * @return void
+     */
+    private function updateEighteenthStatistics(Graph $graph, array $productIds)
+    {
+        $period = $this->period;
+        $firstGraphStatistics = StatisticsModel::whereIn('product_id', $productIds)
+            ->whereGraphId(2)
+            ->get()
+            ->groupBy('product_id');
+        $secondGraphStatistics = StatisticsModel::whereIn('product_id', $productIds)
+            ->whereGraphId(1)
+            ->get()
+            ->groupBy('product_id')
+            ->transform(function($items, $k) {
+                return $items->keyBy('key');
+            });
+
+        foreach ($productIds as $productId) {
+            if (isset($firstGraphStatistics[$productId])) {
+                foreach ($firstGraphStatistics[$productId] as $firstItem) {
+                    if (isset($secondGraphStatistics[$productId]) && isset($secondGraphStatistics[$productId][$firstItem->key])) {
+                        try {
+                            $secondItem = $secondGraphStatistics[$productId][$firstItem->key];
+
+                            $firstValue = $firstItem->value == 0 ? 1 : (int) $firstItem->value;
+                            $secondValue = $secondItem->value == 0 ? 1 : (int) $secondItem->value;
+                            $conversionValue = round($secondValue / $firstValue * 100, 0);
+                            $value = $conversionValue >= 100 ? 100 : $conversionValue;
+
+                            StatisticsModel::updateOrCreate([
+                                'period_type' => $period,
+                                'graph_id' => $graph->id,
+                                'product_id' => $productId,
+                                'key' => $firstItem->key,
+                            ], [
+                                'value' => $value,
+                            ]);
+                        } catch (\Throwable $th) {
+                            \Log::error('Ошибка. updateEighteenthStatistics. SecondValue: '. $secondValue . '. FirstValue: ' . $firstValue . '. Item Key: ' . $firstItem->key);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Конверсия из пробных в клиенты
+     *
+     * @param Graph $graph
+     * @param array $productIds
+     * @return void
+     */
+    private function updateNineteenthStatistics(Graph $graph, array $productIds)
+    {
+        $period = $this->period;
+        $firstGraphStatistics = StatisticsModel::whereIn('product_id', $productIds)
+            ->whereGraphId(1)
+            ->get()
+            ->groupBy('product_id');
+        $secondGraphStatistics = StatisticsModel::whereIn('product_id', $productIds)
+            ->whereGraphId(10)
+            ->get()
+            ->groupBy('product_id')
+            ->transform(function($items, $k) {
+                return $items->keyBy('key');
+            });
+
+        foreach ($productIds as $productId) {
+            if (isset($firstGraphStatistics[$productId])) {
+                foreach ($firstGraphStatistics[$productId] as $firstItem) {
+                    if (isset($secondGraphStatistics[$productId]) && isset($secondGraphStatistics[$productId][$firstItem->key])) {
+                        try {
+                            $secondItem = $secondGraphStatistics[$productId][$firstItem->key];
+    
+                            $firstValue = $firstItem->value == 0 ? 1 : (int) $firstItem->value;
+                            $secondValue = $secondItem->value == 0 ? 1 : (int) $secondItem->value;
+                            $conversionValue = round($secondValue / $firstValue * 100, 0);
+                            $value = $conversionValue >= 100 ? 100 : $conversionValue;
+    
+                            StatisticsModel::updateOrCreate([
+                                'period_type' => $period,
+                                'graph_id' => $graph->id,
+                                'product_id' => $productId,
+                                'key' => $firstItem->key,
+                            ], [
+                                'value' => $value,
+                            ]);
+                        } catch (\Throwable $th) {
+                            \Log::error('Ошибка. updateEighteenthStatistics. SecondValue: '. $secondValue . '. FirstValue: ' . $firstValue . '. Item Key: ' . $firstItem->key);
+                        }
+                    }
+                }
+            }
         }
     }
 }

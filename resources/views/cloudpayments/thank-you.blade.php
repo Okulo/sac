@@ -16,40 +16,40 @@
             position: relative;"
         >
             <div class="col-sm-6">
-            <div class="lp-pom-image-container" style="overflow: hidden;border-style: none;
-                border-radius: 20px;"
-            >
-                <img style="width: 100%" src="{{ $product->data['image'] ?? '/images/trener2.jpeg' }}" alt="" loading="lazy" data-src-desktop-1x="//d9hhrg4mnvzow.cloudfront.net/unbouncepages.com/yogawa/635043a6-alex-shaw-msjsiqcm6og-unsplash_10mv0gs0kl0gs01500001o.jpg" data-src-mobile-1x="//d9hhrg4mnvzow.cloudfront.net/unbouncepages.com/yogawa/635043a6-alex-shaw-msjsiqcm6og-unsplash_107s06n07s06c00000501o.jpg" srcset="">
-            </div>
+				<div class="lp-pom-image-container" style="overflow: hidden;border-style: none;
+					border-radius: 20px;"
+				>
+					<img style="width: 100%" src="{{ $product->data['image'] ?? '/images/trener2.jpeg' }}" alt="" loading="lazy" data-src-desktop-1x="//d9hhrg4mnvzow.cloudfront.net/unbouncepages.com/yogawa/635043a6-alex-shaw-msjsiqcm6og-unsplash_10mv0gs0kl0gs01500001o.jpg" data-src-mobile-1x="//d9hhrg4mnvzow.cloudfront.net/unbouncepages.com/yogawa/635043a6-alex-shaw-msjsiqcm6og-unsplash_107s06n07s06c00000501o.jpg" srcset="">
+				</div>
             </div>
             <div class="col-sm-6">
-            <div class="trener-body">
-				<div style="display: flex; margin: 13px 0px;">
-					<img src="/images/success.svg" alt="" style="height: 40px;margin-right: 12px; vertical-align: middle;">
-						<div class="content-heading" style="margin: auto 0;">
-							Спасибо за оплату! Хороших тренировок!
+				<div class="trener-body">
+					<div style="display: flex; margin: 13px 0px;">
+						<img src="/images/success.svg" alt="" style="height: 40px;margin-right: 12px; vertical-align: middle;">
+							<div class="content-heading" style="margin: auto 0;">
+								Спасибо за оплату! Хороших тренировок!
+							</div>
+						</div>
+					<div>
+						<blockquote class="blockquote" style="border-left: 0.7rem solid rgb(30 190 136); margin: 15px auto">
+							<p class="mb-0">{{ $product->data['name'] ?? '' }}</p>
+							<footer style="font-size: 14px; color: #3c2529;" class="blockquote-footer">{{ $product->data['position'] ?? '' }}</footer>
+						</blockquote>
+						
+						<div style="padding-left: 10px">
+							<p style="font-size: 15px; margin-bottom: 9px;">{{ $product->data['phone_title'] ?? 'Номер для связи' }}: </p>
+							<a style="font-size: 15px" href="https://wa.me/{{ str_replace(' ', '', ($product->data['phone'] ?? '')) }}">{{ $product->data['phone'] ?? '' }}</a>
+							<p style="font-size: 15px; margin: 9px 0px">{{ $product->data['instagram_title'] ?? 'Больше полезных видео у меня в инстаграм' }}: </p>
+							<a href="https://www.instagram.com/{{ $product->data['instagram'] ?? '' }}/">
+							<img style="width: 30px" src="/images/instagram.svg" alt="">
+							<span style="font-size: 16px; margin-left: 5px"> {{ '@' . $product->data['instagram'] ?? '' }}</span>
+							</a>
 						</div>
 					</div>
-                <div>
-					<blockquote class="blockquote" style="border-left: 0.7rem solid rgb(30 190 136); margin: 15px auto">
-						<p class="mb-0">{{ $product->data['name'] ?? '' }}</p>
-						<footer style="font-size: 14px; color: #3c2529;" class="blockquote-footer">{{ $product->data['position'] ?? '' }}</footer>
-					</blockquote>
-					
-					<div style="padding-left: 10px">
-						<p style="font-size: 15px; margin-bottom: 9px;">{{ $product->data['phone_title'] ?? 'Номер для связи' }}: </p>
-						<a style="font-size: 15px" href="https://wa.me/{{ str_replace(' ', '', ($product->data['phone'] ?? '')) }}">{{ $product->data['phone'] ?? '' }}</a>
-						<p style="font-size: 15px; margin: 9px 0px">{{ $product->data['instagram_title'] ?? 'Больше полезных видео у меня в инстаграм' }}: </p>
-						<a href="https://www.instagram.com/{{ $product->data['instagram'] ?? '' }}/">
-						<img style="width: 30px" src="/images/instagram.svg" alt="">
-						<span style="font-size: 16px; margin-left: 5px"> {{ '@' . $product->data['instagram'] ?? '' }}</span>
-						</a>
-					</div>
-                </div>
-				<hr>
-				<h2 style="font-size: 20px; color: #423b39;">Вы так же можете приобрести</h2>
-				<thank-you-carousel-component :products-prop="{{ json_encode($products) }}"></thank-you-carousel-component>
-            </div>
+					<hr>
+					<h2 style="font-size: 20px; color: #423b39;">Вы также можете приобрести:</h2>
+					<thank-you-carousel-component phone-prop="{{ str_replace(' ', '', ($product->data['phone'] ?? '')) }}" :products-prop="{{ json_encode($products) }}"></thank-you-carousel-component>
+				</div>
             </div>
         </div>
         </div>
@@ -63,8 +63,8 @@
 @section('adminlte_css')
 <style>
 @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
- form.errors :invalid {
-	 border-color: #dc3545;
+form.errors :invalid {
+	border-color: #dc3545;
 }
  .success-icon {
 	background: url(/images/success.svg) no-repeat;
@@ -74,48 +74,48 @@
     float: left!important;
 }
  .error-icon {
-	 background: url(/images/error.svg) no-repeat;
-	 display: block;
-	 width: 81px;
-	 height: 88px;
-	 margin: 0 auto 40px;
+	background: url(/images/error.svg) no-repeat;
+	display: block;
+	width: 81px;
+	height: 88px;
+	margin: 0 auto 40px;
 }
  body {
-	 background: #ddeefc;
-	 font-family: "Source Sans Pro", sans-serif;
-	 font-size: 16px;
+	background: #ddeefc;
+	font-family: "Source Sans Pro", sans-serif;
+	font-size: 16px;
 }
  * {
-	 box-sizing: border-box;
+	box-sizing: border-box;
 }
  *:focus {
-	 outline: none;
+	outline: none;
 }
  .wrapper {
-	 display: flex;
-	 padding: 50px 15px;
+	display: flex;
+	padding: 50px 15px;
 }
  @media screen and (max-width: 700px), (max-height: 500px) {
-	 .wrapper {
-		 flex-wrap: wrap;
-		 flex-direction: column;
+	.wrapper {
+		flex-wrap: wrap;
+		flex-direction: column;
 	}
 }
  .card-form {
-	 max-width: 570px;
-	 margin: auto;
-	 width: 100%;
+	max-width: 570px;
+	margin: auto;
+	width: 100%;
 }
  @media screen and (max-width: 576px) {
-	 .card-form {
-		 margin: 0 auto;
+	.card-form {
+		margin: 0 auto;
 	}
 }
  .card-form__inner {
-	 background: #fff;
-	 box-shadow: 0 30px 60px 0 rgba(90, 116, 148, 0.4);
-	 border-radius: 10px;
-	 padding: 35px;
+	background: #fff;
+	box-shadow: 0 30px 60px 0 rgba(90, 116, 148, 0.4);
+	border-radius: 10px;
+	padding: 35px;
 }
  @media screen and (max-width: 480px) {
 	 .card-form__inner {

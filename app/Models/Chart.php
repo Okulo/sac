@@ -16,6 +16,7 @@ class Chart extends Model
         'description',
         'order',
         'is_stacking',
+        'stacking',
         'type',
     ];
 
@@ -31,6 +32,7 @@ class Chart extends Model
 
     public function graphs()
     {
-        return $this->hasMany(Graph::class, 'chart_id')->orderBy('order');
+        return $this->belongsToMany(Graph::class);
+        // return $this->hasMany(Graph::class, 'chart_id')->orderBy('order');
     }
 }

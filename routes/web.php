@@ -6,7 +6,9 @@ use App\Http\Controllers\UsersBonusesController;
 use App\Http\Controllers\StatisticsController;
 use App\Models\Bonus;
 use App\Models\Card;
+use App\Models\Chart;
 use App\Models\Customer;
+use App\Models\Graph;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\StatisticsModel;
@@ -26,6 +28,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get("/test", function () {
+    // $chart = Chart::where('id', 2)->first();
+    // $chart->graphs()->detach();
     // $payments = Payment::whereStatus('Completed')->get()->groupBy('product_id');
     // foreach ($payments as $key => $productPayments) {
     //     $product = Product::whereId($key)->first();
@@ -173,6 +177,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get("/search", 'SearchController@search')->name("search");
 
     Route::get("/users-bonuses", [UsersBonusesController::class, "show"])->name("users_bonuses.show");
+    Route::get("/manager-bonuses", [UsersBonusesController::class, "showManagerBonuses"])->name("manager_bonuses.show");
 
     Route::post('customers/update-with-data', 'CustomerController@createWithData');
     Route::get('customers/list', 'CustomerController@getList');

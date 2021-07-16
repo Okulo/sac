@@ -32,4 +32,10 @@ class Graph extends Model
     {
         return $this->hasMany(StatisticsModel::class, 'graph_id');
     }
+
+    public function charts()
+    {
+        return $this->belongsToMany(Chart::class);
+        // return $this->hasMany(Graph::class, 'chart_id')->orderBy('order');
+    }
 }

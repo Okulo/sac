@@ -145,10 +145,16 @@ class StatisticsController extends Controller
                 ],
             ];
 
-            if ($chart->is_stacking) {
+            if ($chart->stacking == 'normal') {
                 $data[$chart->id]['plotOptions']['area']['stacking'] = 'normal';
             }
 
+            if ($chart->stacking == 'percent') {
+                $data[$chart->id]['yAxis']['max'] = 100;
+                // $data[$chart->id]['plotOptions']['area']['stacking'] = 'percent';
+                $data[$chart->id]['plotOptions']['area']['compare'] = 'percent';
+            }
+            
             foreach ($chart->graphs as $graph) {
                 $statistics = $graph->statistics()->where('product_id', $product->id)->where('period_type', $period)->get()->pluck('value', 'key');
 
