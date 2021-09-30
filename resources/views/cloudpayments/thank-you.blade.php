@@ -27,7 +27,7 @@
 					<div style="display: flex; margin: 13px 0px;">
 						<img src="/images/success.svg" alt="" style="height: 40px;margin-right: 12px; vertical-align: middle;">
 							<div class="content-heading" style="margin: auto 0;">
-								Спасибо за оплату! Хороших тренировок!
+								Спасибо за оплату!
 							</div>
 						</div>
 					<div>
