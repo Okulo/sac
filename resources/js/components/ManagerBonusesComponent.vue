@@ -78,7 +78,7 @@
                     ></highcharts>
                 </div>
                 <div class="card">
-                    <div style="margin-left: 20px; margin-top: 20px; margin-bottom: 30px; margin-right: 0px;" v-if="dataProp.period == 'week'">
+                    <div style="margin-left: 20px; margin-top: 20px; margin-bottom: 30px; margin-right: 0px;">
                         <h1 style="text-align: center">{{ getTitle() }}</h1>
                         <div v-for="(usersProducts, productIndex) in managerBonusesGroupByProducts[data.currentPoint]" :key="productIndex">
                             <h3 style="margin-bottom: 20px">{{ products[productIndex] }} - {{ managerBonusesGroupByProducts[data.currentPoint][productIndex] }}₸</h3>

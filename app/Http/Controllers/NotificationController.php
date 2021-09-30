@@ -9,6 +9,7 @@ use App\Filters\NotificationFilter;
 use App\Http\Requests\CreateSubscriptionRequest;
 use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\NotificationCollection;
+use App\Models\Team;
 use App\Models\UserLog;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
@@ -41,6 +42,7 @@ class NotificationController extends Controller
     {
         access(['can-operator', 'can-head', 'can-host']);
         $products = Product::get()->pluck('title', 'id');
+        $teams = Team::get()->pluck('name', 'id');
 
         $data['main'] = [
             [
@@ -63,6 +65,12 @@ class NotificationController extends Controller
                 'title' => 'Тип уведомления',
                 'type' => 'select-multiple',
                 'options' => Notification::TYPES,
+            ],
+            [
+                'name' => 'team_id',
+                'title' => 'Команды',
+                'type' => 'select-multiple',
+                'options' => $teams,
             ],
         ];
 

@@ -56,6 +56,7 @@ class UpdateNotifications extends Command
                 'payment_id' => $payment->id,
             ], [
                 'product_id' => $payment->subscription->product->id,
+                'team_id' => $payment->subscription->team_id,
                 'data' => [
                     'error_description' => $payment->data['cloudpayments']['CardHolderMessage'] ?? null,
                     'paided_at' => $payment->paided_at,
@@ -73,6 +74,7 @@ class UpdateNotifications extends Command
                 'type' => Notification::TYPE_ENDED_SUBSCRIPTIONS_DT,
                 'subscription_id' => $subscription->id,
             ], [
+                'team_id' => $subscription->team_id,
                 'product_id' => $subscription->product->id,
                 'data' => [],
             ]);
@@ -88,6 +90,7 @@ class UpdateNotifications extends Command
                 'subscription_id' => $subscription->id,
             ], [
                 'product_id' => $subscription->product->id,
+                'team_id' => $subscription->team_id,
                 'data' => [],
             ]);
         }
@@ -105,6 +108,7 @@ class UpdateNotifications extends Command
                 'type' => Notification::TYPE_ENDED_TRIAL_PERIOD,
                 'subscription_id' => $subscription->id,
             ], [
+                'team_id' => $subscription->team_id,
                 'product_id' => $subscription->product->id,
                 'data' => [],
             ]);
@@ -119,6 +123,7 @@ class UpdateNotifications extends Command
                 'type' => Notification::WAITING_PAYMENT_CP,
                 'subscription_id' => $subscription->id,
             ], [
+                'team_id' => $subscription->team_id,
                 'product_id' => $subscription->product->id,
                 'data' => [],
             ]);

@@ -245,7 +245,11 @@ class UsersBonusesController extends Controller
                     'editable' => false,
                     "name" => "Сумма",
                     "data" => array_values(collect($categories)->map(function ($category, $key) use ($usersBonusesForChart) {
-                        return ['name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 'x' => $category, 'y' => (int) ($usersBonusesForChart[$category] ?? 0)];
+                        return [
+                            'name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 
+                            'x' => $category, 
+                            'y' => (int) ($usersBonusesForChart[$category] ?? 0)
+                        ];
                     })->toArray()),
                     "color" => "#c2de80",
                 ],

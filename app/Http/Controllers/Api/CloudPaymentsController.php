@@ -53,6 +53,7 @@ class CloudPaymentsController extends Controller
                         'type' => Notification::TYPE_CANCEL_SUBSCRIPTION,
                         'subscription_id' => $subscription->id,
                         'product_id' => $subscription->product->id,
+                        'team_id' => $subscription->team_id,
                         'data' => [],
                     ]);
 

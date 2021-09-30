@@ -9,6 +9,7 @@ use App\Models\Card;
 use App\Models\Chart;
 use App\Models\Customer;
 use App\Models\Graph;
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\StatisticsModel;
@@ -28,47 +29,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get("/test", function () {
-    // $chart = Chart::where('id', 2)->first();
-    // $chart->graphs()->detach();
-    // $payments = Payment::whereStatus('Completed')->get()->groupBy('product_id');
-    // foreach ($payments as $key => $productPayments) {
-    //     $product = Product::whereId($key)->first();
-    //     $productPaymentTypes = $product->paymentTypes->pluck('id', 'name')->toArray();
-    //     $productBonuses = $product->productBonuses;
-    //     unset($productPaymentTypes['tries']);
-    //     foreach ($productPayments as $payment) {
-    //         $countBeforePayments = $payment->subscription->payments
-    //             ->where('status', 'Completed')
-    //             ->where('type', $payment->type)
-    //             ->where('paided_at', '<', $payment->paided_at)
-    //             ->where('id', '!=', $payment->id)
-    //             ->count();
+    $notifications = Notification::whereNotNull('subscription_id')->get();
 
-    //         if ($countBeforePayments < 1) {
-    //             $bonus = $productBonuses
-    //                 ->where('type', 'firstPayment')
-    //                 ->where('payment_type_id', $productPaymentTypes[$payment->type])->first();
-    //             if (! isset($bonus)) {
-    //                 dd($payment);
-    //             }
-    //             $payment->update([
-    //                 'product_bonus_id' => $bonus->id,
-    //             ]);
-    //         } else {
-    //             $bonus = $productBonuses
-    //                 ->where('type', 'repeatedPayment')
-    //                 ->where('payment_type_id', $productPaymentTypes[$payment->type])
-    //                 ->first();
-
-    //             if (! isset($bonus)) {
-    //                 dd($payment);
-    //             }
-    //             $payment->update([
-    //                 'product_bonus_id' => $bonus->id,
-    //             ]);
-    //         }
-    //     }
-    // }
+    foreach ($notifications as $notification) {
+        if (isset($notification->subscription)) {
+            $notification->update([
+                'team_id' => $notification->subscription->team_id,
+            ]);
+        }
+    }
 })->name("test");
 
 Route::get("/test2", function () {
@@ -163,6 +132,27 @@ Route::get("/test5", function () {
     }
     // dd($subscriptions->count());
 })->name("test5");
+
+Route::get("/test6", function () {
+    $from = Carbon::parse('2021-04-01 00:00:00');
+    $to = Carbon::now();
+    $payments = Payment::where('status', 'Completed')->where('type', 'transfer')->whereBetween('paided_at', [$from, $to])->get()
+        ->groupBy('subscription_id')
+        ->transform(function($items) {
+            return $items->groupBy(function($payment) {
+                return Carbon::parse($payment->paided_at)->format('Y-m');
+            });
+        })->toArray();
+    $data = [];
+    foreach ($payments as $subId => $times) {
+        foreach ($times as $spayments) {
+            if (count($spayments) > 1) {
+                $data[] = $subId;
+            }
+        }
+    }
+    dd($data);
+})->name("test6");
 
 Route::get("/", [HomeController::class, "homepage"])->name("homepage");
 Route::get("/thank-you", [HomeController::class, "thankYou"])->name("thankYou");

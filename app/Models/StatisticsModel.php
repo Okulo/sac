@@ -103,6 +103,16 @@ class StatisticsModel extends Model
     // График: Бонусы менеджера
     const TWENTIETH_STATISTICS = 20;
 
+    // Страница: Финансовые
+    // Диаграмма: Рентабельность услуги
+    // График: Расход на рекламу
+    const TWENTY_FIRST_STATISTICS = 21;
+
+    // Страница: Финансовые
+    // Диаграмма: Рентабельность услуги
+    // График: Расход на оплату тренеру
+    const TWENTY_SECOND_STATISTICS = 22;
+
     const PERIOD_TYPE_WEEK = 'week';
     const PERIOD_TYPE_MONTH = 'month';
 

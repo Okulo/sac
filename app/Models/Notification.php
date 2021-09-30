@@ -20,6 +20,7 @@ class Notification extends Model
         'in_process',
         'processed',
         'data',
+        'team_id',
     ];
 
     const TYPE_CANCEL_SUBSCRIPTION = 1; // Отменили самостоятельно
@@ -68,7 +69,7 @@ class Notification extends Model
 
     public function subscription()
     {
-        return $this->belongsTo(Subscription::class);
+        return $this->belongsTo(Subscription::class)->withTrashed();
     }
 
     public function product()

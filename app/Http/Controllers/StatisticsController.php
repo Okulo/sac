@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bonus;
 use App\Models\Chart;
+use App\Models\Graph;
 use App\Models\Product;
 use App\Models\StatisticsModel;
 use App\Models\Subscription;
@@ -263,8 +265,8 @@ class StatisticsController extends Controller
             Carbon::parse($category / 1000)->startOfWeek()->isoFormat('DD') : 
             Carbon::parse($category / 1000)->startOfMonth()->isoFormat('DD');
         $end = $period == 'week' ? 
-            Carbon::parse($category / 1000)->endOfWeek()->isoFormat('DD MMM, YY') : 
-            Carbon::parse($category / 1000)->endOfMonth()->isoFormat('DD MMM, YY');
+            Carbon::parse($category / 1000)->endOfWeek()->isoFormat('DD MMM') : 
+            Carbon::parse($category / 1000)->endOfMonth()->isoFormat('DD MMM');
         return $start . ' - ' . $end;
     }
 
@@ -432,6 +434,159 @@ class StatisticsController extends Controller
                     'dataLabels' => [
                         'enabled' => true,
                     ],
+                ]
+            ],
+        ]);
+
+        $operatorsExpenses = Bonus::join('product_bonuses', 'product_bonuses.id', '=', 'product_bonus_id')
+            ->join('payment_types', 'payment_types.id', '=', 'product_bonuses.payment_type_id')
+            ->select(
+                \DB::raw("SUM(product_bonuses.amount * bonuses.amount) as total_bonus"),
+                'bonuses.unix_date'
+            )
+            ->where('bonuses.product_id', $productId)
+            ->where('bonuses.date_type', $period)
+            ->groupBy('bonuses.unix_date')
+            ->get()
+            ->pluck('total_bonus', 'unix_date')
+            ->toArray();
+
+        $managersExpenses = Graph::whereType(StatisticsModel::TWENTIETH_STATISTICS)->first()->statistics()->where('period_type', $request->get('period'))->where('product_id', $request->get('productId'))->get()->pluck('value', 'key')->toArray();
+        $advertisingExpense = StatisticsModel::where('period_type', $request->get('period'))->where('product_id', $request->get('productId'))->where('graph_id', StatisticsModel::TWENTY_FIRST_STATISTICS)->get()->pluck('value', 'key');
+        $сoachСost = StatisticsModel::where('period_type', $request->get('period'))->where('product_id', $request->get('productId'))->where('graph_id', StatisticsModel::TWENTY_SECOND_STATISTICS)->get()->pluck('value', 'key');
+
+        $totalExpenses = array_values(collect($categories)->map(function ($category, $key) use ($operatorsExpenses, $managersExpenses, $advertisingExpense, $сoachСost) {
+            $operatorsExpenses = isset($operatorsExpenses[$category]) ? (int) $operatorsExpenses[$category] : 0;
+            $managersExpenses = isset($managersExpenses[$category]) ? (int) $managersExpenses[$category] : 0;
+            $advertisingExpense = isset($advertisingExpense[$category]) ? (int) $advertisingExpense[$category] : 0;
+            $сoachСost = isset($сoachСost[$category]) ? (int) $сoachСost[$category] : 0;
+
+            $value = $operatorsExpenses + $managersExpenses + $advertisingExpense + $сoachСost;
+
+            return [
+                'name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 
+                'x' => $category, 
+                'y' => ((int) $value) ?? 0,
+            ];
+        })->toArray());
+
+        $income = array_values(collect($categories)->map(function ($category, $key) use ($turnover, $operatorsExpenses, $managersExpenses, $advertisingExpense, $сoachСost) {
+            $operatorsExpenses = isset($operatorsExpenses[$category]) ? (int) $operatorsExpenses[$category] : 0;
+            $managersExpenses = isset($managersExpenses[$category]) ? (int) $managersExpenses[$category] : 0;
+            $advertisingExpense = isset($advertisingExpense[$category]) ? (int) $advertisingExpense[$category] : 0;
+            $сoachСost = isset($сoachСost[$category]) ? (int) $сoachСost[$category] : 0;
+            $turnover = isset($turnover[$category]) ? $turnover[$category]->sum('total') : 0;
+            $expenses = (int) ($operatorsExpenses + $managersExpenses + $advertisingExpense + $сoachСost);
+            $value = $turnover - $expenses;
+
+            return [
+                'name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 
+                'x' => $category, 
+                'y' => ((int) $value) ?? 0,
+            ];
+        })->toArray());
+
+        // dd($income);
+
+        $chats->push([
+            'type' => 'highchart',
+            'chart' => [
+                'type' => 'area',
+            ],
+            "title" => ["text" => 'Рентабельность услуги'],
+            "xAxis" => [
+                "type" => 'datetime',
+                'label' => [
+                    'style' => [
+                        'color' => '#000',
+                    ],
+                ],
+            ],
+            "series" => [
+                [
+                    'visible' => false,
+                    'editable' => false,
+                    "name" => "Расход на бонусы операторов",
+                    "data" => array_values(collect($categories)->map(function ($category, $key) use ($operatorsExpenses) {
+                        return ['name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 'x' => $category, 'y' => isset($operatorsExpenses[$category]) ? (int) $operatorsExpenses[$category] : 0];
+                    })->toArray()),
+                    "color" => "#2adaca",
+                    "description" => "Сумма из бонусов всех операторов за неделю по услуге",
+                    'groupPadding' => 0,
+                    'stacking' => 'normal'
+                ],
+                [
+                    'visible' => false,
+                    'editable' => false,
+                    "name" => "Расход на бонусы менеджеров",
+                    "data" => array_values(collect($categories)->map(function ($category, $key) use ($managersExpenses) {
+                        return ['name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 'x' => $category, 'y' => isset($managersExpenses[$category]) ? (int) $managersExpenses[$category] : 0];
+                    })->toArray()),
+                    "color" => "#c2de80",
+                    "description" => "Сумма из бонусов всех менеджеров за неделю по услуге",
+                    'groupPadding' => 0,
+                    'stacking' => 'normal'
+                ],
+                [
+                    'visible' => false,
+                    'editable' => true,
+                    "name" => "Расход на рекламу",
+                    "statisticsType" => StatisticsModel::TWENTY_FIRST_STATISTICS,
+                    "data" => array_values(collect($categories)->map(function ($category, $key) use ($advertisingExpense) {
+                        return ['name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 'x' => $category, 'y' => isset($advertisingExpense[$category]) ? (int) $advertisingExpense[$category] : 0];
+                    })->toArray()),
+                    "color" => "#ff000085",
+                    "description" => "Вбивается вручную",
+                    'groupPadding' => 0,
+                    'stacking' => 'normal'
+                ],
+                [
+                    'visible' => false,
+                    'editable' => true,
+                    "name" => "Расход на оплату тренеру",
+                    "statisticsType" => StatisticsModel::TWENTY_SECOND_STATISTICS,
+                    "data" => array_values(collect($categories)->map(function ($category, $key) use ($сoachСost) {
+                        return ['name' => Carbon::parse((int) $category / 1000)->setTimezone('Asia/Almaty')->isoFormat('DD MMM, YY'), 'x' => $category, 'y' => isset($сoachСost[$category]) ? (int) $сoachСost[$category] : 0];
+                    })->toArray()),
+                    "color" => "#ffff00a6",
+                    "description" => "Вбивается вручную",
+                    'groupPadding' => 0,
+                    'stacking' => 'normal'
+                ],
+                [
+                    'editable' => false,
+                    'visible' => true,
+                    "name" => "Общий расход",
+                    "data" => $totalExpenses,
+                    "color" => "#e8bf29",
+                    "description" => "Общий расход от услуги",
+                    'groupPadding' => 0,
+                    // 'stacking' => 'normal'
+                ],
+                [
+                    'visible' => true,
+                    'editable' => false,
+                    "name" => "Чистый доход от услуги",
+                    "data" => $income,
+                    "color" => "#c2de80",
+                    "description" => "Чистый доход от услуги",
+                    'groupPadding' => 0,
+                    // 'stacking' => 'normal'
+                ],
+            ],
+            'plotOptions' => [
+                'area' => [
+                    // 'stacking' => 'normal',
+
+                    'dataLabels' => [
+                        'enabled' => true,
+                        'allowOverlap' => true,
+                        'inside' => false,
+                        'position' => 'right',
+                        
+                    ],
+                    'fillOpacity' => 0.5,
+                    'trackByArea' => true,
                 ]
             ],
         ]);

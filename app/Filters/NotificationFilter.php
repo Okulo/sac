@@ -49,4 +49,16 @@ class NotificationFilter extends BaseFilter
     {
         
     }
+
+    public function teamId($value)
+    {
+        if (is_array($value)) {
+        } else {
+            $value = [$value];
+        }
+
+        return $this->builder->where(function($query) use ($value) {
+            $query->whereIn('notifications.team_id', $value)->orWhere('notifications.team_id', null);
+        });
+    }
 }

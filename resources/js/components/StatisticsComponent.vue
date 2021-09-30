@@ -204,7 +204,8 @@ import { VueEditor } from "vue2-editor";
                 this.charts[index] = chart;
                 this.charts[index].xAxis.labels = {
                     formatter: function(value) {
-                        return moment(value.value).tz('Asia/Almaty').lang("ru").format('LL');
+                        return moment(value.value).tz('Asia/Almaty').locale("ru").format('D MMM');
+                        // return moment(value.value).tz('Asia/Almaty').lang("ru").format('LL');
                     }
                 };
 
