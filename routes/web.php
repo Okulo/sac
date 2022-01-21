@@ -57,7 +57,7 @@ Route::get("/test2", function () {
                 'exp_date' => $payment->data['cloudpayments']['CardExpDate'] ?? null,
                 'type' => $payment->data['cloudpayments']['CardType'] ?? null,
                 'name' => $payment->data['cloudpayments']['Name'] ?? '',
-    
+
             ]);
         }
     }
@@ -134,7 +134,7 @@ Route::get("/test5", function () {
 })->name("test5");
 
 Route::get("/test6", function () {
-    $from = Carbon::parse('2021-04-01 00:00:00');
+    $from = Carbon::parse('2021-10-02 00:00:00');
     $to = Carbon::now();
     $payments = Payment::where('status', 'Completed')->where('type', 'transfer')->whereBetween('paided_at', [$from, $to])->get()
         ->groupBy('subscription_id')
@@ -161,6 +161,7 @@ Auth::routes();
 Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get("/dashboard", [HomeController::class, "dashboard"])->name("dashboard");
     Route::post("/statistics", [StatisticsController::class, "update"])->name("statistics.update");
+    Route::post("/statistics/getPeriods", [StatisticsController::class, "getPeriods"])->name("statistics.getPeriods");
     Route::post("/statistics/timeline", [StatisticsController::class, "updateTimeline"])->name("statistics_timeline.update");
     Route::get("/statistics/quantitative", [StatisticsController::class, "quantitative"])->name("statistics.quantitative");
     Route::get("/statistics/financial", [StatisticsController::class, "financial"])->name("statistics.financial");
@@ -199,6 +200,8 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('payments/filter', 'PaymentController@getFilters');
 
     Route::get('products/with-prices', 'ProductController@withPrices');
+
+    Route::get('notific/waiting', 'NotificController@waiting');
 
     Route::resources([
         'customers' => 'CustomerController',

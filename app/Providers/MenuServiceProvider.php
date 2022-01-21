@@ -96,6 +96,11 @@ class MenuServiceProvider extends ServiceProvider
                 'label_color' => 'success',
             ]);
 
+            $event->menu->addIn('notifications', [
+                "key" => "notification_type_waiting",
+                "text" => 'New Жду оплату',
+                "url" => "notific/waiting",
+            ]);
             $event->menu->addIn('statistics', [
                 "key" => "statistic_type_1",
                 "text" => 'Количественные',

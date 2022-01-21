@@ -64,6 +64,7 @@ Vue.component('phone-component', require('./components/PhoneComponent.vue').defa
 Vue.component('date-component', require('./components/DateComponent.vue').default);
 Vue.component('statistics-component', require('./components/StatisticsComponent.vue').default);
 Vue.component('simple-timeline', require('./components/SimpleTimeline/SimpleTimeline.vue').default);
+Vue.component('notific-component', require('./components/NotificComponent.vue').default);
 
 // import SimpleTimeline from './components/SimpleTimeline/SimpleTimeline';
 // import SimpleTimelineItem from './components/SimpleTimeline/SimpleTimelineItem';
@@ -116,7 +117,7 @@ Vue.use(BootstrapVue)
 import { Datetime } from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
- 
+
 Vue.use(Datetime)
 Vue.component('datetime', Datetime);
 
