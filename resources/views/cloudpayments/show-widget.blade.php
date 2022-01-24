@@ -70,8 +70,11 @@
 $( "#cloudpayment-widget-form" ).submit(function( event ) {
     event.preventDefault();
     var widget = new cp.CloudPayments();
-    
+
     var data = JSON.parse('<?php echo $data; ?>');
+
+    console.log(data);
+
     widget.charge(data,
     function (options) { // success
         window.location.href = "{{ route('cloudpayments.thank_you', [$payment->subscription->product->id]) }}";

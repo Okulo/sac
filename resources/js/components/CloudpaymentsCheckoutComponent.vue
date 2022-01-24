@@ -148,8 +148,8 @@
                   <div class="card-input">
                       <label for="cardNumber" class="card-input__label">Номер карты</label>
                       <!-- <the-mask
-                        data-cp="cardNumber" 
-                        id="cardNumber" 
+                        data-cp="cardNumber"
+                        id="cardNumber"
                         class="card-input__input"
                         :masked="false"
                         :mask="generateCardNumberMask"
@@ -202,7 +202,7 @@
                 ОПЛАТИТЬ {{ payment.amount }} тенге
                 </button>
                 <p style="margin-top: 20px;text-align: center;">Нажимая "ОПЛАТИТЬ", Вы даёте согласие
-                    на обработку Ваших персональных данных и принимаете 
+                    на обработку Ваших персональных данных и принимаете
                     <a href="https://www.strela-academy.ru/offer.pdf" style="color: #fc0000;text-decoration: underline;" target="_blank">Пользовательское соглашение</a>
                 </p>
               </div>
@@ -371,7 +371,7 @@ export default {
       } else {
         this.spinnerData.loading = false;
 
-        // найдены ошибки в введённых данных, объект `result.messages` формата: 
+        // найдены ошибки в введённых данных, объект `result.messages` формата:
         // { name: "В имени держателя карты слишком много символов", cardNumber: "Неправильный номер карты" }
         // где `name`, `cardNumber` соответствуют значениям атрибутов `<input ... data-cp="cardNumber">`
         for (var msgName in result.messages) {

@@ -130,38 +130,38 @@ class CloudPaymentsController extends Controller
         ]);
     }
 
-    // public function showCheckout(int $subscriptionId, Request $request)
-    // {
-    //     $subscription = Subscription::whereId($subscriptionId)->where('status', '!=', 'paid')->firstOr(function () {
-    //         abort(404);
-    //     });
+     public function showCheckout(int $subscriptionId, Request $request)
+     {
+         $subscription = Subscription::whereId($subscriptionId)->where('status', '!=', 'paid')->firstOr(function () {
+             abort(404);
+         });
 
-    //     $payment = $subscription->payments()->whereStatus('new')->whereType('cloudpayments')->first();
+         $payment = $subscription->payments()->whereStatus('new')->whereType('cloudpayments')->first();
 
-    //     // Если у юзера вышла ошибка с платежом, создаем новый
-    //     if (!isset($payment)) {
-    //         $payment = $subscription->payments()->create([
-    //             'customer_id' => $subscription->customer->id,
-    //             'user_id' => null,
-    //             'quantity' => 1,
-    //             'type' => 'cloudpayments',
-    //             'status' => 'new',
-    //             'amount' => $subscription->price,
-    //         ]);
-    //     } else {
-    //         $payment->update([
-    //             'amount' => $subscription->price,
-    //         ]);
-    //     }
+         // Если у юзера вышла ошибка с платежом, создаем новый
+         if (!isset($payment)) {
+             $payment = $subscription->payments()->create([
+                 'customer_id' => $subscription->customer->id,
+                 'user_id' => null,
+                 'quantity' => 1,
+                 'type' => 'cloudpayments',
+                 'status' => 'new',
+                 'amount' => $subscription->price,
+             ]);
+         } else {
+             $payment->update([
+                 'amount' => $subscription->price,
+             ]);
+         }
 
-    //     $publicId = env('CLOUDPAYMENTS_USERNAME');
+         $publicId = env('CLOUDPAYMENTS_USERNAME');
 
-    //     return view('cloudpayments.show-checkout', [
-    //         'payment' => $payment,
-    //         'customer' => $subscription->customer,
-    //         'subscription' => $subscription,
-    //         'product' => $subscription->product,
-    //         'publicId' => $publicId,
-    //     ]);
-    // }
+         return view('cloudpayments.show-checkout', [
+             'payment' => $payment,
+             'customer' => $subscription->customer,
+             'subscription' => $subscription,
+             'product' => $subscription->product,
+             'publicId' => $publicId,
+         ]);
+     }
 }

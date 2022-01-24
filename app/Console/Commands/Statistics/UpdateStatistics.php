@@ -47,94 +47,6 @@ class UpdateStatistics extends Command
     {
         $this->period = $this->argument('period');
 
-        $graph = Graph::whereType(StatisticsModel::SECOND_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateSecondStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::THIRD_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateThirdStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::FOURTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateFourthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::SEVENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray() ?? [];
-            if (! empty($productIds)) {
-                $this->updateSeventhStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::EIGHTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateEighthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::NINTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateNinthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::TENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateTenthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::ELEVENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateEleventhStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::TWELFTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateTwelfthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::THIRTEENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateThirteenthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::FIFTEENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateFifteenthStatistics($graph, $productIds);
-            }
-        }
-
         $graph = Graph::whereType(StatisticsModel::SIXTEENTH_STATISTICS)->first();
         if (isset($graph)) {
             $productIds = $graph->products->pluck('id')->toArray();
@@ -143,37 +55,6 @@ class UpdateStatistics extends Command
             }
         }
 
-        // $graph = Graph::whereType(StatisticsModel::SEVENTEENTH_STATISTICS)->first();
-        // if (isset($graph)) {
-        //     $productIds = $graph->products->pluck('id')->toArray();
-        //     if (! empty($productIds)) {
-        //         $this->updateSeventeenthStatistics($graph, $productIds);
-        //     }
-        // }
-
-        $graph = Graph::whereType(StatisticsModel::EIGHTEENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateEighteenthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::NINETEENTH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = $graph->products->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateNineteenthStatistics($graph, $productIds);
-            }
-        }
-
-        $graph = Graph::whereType(StatisticsModel::TWENTIETH_STATISTICS)->first();
-        if (isset($graph)) {
-            $productIds = Product::get()->pluck('id')->toArray();
-            if (! empty($productIds)) {
-                $this->updateTwentiethStatistics($graph, $productIds);
-            }
-        }
     }
 
     private function updateTwentiethStatistics(Graph $graph, array $productIds)
@@ -268,7 +149,7 @@ class UpdateStatistics extends Command
                     }
                 });
             })->toArray();
-        
+
         foreach($products as $productId => $subscriptions) {
             foreach ($subscriptions as $key => $value) {
                 StatisticsModel::updateOrCreate([
@@ -304,7 +185,7 @@ class UpdateStatistics extends Command
                     }
                 });
             })->toArray();
-        
+
         foreach($products as $productId => $subscriptions) {
             foreach ($subscriptions as $key => $value) {
                 StatisticsModel::updateOrCreate([
@@ -339,7 +220,7 @@ class UpdateStatistics extends Command
                     }
                 });
             })->toArray();
-        
+
         foreach($products as $productId => $subscriptions) {
             foreach ($subscriptions as $key => $value) {
                 StatisticsModel::updateOrCreate([
@@ -375,7 +256,7 @@ class UpdateStatistics extends Command
                 });
             })
             ->toArray();
-        
+
         foreach($products as $productId => $subscriptions) {
             foreach ($subscriptions as $key => $value) {
                 StatisticsModel::updateOrCreate([
@@ -447,7 +328,7 @@ class UpdateStatistics extends Command
                 });
             })
             ->toArray();
-        
+
         foreach($products as $productId => $subscriptions) {
             foreach ($subscriptions as $key => $value) {
                 StatisticsModel::updateOrCreate([
@@ -622,18 +503,8 @@ class UpdateStatistics extends Command
                 return $items->count();
             })
             ->toArray();
+print_r( $products);
 
-        foreach($products as $productId => $subscriptionsCount) {
-            StatisticsModel::updateOrCreate([
-                'period_type' => $period,
-                // 'type' => StatisticsModel::SIXTEENTH_STATISTICS,
-                'graph_id' => $graph->id,
-                'product_id' => $productId,
-                'key' => $date,
-            ], [
-                'value' => $subscriptionsCount,
-            ]);
-        }
     }
 
     private function updateSeventeenthStatistics(Graph $graph, array $productIds)
@@ -753,12 +624,12 @@ class UpdateStatistics extends Command
                     if (isset($secondGraphStatistics[$productId]) && isset($secondGraphStatistics[$productId][$firstItem->key])) {
                         try {
                             $secondItem = $secondGraphStatistics[$productId][$firstItem->key];
-    
+
                             $firstValue = $firstItem->value == 0 ? 1 : (int) $firstItem->value;
                             $secondValue = $secondItem->value == 0 ? 1 : (int) $secondItem->value;
                             $conversionValue = round($secondValue / $firstValue * 100, 0);
                             $value = $conversionValue >= 100 ? 100 : $conversionValue;
-    
+
                             StatisticsModel::updateOrCreate([
                                 'period_type' => $period,
                                 'graph_id' => $graph->id,
