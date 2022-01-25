@@ -503,7 +503,18 @@ class UpdateStatistics extends Command
                 return $items->count();
             })
             ->toArray();
-print_r( $products);
+
+        foreach($products as $productId => $subscriptionsCount) {
+            StatisticsModel::updateOrCreate([
+                'period_type' => $period,
+                // 'type' => StatisticsModel::SIXTEENTH_STATISTICS,
+                'graph_id' => $graph->id,
+                'product_id' => $productId,
+                'key' => $date,
+            ], [
+                'value' => $subscriptionsCount,
+            ]);
+        }
 
     }
 

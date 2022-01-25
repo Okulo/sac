@@ -70,7 +70,7 @@
 $( "#cloudpayment-widget-form" ).submit(function( event ) {
     event.preventDefault();
     var widget = new cp.CloudPayments();
-    
+
     var data = <?php echo json_encode($data, JSON_FORCE_OBJECT); ?>;
     console.log(data);
     widget.charge({ // options

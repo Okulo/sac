@@ -214,5 +214,6 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
 
 Route::get("/pull", [HomeController::class, "pull"])->name("pull");
 Route::get('cloudpayments/{subscriptionId}', 'CloudPaymentsController@showWidget')->name('cloudpayments.show_widget');
+Route::get('cloudpayments/savecard/{subscriptionId}', 'CloudPaymentsController@saveCard')->name('cloudpayments.save_card');
 Route::get('cloudpayments/showcheckout/{subscriptionId}', 'CloudPaymentsController@showCheckout')->name('cloudpayments.show_checkout');
 Route::get('cloudpayments/{productId}/thank-you', 'CloudPaymentsController@thankYou')->name('cloudpayments.thank_you');

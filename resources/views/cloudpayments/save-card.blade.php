@@ -18,12 +18,12 @@
                         <div class="col-sm-5">
                             <div class="card-input">
                                 <label class="card-input__label">Имя</label>
-                                <input type="text" class="card-input__input" value="{{ $payment->subscription->customer->name }}" disabled>
+                                <input type="text" class="card-input__input" value="Имя клиента" disabled>
                             </div>
                             <div class="card-input">
                                 <label class="card-input__label">Телефон абонента</label>
                                 <the-mask :masked="false" mask="+# (###) ### ##-##" type="text"
-                                    class="card-input__input" id="phone" value="{{ $payment->subscription->customer->phone }}" required disabled>
+                                    class="card-input__input" id="phone" value="+" required disabled>
                                 </the-mask>
                             </div>
                             {{--<div class="card-input">
@@ -36,16 +36,16 @@
                         <div class="col-sm-6">
                             <div class="card-input">
                                 <label class="card-input__label">Услуга</label>
-                                <input type="text" class="card-input__input" value="{{ $payment->subscription->product->title }}" disabled>
+                                <input type="text" class="card-input__input" value="Платеж для проверки карты" disabled>
                             </div>
                             <div class="card-input">
-                                <label class="card-input__label">{{ $payment->type == 'cloudpayments' ? 'Стоимость в месяц' : 'Стоимость' }}</label>
-                                <input type="text" class="card-input__input" value="{{ $payment->amount }} тенге"
+                                <label class="card-input__label">Сумма</label>
+                                <input type="text" class="card-input__input" value="5 тенге"
                                     disabled>
                             </div>
                         </div>
                         <button type="submit" class="card-form__button" style="font-size: 18px">
-                            Перейти к оплате блейд
+                            Тут нужна оплата двухстадийная оплата
                         </button>
                         <p style="margin-top: 20px;text-align: center;">Нажимая "Перейти к оплате", Вы даёте согласие
                             на обработку Ваших персональных данных и принимаете
@@ -77,10 +77,10 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
 
     widget.charge(data,
     function (options) { // success
-        window.location.href = "{{ route('cloudpayments.thank_you', [$payment->subscription->product->id]) }}";
+        window.location.href = "/";
     },
     function (reason, options) { // fail
-        window.location.href = "{{ route('cloudpayments.show_widget', [$payment->subscription->id]) }}";
+        window.location.href = "/";
     });
 });
 </script>
