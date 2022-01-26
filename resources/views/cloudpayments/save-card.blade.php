@@ -67,21 +67,41 @@
 
 @section('adminlte_js')
 <script>
+
 $( "#cloudpayment-widget-form" ).submit(function( event ) {
+
     event.preventDefault();
     var widget = new cp.CloudPayments();
+    widget.pay('auth', // или 'charge'
+        { //options
+            publicId: 'pk_c80b97850a717a931b595b7a6b688htf', //id из личного кабинета
+            description: 'Тестовый платеж для проверки блокировки средств', //назначение
+            amount: 10, //сумма
+            currency: 'KZT', //валюта
+            accountId: '13734', //идентификатор плательщика (необязательно)
+            invoiceId: '1234567', //номер заказа  (необязательно)
+            email: 'almaty-pro@yandex.ru', //email плательщика (необязательно)
+            skin: "mini", //дизайн виджета (необязательно)
+            data: {
+                myProp: 'данные prop'
+            }
+        },
+        {
+            onSuccess: function (options) { // success
+                //действие при успешной оплате
+                console.log('успешная оплата');
+            },
+            onFail: function (reason, options) { // fail
+                //действие при неуспешной оплате
+                console.log("фэйл причина"+reason);
+            },
+            onComplete: function (paymentResult, options) { //Вызывается как только виджет получает от api.cloudpayments ответ с результатом транзакции.
+                //например вызов вашей аналитики Facebook Pixel
+               // console.log("результат - "+ paymentResult);
+            }
+        }
+    )
 
-    var data = JSON.parse('<?php echo $data; ?>');
-
-    console.log(data);
-
-    widget.charge(data,
-    function (options) { // success
-        window.location.href = "/";
-    },
-    function (reason, options) { // fail
-        window.location.href = "/";
-    });
 });
 </script>
 @endsection

@@ -169,6 +169,9 @@ class CloudPaymentsController extends Controller
     public function saveCard(int $subscriptionId, Request $request)
     {
 
+
+
+
         $publicId = env('CLOUDPAYMENTS_USERNAME');
 //        $data = [
 //            'publicId' => $publicId, //id из личного кабинета
