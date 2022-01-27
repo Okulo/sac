@@ -52,12 +52,12 @@
                                 <b-tab v-for="(subscription, subIndex) in subscriptions" :key="subIndex" :active="showTab(subIndex)" :title="getSubscriptionTitle(subscription.product_id)" style="position: relative;">
                                     <div v-if="isDisabled(subscription)" style="width: 100%; height: 100%; display: block; background: #0000001a; z-index: 10000; top: 0; position: absolute; left: 0;"></div>
                                     <div class="row">
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             title="Удалить услугу"
-                                            @click="removeProduct(subscription.id, subIndex)" 
-                                            class="close" 
-                                            data-dismiss="alert" 
+                                            @click="removeProduct(subscription.id, subIndex)"
+                                            class="close"
+                                            data-dismiss="alert"
                                             aria-label="Close"
                                             style="right: 20px; position: absolute; z-index: 1"
                                         ><span aria-hidden="true">&times;</span></button>
@@ -128,6 +128,15 @@
                                                     :auto="true"
                                                     :disabled="isDisabled(subscription)"
                                                 ></datetime>
+
+
+                                                <div>
+                                                    <div class="row" style="margin-bottom: 15px;">
+                                                        <div data-v-9097e738="" class="col-sm-6">
+                                                            <div class="recurrent_block">
+                                                                <a data-v-9097e738="" target="_blank" href="http://127.0.0.1:8000/cloudpayments/15254">http://127.0.0.1:8000/cloudpayments/15254</a>
+                                                                <input data-v-9097e738="" type="hidden" id="recurrent-link-2" value="http://127.0.0.1:8000/cloudpayments/15254"></div></div> <div data-v-9097e738="" class="col-sm-6"><div data-v-9097e738="" class="recurrent_button-block"><button data-v-9097e738="" class="btn btn-info">Копировать</button></div></div></div>
+                                                </div>
                                             </div>
                                             <div v-else-if="subscription.payment_type == 'transfer' || subscription.payment_type == 'cloudpayments'">
                                                 <div v-show="!subscription.is_edit_ended_at">
@@ -556,7 +565,7 @@ export default {
 
             // For IE.
             if (window.clipboardData) {
-                window.clipboardData.setData("Text", input.val());        
+                window.clipboardData.setData("Text", input.val());
             } else {
                 // Create a temporary element off screen.
                 var tmpElem = $('<div>');
@@ -574,7 +583,7 @@ export default {
                 selection.removeAllRanges ();
                 selection.addRange (range);
                 // Lets copy.
-                try { 
+                try {
                     success = document.execCommand("copy", false, null);
                 }
                 catch (e) {
