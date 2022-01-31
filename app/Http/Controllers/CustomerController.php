@@ -6,6 +6,7 @@ use App\Exceptions\ErrorCodes;
 use App\Exceptions\NoticeException;
 use App\Http\Requests\CreateCustomerRequest;
 use App\Http\Requests\CreateCustomerWithDataRequest;
+use App\Models\CpNotification;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Filters\CustomerFilter;
@@ -36,8 +37,21 @@ class CustomerController extends Controller
             throw new \Exception('Клиент не найден', 404);
         });
 
+        $cp_data = CpNotification::where('request->AccountId',$customerId)->first();
+        if($cp_data) {
+            $cp_request = $cp_data->request;
+        }
+        else {
+            $cp_request = 'Нет данных';
+        }
+
+    //    $cp_note = CpNotification::select('transaction_id', 'request')->get()->toArray();
+
+     //   dd($cp_note->request);
+
         return response()->json([
             'data' => new CustomerWithSubscriptionResource($customer),
+            'cp_data' => $cp_request,
             'message' => 'Успешно'
         ], 200);
     }
@@ -54,7 +68,7 @@ class CustomerController extends Controller
                         'title' => Subscription::PAYMENT_TYPE[$paymentType],
                         'statuses' => [],
                     ];
-        
+
                     switch ($paymentType) {
                         case 'tries':
                             $statuses = Subscription::STATUSES;
@@ -229,7 +243,7 @@ class CustomerController extends Controller
     {
         $customerExists = Customer::where('id', ($data['customer']['id'] ?? null))->where('phone', $data['customer']['phone'])->exists();
         $updateCustomer = isset($data['customer']['id']);
-        
+
         if ($updateCustomer) { // Обновить клиента
             if ($customerExists) { // Обновить существующего клиента
                 $customer = Customer::updateOrCreate([
