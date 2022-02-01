@@ -37,7 +37,9 @@ class CustomerController extends Controller
             throw new \Exception('Клиент не найден', 404);
         });
 
-        $cp_data = CpNotification::where('request->AccountId',$customerId)->first();
+        $cp_data = CpNotification::where('request->AccountId',$customerId)
+            ->where('request->Status', 'Authorized')
+            ->first();
         if($cp_data) {
             $cp_request = $cp_data->request;
         }
