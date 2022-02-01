@@ -130,7 +130,7 @@
                                         ></datetime>
                                         <p><br></p>
 
-                                        <div v-if="cp_data.AccountId && cp_data.Status == 'Authorized'">
+                                        <div v-if="cp_data.AccountId && !customer.card">
                                             <div class="col-sm-12">
                                                 <span>У клиента есть привязанная карта</span>
                                                 {{cp_data.Status}}
@@ -139,7 +139,6 @@
 
                                             </div>
                                         </div>
-
                                         <div class="row" v-if="customer.card" style="margin-bottom: 15px">
                                             <div class="col-sm-12">
                                                 <span>У клиента есть привязанная карта</span>
@@ -264,10 +263,11 @@
                                 </div> -->
                                 </b-modal>
                             </div>
-                            <div class="row" v-if="customer.card && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
+                            <div class="row" v-if="customer.card && subscription.recurrent" style="margin-bottom: 15px">
                                 <div class="col-sm-12">
                                     <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
-                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
+                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id"
+                                            @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                 </div>
                             </div>
                             <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Exceptions\NoticeException;
+use App\Models\UserCard;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\Cloudpayments\PayFailNotification;
@@ -83,13 +84,45 @@ class CloudPaymentsController extends Controller
         return response()->json([
             'code' => 0,
         ]);
+
+        //ниже проверку пока отключим
+
+//        try {
+//            $data = $request->all();
+//            $jsonData = json_encode($data);
+//           var_dump($data['Name']);
+//
+//            UserCard::updateOrCreate(
+//                [
+//                    'token' => 'токен типа',
+//                    'cp_account_id' => '1111111',
+//                    'customer_id' => '13734',
+//                    'first_six' => '111111',
+//                    'last_four' => '2222',
+//                    'exp_date' => CardExpDate,
+//                    'type' => '5',
+//                    'name' => $data['Name'],
+//                    'data' =>  $jsonData,
+//                ]
+//            );
+//
+//            return response()->json([
+//                'code' => 0,
+//            ], 200);
+//        } catch (\Throwable $e) {
+//            \Log::info($data);
+//            \Log::error($e);
+//            return response()->json([
+//                'code' => 500
+//            ], 500);
+//        }
     }
 
     public function payFailNotification(Request $request)
     {
         try {
             $data = $request->all();
-            PayFailNotification::dispatch($data)->onQueue('cp_pay');
+            PayFailNoticfication::dispatch($data)->onQueue('cp_pay');
 
             return response()->json([
                 'code' => 0,
