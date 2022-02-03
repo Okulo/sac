@@ -275,7 +275,7 @@
                                     <span><span style="font-weight: bold">{{ cp_data.CardType }}</span> (конец карты - {{ cp_data.CardLastFour }}) </span>
                                         <br><br>
                                         <button type="button" class="btn btn-secondary" :id="'writeOffPaymentByToken-' + subscription.id"
-                                                @click="createPaymentByToken(cp_data.AccountId,cp_data.Token)" :disabled="isDisabled(subscription)">
+                                                @click="createPaymentByToken(subscription.id,cp_data)" :disabled="isDisabled(subscription)">
                                             Списать оплату с привязанной карты</button>
                                     </div>
                                 </div>
@@ -461,11 +461,11 @@
                     return false;
                 }
             },
-            createPaymentByToken(accountId, clientToken){
+            createPaymentByToken(subId, cardData){
                 this.spinnerData.loading = true;
                 axios.post('/subscriptions/createPaymentByToken', {
-                    accountId: accountId,
-                    clientToken: clientToken
+                    subscriptionId: subId,
+                    cardData: cardData
                 }).then(response => {
                     this.spinnerData.loading = false;
                     Vue.$toast.success(response.data.message);
