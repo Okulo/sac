@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Exceptions\NoticeException;
-use App\Models\UserCard;
+use App\Models\CustomerLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\Cloudpayments\PayFailNotification;
@@ -122,8 +122,54 @@ class CloudPaymentsController extends Controller
     {
         try {
             $data = $request->all();
-            PayFailNoticfication::dispatch($data)->onQueue('cp_pay');
 
+         if($data['Status'] == 'Authorized'){
+             $transaction_id = $data['TransactionId'];
+
+             $url = 'https://api.cloudpayments.ru/payments/void';
+             $username = 'pk_c80b97850a717a931b595b7a6b688';
+             $password = '84c46feec101d49a09e0900c5079fd5b';
+             $parameters = "TransactionId=$transaction_id";
+             $headers = array(
+                 'Authorization: Basic '. base64_encode($username.':'.$password)
+             );
+
+             $ch = curl_init();
+             curl_setopt($ch, CURLOPT_URL, $url);
+             curl_setopt($ch,CURLOPT_POST, 1);
+             curl_setopt($ch, CURLOPT_HEADER, 1);
+             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+             curl_setopt( $ch, CURLOPT_POSTFIELDS, $parameters);
+
+             $result = curl_exec ($ch);
+
+             curl_close ($ch);
+             $resultarr = explode ( "\n" , $result ) ;
+             $httpval = explode ( " " , $resultarr[0] ) ; // explode the first line
+
+
+             for ( $i=1 ;  $i < count( $resultarr) ; $i++ ) {
+                 if ( is_array (json_decode( $resultarr[$i] , true)) ){
+                     $resultvals  = json_decode( $resultarr[$i] , true) ;
+                 }
+             }
+
+             var_dump( $data['TransactionId']);
+
+             $user = CustomerLog::updateOrCreate(
+                 [
+                     'transaction_id' => $data['TransactionId'],
+                     'customer_id' => $data['AccountId'],
+                     'status' => $resultvals['Success'],
+                     'message' => $resultvals['Message'],
+                 ]
+             );
+
+         }
+         else{
+             PayFailNotification::dispatch($data)->onQueue('cp_pay');
+         }
             return response()->json([
                 'code' => 0,
             ], 200);
