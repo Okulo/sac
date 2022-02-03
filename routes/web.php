@@ -191,6 +191,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('subscriptions/filter', 'SubscriptionController@getFilters');
     Route::post('subscriptions/manualWriteOffPayment', 'SubscriptionController@manualWriteOffPayment');
     Route::post('subscriptions/writeOffPaymentByToken', 'SubscriptionController@writeOffPaymentByToken');
+    Route::post('subscriptions/createPaymentByToken', 'SubscriptionController@createPaymentByToken');
 
     Route::get('userlogs/list', 'UserLogController@getList');
     Route::get('userlogs/filter', 'UserLogController@getFilters');

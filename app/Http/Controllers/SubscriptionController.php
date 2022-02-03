@@ -268,7 +268,7 @@ class SubscriptionController extends Controller
             $subscription->update([
                 'manual_write_off_at' => Carbon::now(),
             ]);
-            $cloudpaymentService->updateSubscription([
+            $trying = $cloudpaymentService->updateSubscription([
                 'Id' => $subscription->cp_subscription_id,
                 // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
                 'Description' => 'Дата списания: ' . Carbon::yesterday()->format('Y-m-d\TH:i:s'),
@@ -279,6 +279,13 @@ class SubscriptionController extends Controller
 
         return response()->json([
             'message' => 'Запрос на списание отправлен.'
+        ], 200);
+    }
+
+    public function createPaymentByToken(Request $request)
+    {
+        return response()->json([
+            'message' => 'Оплата прошла успешно. Пожалуйста обновите страницу.'
         ], 200);
     }
 

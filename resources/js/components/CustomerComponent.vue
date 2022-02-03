@@ -128,35 +128,7 @@
                                             :auto="true"
                                             :disabled="isDisabled(subscription)"
                                         ></datetime>
-                                        <p><br></p>
 
-                                        <div v-if="cp_data.AccountId && !customer.card">
-                                            <div class="col-sm-12">
-                                                <span>У клиента есть привязанная карта</span>
-                                                {{cp_data.Status}}
-                                          <br>
-                                                <span><span style="font-weight: bold">{{ cp_data.CardType }}</span> (конец карты - {{ cp_data.CardLastFour }}) </span>
-
-                                            </div>
-                                        </div>
-                                        <div class="row" v-if="customer.card" style="margin-bottom: 15px">
-                                            <div class="col-sm-12">
-                                                <span>У клиента есть привязанная карта</span>
-                                                <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
-
-                                            </div>
-                                        </div>
-                                        <div v-if="customer.id && !cp_data.AccountId && !customer.card" class="row recurrent_block" style="margin-bottom: 5px">
-                                            Ниже сформирована ссылка для привязки карты клиентом (текст любой)
-                                            <p><br></p>
-                                            <div class="col-sm-8">
-                                                <a target="_blank" :href="'http://127.0.0.1:8000/cloudpayments/savecard/'+ customer.id">http://127.0.0.1:8000/cloudpayments/savecard/{{ customer.id}}</a>
-                                                <input type="hidden" :id="'recurrent-link-' + subIndex" :value="'http://127.0.0.1:8000/cloudpayments/savecard/'+customer.id">
-                                            </div>
-                                            <div class="col-sm-3  offset-1">
-                                                <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div v-else-if="subscription.payment_type == 'transfer' || subscription.payment_type == 'cloudpayments'">
                                         <div v-show="!subscription.is_edit_ended_at">
@@ -263,13 +235,7 @@
                                 </div> -->
                                 </b-modal>
                             </div>
-                            <div class="row" v-if="customer.card && subscription.recurrent" style="margin-bottom: 15px">
-                                <div class="col-sm-12">
-                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
-                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id"
-                                            @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
-                                </div>
-                            </div>
+
                             <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
                                 <div class="col-sm-6">
                                     <div class="recurrent_block">
@@ -281,6 +247,49 @@
                                     <div class="recurrent_button-block">
                                         <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
                                     </div>
+                                </div>
+                            </div>
+
+
+                            <div v-if="customer.id && !cp_data.AccountId && !customer.card" class="row" style="margin-bottom: 5px">
+
+                                <div class="col-sm-6">
+                                    <div class="card_link_block">
+                                        Ниже сформирована ссылка для привязки карты клиентом (текст любой)
+                                       <br><br>
+                                        <a target="_blank" :href="'http://127.0.0.1:8000/cloudpayments/savecard/'+ customer.id">http://127.0.0.1:8000/cloudpayments/savecard/{{ customer.id}}</a>
+                                        <input type="hidden" :id="'recurrent-link-' + subIndex" :value="'http://127.0.0.1:8000/cloudpayments/savecard/'+customer.id">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="recurrent_button-block">
+                                        <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
+                                    </div>
+                                </div>
+                            </div><p></p>
+
+                            <div v-if="cp_data.AccountId && !customer.card">
+                                <div class="col-sm-6">
+                                    <div class="user_card_block">
+                                    <span>Клиент привязал карту</span>
+                                    <span><span style="font-weight: bold">{{ cp_data.CardType }}</span> (конец карты - {{ cp_data.CardLastFour }}) </span>
+                                        <br><br>
+                                        <button type="button" class="btn btn-secondary" :id="'writeOffPaymentByToken-' + subscription.id"
+                                                @click="createPaymentByToken(cp_data.AccountId,cp_data.Token)" :disabled="isDisabled(subscription)">
+                                            Списать оплату с привязанной карты</button>
+                                    </div>
+                                </div>
+                            </div>
+<br><br>
+
+                            <div class="row" v-if="customer.card && subscription.recurrent" style="margin-bottom: 15px">
+                                <div class="col-sm-6">
+                                 <div class="user_card_block">
+                                    У клиента есть привязанная карта
+                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span><br><br>
+                                    <button type="button" class="btn btn-secondary" :id="'writeOffPaymentByToken-' + subscription.id"
+                                            @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
+                            </div>
                                 </div>
                             </div>
                             <div v-show="type == 'edit'" class="row" style="margin-bottom: 15px;">
@@ -451,6 +460,20 @@
                 } else {
                     return false;
                 }
+            },
+            createPaymentByToken(accountId, clientToken){
+                this.spinnerData.loading = true;
+                axios.post('/subscriptions/createPaymentByToken', {
+                    accountId: accountId,
+                    clientToken: clientToken
+                }).then(response => {
+                    this.spinnerData.loading = false;
+                    Vue.$toast.success(response.data.message);
+                })
+                    .catch(err => {
+                        this.spinnerData.loading = false;
+                        Vue.$toast.error(err.response.data.message);
+                    });
             },
             writeOffPaymentByToken(subId, cardId) {
                 document.getElementById('writeOffPaymentByToken-' + subId).disabled = true;
@@ -874,6 +897,15 @@
     }
     .selectpicker {
         display: block!important;
+    }
+
+    .user_card_block {
+        padding: 15px;
+        border: 1px solid #38c172;
+    }
+    .card_link_block{
+        padding: 15px;
+        border: 1px solid #dc3545;
     }
     .bd-example {
         padding: 1.5rem;
