@@ -274,9 +274,11 @@
                                     <span>Клиент привязал карту</span>
                                     <span><span style="font-weight: bold">{{ cp_data.CardType }}</span> (конец карты - {{ cp_data.CardLastFour }}) </span>
                                         <br><br>
+                                        <div v-if="(subscription.id) && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')">
                                         <button type="button" class="btn btn-secondary" :id="'writeOffPaymentByToken-' + subscription.id"
                                                 @click="createPaymentByToken(subscription.id,cp_data)" :disabled="isDisabled(subscription)">
                                             Списать оплату с привязанной карты</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
