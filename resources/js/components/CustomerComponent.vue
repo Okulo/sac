@@ -22,7 +22,7 @@
                                     <div class="col-sm-8">
                                         <the-mask
                                             :masked="false"
-                                            mask="+# (###) ### ##-##"
+                                            mask="+# (###) ### ##-##-##"
                                             type="text"
                                             class="form-control"
                                             id="phone"
@@ -52,12 +52,12 @@
                                 <b-tab v-for="(subscription, subIndex) in subscriptions" :key="subIndex" :active="showTab(subIndex)" :title="getSubscriptionTitle(subscription.product_id)" style="position: relative;">
                                     <div v-if="isDisabled(subscription)" style="width: 100%; height: 100%; display: block; background: #0000001a; z-index: 10000; top: 0; position: absolute; left: 0;"></div>
                                     <div class="row">
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             title="Удалить услугу"
-                                            @click="removeProduct(subscription.id, subIndex)" 
-                                            class="close" 
-                                            data-dismiss="alert" 
+                                            @click="removeProduct(subscription.id, subIndex)"
+                                            class="close"
+                                            data-dismiss="alert"
                                             aria-label="Close"
                                             style="right: 20px; position: absolute; z-index: 1"
                                         ><span aria-hidden="true">&times;</span></button>
@@ -556,7 +556,7 @@ export default {
 
             // For IE.
             if (window.clipboardData) {
-                window.clipboardData.setData("Text", input.val());        
+                window.clipboardData.setData("Text", input.val());
             } else {
                 // Create a temporary element off screen.
                 var tmpElem = $('<div>');
@@ -574,7 +574,7 @@ export default {
                 selection.removeAllRanges ();
                 selection.addRange (range);
                 // Lets copy.
-                try { 
+                try {
                     success = document.execCommand("copy", false, null);
                 }
                 catch (e) {

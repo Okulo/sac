@@ -2,7 +2,7 @@
     <div>
         <the-mask
             :masked="false"
-            mask="+# (###) ### ##-##"
+            mask="+# (###) ### ##-##-##"
             type="text"
             :class="classes"
             v-model="value"
@@ -27,7 +27,7 @@
             }
         },
         methods: {
-            
+
         }
     }
 </script>

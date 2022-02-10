@@ -22,7 +22,7 @@
                             </div>
                             <div class="card-input">
                                 <label class="card-input__label">Телефон абонента</label>
-                                <the-mask :masked="false" mask="+# (###) ### ##-##" type="text"
+                                <the-mask :masked="false" mask="+# (###) ### ##-##-##" type="text"
                                     class="card-input__input" id="phone" value="{{ $subscription->customer->phone }}" required disabled>
                                 </the-mask>
                             </div>
@@ -70,7 +70,7 @@
 $( "#cloudpayment-widget-form" ).submit(function( event ) {
     event.preventDefault();
     var widget = new cp.CloudPayments();
-    
+
     var data = <?php echo json_encode($data, JSON_FORCE_OBJECT); ?>;
     console.log(data);
     widget.charge({ // options

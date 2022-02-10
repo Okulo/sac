@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
             'name' => 'required',
             'account' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|numeric|regex:/^\+?(\d{11})$/',
+            'phone' => 'required|numeric',
             'role_id' => 'required|numeric|exists:roles,id',
             'pass' => 'required',
         ];
