@@ -22,7 +22,7 @@
                             <div class="col-sm-8">
                                 <the-mask
                                     :masked="false"
-                                    mask="+# (###) ### ##-##"
+                                    mask="+# (###) ### ##-##-##"
                                     type="text"
                                     class="form-control"
                                     id="phone"
