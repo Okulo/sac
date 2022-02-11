@@ -17,7 +17,7 @@
                     <label class="card-input__label">Телефон абонента</label>
                     <the-mask
                       :masked="false"
-                      mask="+# (###) ### ##-##"
+                      mask="+# (###) ### ##-##-##"
                       type="text"
                       class="card-input__input"
                       id="phone"
@@ -47,7 +47,7 @@
                 Перейти к оплате
                 </button>
                 <p style="margin-top: 20px;text-align: center;">Нажимая "Перейти к оплате", Вы даёте согласие
-                    на обработку Ваших персональных данных и принимаете 
+                    на обработку Ваших персональных данных и принимаете
                     <a href="https://www.strela-academy.ru/offer.pdf" style="color: #fc0000;text-decoration: underline;" target="_blank">Пользовательское соглашение</a>
                 </p>
               </div>
@@ -224,7 +224,7 @@ export default {
 
       // var data = {};
       // data.cloudPayments = {
-      //   recurrent: { 
+      //   recurrent: {
       //     interval: 'Month',
       //     period: 1,
       //     customerReceipt: receipt
@@ -247,7 +247,7 @@ export default {
       //     email: this.customer.email, //e-mail покупателя, если нужно отправить письмо с чеком
       //     phone: this.customer.phone, //телефон покупателя в любом формате, если нужно отправить сообщение со ссылкой на чек
       //     //customerInfo: "", // тег-1227 Покупатель - наименование организации или фамилия, имя, отчество (при наличии), серия и номер паспорта покупателя (клиента)
-      //     //customerInn: "7708806063", // тег-1228 ИНН покупателя 
+      //     //customerInn: "7708806063", // тег-1228 ИНН покупателя
       //     isBso: false, //чек является бланком строгой отчётности
       //     // AgentSign: null, //признак агента, тег ОФД 1057
       //     // amounts: {
