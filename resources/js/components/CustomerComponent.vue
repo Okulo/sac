@@ -72,7 +72,7 @@
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="price" class="col-form-label">Цена</label>
-                                            <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">
+                                            <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" @change="selectPrice($event)" :disabled="isDisabled(subscription)">
                                                 <option v-if="subscription.price != null" :value="subscription.price" selected>{{ subscription.price }}</option>
                                                 <option v-for="(option, optionIndex) in getPrices(subscription.product_id)" :key="optionIndex" :value="option" v-if="option != subscription.price">{{ option }}</option>
                                             </select>
@@ -253,6 +253,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="cp_info" class="col-sm-12" >
+
+                                            <button class="btn btn-warning float-right" @click="changeAmount(subscription.cp_subscription_id)">Изменить цену подписки</button>
+
+                                    </div>
+                                    <br><br>
                                     <div v-show="type == 'edit'" class="row" style="margin-bottom: 15px;">
                                         <div class="col-sm-12">
                                             <a target="_blank" :href="'/userlogs?subscription_id=' + subscription.id">Логи абонемента</a>
@@ -368,6 +374,7 @@ export default {
                 email: '',
                 comments: '',
             },
+            currentPrice: '',
             products: {},
             subscriptions: [],
             users: [],
@@ -378,11 +385,6 @@ export default {
                 frozen: 'green',
                 transfer: 'red',
                 cloudpayments: 'yellow',
-            },
-            spinnerData: {
-                loading: false,
-                color: '#6cb2eb',
-                size: '100px',
             },
         }
     },
@@ -410,6 +412,31 @@ export default {
         this.getOptions();
     },
     methods: {
+
+        selectPrice(event) {
+            this.currentPrice = event.target.value;
+        },
+        changeAmount(subId){
+
+            if (confirm("Хотите изменить стоимость подписки?")){
+                axios.post('/cloudpayments/updateamount/', {
+                    Id: subId,
+                    Amount: this.currentPrice
+                })
+                    .then(function (response) {
+                        let message = "Стоимость подписки успешно изменена!";
+                        console.log(response);
+                        Vue.$toast.success(message);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error(error);
+                    });
+
+            } else {
+                return false;
+            }
+        },
         isDisabled(subscription) {
             if (this.userRole == 'head' || this.userRole == 'host') {
                 return false;
