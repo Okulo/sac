@@ -9,6 +9,9 @@ use App\Services\CloudPaymentsService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+use App\Models\UserLog;
+use Illuminate\Support\Facades\Auth;
+
 class CloudPaymentsController extends Controller
 {
     public function showWidget(int $subscriptionId, Request $request)
@@ -133,6 +136,9 @@ class CloudPaymentsController extends Controller
 
     public function updateAmount( Request $request)
     {
+
+
+
         $cloudpaymentService = new CloudPaymentsService();
        $data =  $cloudpaymentService->updateSubscription([
             'Id' => $request->Id,
@@ -141,6 +147,7 @@ class CloudPaymentsController extends Controller
         ]);
 
       return $data;
+
     }
 
 

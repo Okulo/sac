@@ -163,6 +163,17 @@
                                                 <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
                                             </select>
                                         </div>
+                                        <div class="col-sm-6" id="change-price" v-if="currentPrice">
+                                            <hr>
+                                            <label class="col-form-label">Изменить цену подписки</label>
+
+                                            <div class="form-inline">
+                                                <div class="form-group mb-2" style="margin-right: 45px">
+                                                 {{currentPrice}}
+                                                </div>
+                                                <button @click="changeAmount(subscription.cp_subscription_id)" class="btn btn-warning mb-2">Изменить</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null">
                                         <div class="form-group col-sm-6">
@@ -252,11 +263,6 @@
                                                 <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div id="cp_info" class="col-sm-12" >
-
-                                            <button class="btn btn-warning float-right" @click="changeAmount(subscription.cp_subscription_id)">Изменить цену подписки</button>
-
                                     </div>
                                     <br><br>
                                     <div v-show="type == 'edit'" class="row" style="margin-bottom: 15px;">
@@ -419,21 +425,25 @@ export default {
         changeAmount(subId){
 
             if (confirm("Хотите изменить стоимость подписки?")){
-                axios.post('/cloudpayments/updateamount/', {
+                axios.post('/cloudpayments/updateamount', {
                     Id: subId,
                     Amount: this.currentPrice
                 })
                     .then(function (response) {
                         let message = "Стоимость подписки успешно изменена!";
                         console.log(response);
+                        $('#change-price').hide();
                         Vue.$toast.success(message);
+
                     })
                     .catch(function (error) {
                         console.log(error);
                         Vue.$toast.error(error);
                     });
+                this.submit();
 
             } else {
+                console.log(this.customer.subscriptions);
                 return false;
             }
         },
@@ -681,6 +691,8 @@ export default {
                 },
                 subscriptions: this.subscriptions,
             };
+
+            console.log(this.subscriptions);
             if (this.type != 'create') {
                 data.customer.id = this.customer.id;
             }
