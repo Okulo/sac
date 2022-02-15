@@ -137,7 +137,14 @@ class CloudPaymentsController extends Controller
     public function updateAmount( Request $request)
     {
 
-
+        UserLog::create([
+            'subscription_id' =>  $request->subscription,
+            'user_id' => null,
+            'type' => 13,
+            'data' => [
+                'new' => $request->Amount,
+            ],
+        ]);
 
         $cloudpaymentService = new CloudPaymentsService();
        $data =  $cloudpaymentService->updateSubscription([
@@ -146,7 +153,7 @@ class CloudPaymentsController extends Controller
             // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
         ]);
 
-      return $data;
+      return $request;
 
     }
 

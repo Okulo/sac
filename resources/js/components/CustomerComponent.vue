@@ -427,7 +427,8 @@ export default {
             if (confirm("Хотите изменить стоимость подписки?")){
                 axios.post('/cloudpayments/updateamount', {
                     Id: subId,
-                    Amount: this.currentPrice
+                    Amount: this.currentPrice,
+                    subscription: this.customer.subscriptions[0].id
                 })
                     .then(function (response) {
                         let message = "Стоимость подписки успешно изменена!";
@@ -443,7 +444,7 @@ export default {
                 this.submit();
 
             } else {
-                console.log(this.customer.subscriptions);
+                console.log(this.customer.subscriptions[0].id);
                 return false;
             }
         },
