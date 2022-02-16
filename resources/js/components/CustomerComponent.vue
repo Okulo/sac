@@ -72,7 +72,7 @@
                                         </div>
                                         <div class="form-group col-sm-6">
                                             <label for="price" class="col-form-label">Цена</label>
-                                            <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">
+                                            <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" @change="selectPrice($event)" :disabled="isDisabled(subscription)">
                                                 <option v-if="subscription.price != null" :value="subscription.price" selected>{{ subscription.price }}</option>
                                                 <option v-for="(option, optionIndex) in getPrices(subscription.product_id)" :key="optionIndex" :value="option" v-if="option != subscription.price">{{ option }}</option>
                                             </select>
@@ -162,6 +162,17 @@
                                             <select v-model="subscription.team_id" :name="'subscriptions.' + subIndex + '.team_id'" id="team_id" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">
                                                 <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
                                             </select>
+                                        </div>
+                                        <div class="col-sm-6" id="change-price" v-if="currentPrice">
+                                            <hr>
+                                            <label class="col-form-label">Изменить цену подписки</label>
+
+                                            <div class="form-inline">
+                                                <div class="form-group mb-2" style="margin-right: 45px">
+                                                 {{currentPrice}}
+                                                </div>
+                                                <button @click="changeAmount(subscription.cp_subscription_id)" class="btn btn-warning mb-2">Изменить</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null">
@@ -253,6 +264,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <br><br>
                                     <div v-show="type == 'edit'" class="row" style="margin-bottom: 15px;">
                                         <div class="col-sm-12">
                                             <a target="_blank" :href="'/userlogs?subscription_id=' + subscription.id">Логи абонемента</a>
@@ -295,6 +307,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-sm-12">
+                                            <ul class="list-group">
+                                                <li class="list-group-item list-payment-Completed" v-for="item in subscriptionLogs"  v-if="item.type.value == 'Изменена стоимость подписки'">
+                                                    <div v-if="item.type.value == 'Изменена стоимость подписки'">
+                                                    <a href="#">ID: {{ item.id.value }}</a>
+                                                    <span> | </span>
+                                                    {{ item.created_at.value}}, изменена стоимость подписки
+                                                    <span> | </span>
+                                                    <span v-html="item.data.value"></span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        &nbsp;
                                         <div class="col-sm-12">
                                             <ul class="list-group">
                                                 <li :class="'list-group-item list-payment-' + payment.status" v-for="(payment, paymentIndex) in subscription.payments" :key="paymentIndex">
@@ -368,9 +394,11 @@ export default {
                 email: '',
                 comments: '',
             },
+            currentPrice: '',
             products: {},
             subscriptions: [],
             users: [],
+            subscriptionLogs: {},
             paymentTypes: {},
             statuses: {},
             quantities: {},
@@ -378,11 +406,6 @@ export default {
                 frozen: 'green',
                 transfer: 'red',
                 cloudpayments: 'yellow',
-            },
-            spinnerData: {
-                loading: false,
-                color: '#6cb2eb',
-                size: '100px',
             },
         }
     },
@@ -392,6 +415,7 @@ export default {
             this.customerId = newVal;
             if (this.customerId !== null) {
                 this.getCustomerWithData();
+                this.getLogs();
             }
         },
         customer: function (newVal, oldVal) {
@@ -410,6 +434,51 @@ export default {
         this.getOptions();
     },
     methods: {
+
+        getLogs(){
+            axios.get('/userlogs/list/', {
+                params: {
+                    subscription_id: 16268
+                }
+            })
+                .then(response => {
+                    this.subscriptionLogs = response.data.data;
+                    console.log(this.subscriptionLogs);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    Vue.$toast.error(error);
+                });
+        },
+        selectPrice(event) {
+            this.currentPrice = event.target.value;
+        },
+        changeAmount(subId){
+
+            if (confirm("Хотите изменить стоимость подписки?")){
+                axios.post('/cloudpayments/updateamount', {
+                    Id: subId,
+                    Amount: this.currentPrice,
+                    subscription: this.customer.subscriptions[0].id
+                })
+                    .then(function (response) {
+                        let message = "Стоимость подписки успешно изменена!";
+                        console.log(response);
+                        $('#change-price').hide();
+                        Vue.$toast.success(message);
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error(error);
+                    });
+                this.submit();
+
+            } else {
+                console.log(this.customer.subscriptions[0].id);
+                return false;
+            }
+        },
         isDisabled(subscription) {
             if (this.userRole == 'head' || this.userRole == 'host') {
                 return false;
@@ -654,6 +723,8 @@ export default {
                 },
                 subscriptions: this.subscriptions,
             };
+
+            console.log(this.subscriptions);
             if (this.type != 'create') {
                 data.customer.id = this.customer.id;
             }

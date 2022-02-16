@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ThankYouProductResource;
 use App\Models\Product;
 use App\Models\Subscription;
+use App\Services\CloudPaymentsService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+
+use App\Models\UserLog;
+use Illuminate\Support\Facades\Auth;
 
 class CloudPaymentsController extends Controller
 {
@@ -129,6 +133,30 @@ class CloudPaymentsController extends Controller
             'products' => ThankYouProductResource::collection($products),
         ]);
     }
+
+    public function updateAmount( Request $request)
+    {
+
+        UserLog::create([
+            'subscription_id' =>  $request->subscription,
+            'user_id' => null,
+            'type' => 13,
+            'data' => [
+                'new' => $request->Amount,
+            ],
+        ]);
+
+        $cloudpaymentService = new CloudPaymentsService();
+       $data =  $cloudpaymentService->updateSubscription([
+            'Id' => $request->Id,
+            'Amount' => $request->Amount,
+            // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
+        ]);
+
+      return $request;
+
+    }
+
 
     // public function showCheckout(int $subscriptionId, Request $request)
     // {
