@@ -309,6 +309,20 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <ul class="list-group">
+                                                <li class="list-group-item list-payment-Completed" v-for="item in subscriptionLogs"  v-if="item.type.value == 'Изменена стоимость подписки'">
+                                                    <div v-if="item.type.value == 'Изменена стоимость подписки'">
+                                                    <a href="#">ID: {{ item.id.value }}</a>
+                                                    <span> | </span>
+                                                    {{ item.created_at.value}}, изменена стоимость подписки
+                                                    <span> | </span>
+                                                    <span v-html="item.data.value"></span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        &nbsp;
+                                        <div class="col-sm-12">
+                                            <ul class="list-group">
                                                 <li :class="'list-group-item list-payment-' + payment.status" v-for="(payment, paymentIndex) in subscription.payments" :key="paymentIndex">
                                                     <a :href="payment.url" target="_blank">ID: {{ payment.id }}</a>
                                                     <span> | </span>
@@ -384,6 +398,7 @@ export default {
             products: {},
             subscriptions: [],
             users: [],
+            subscriptionLogs: {},
             paymentTypes: {},
             statuses: {},
             quantities: {},
@@ -400,6 +415,7 @@ export default {
             this.customerId = newVal;
             if (this.customerId !== null) {
                 this.getCustomerWithData();
+                this.getLogs();
             }
         },
         customer: function (newVal, oldVal) {
@@ -419,6 +435,21 @@ export default {
     },
     methods: {
 
+        getLogs(){
+            axios.get('/userlogs/list/', {
+                params: {
+                    subscription_id: 16268
+                }
+            })
+                .then(response => {
+                    this.subscriptionLogs = response.data.data;
+                    console.log(this.subscriptionLogs);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    Vue.$toast.error(error);
+                });
+        },
         selectPrice(event) {
             this.currentPrice = event.target.value;
         },
