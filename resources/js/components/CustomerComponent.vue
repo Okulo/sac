@@ -438,7 +438,7 @@ export default {
         getLogs(){
 
             console.log(this.subscriptionIdProp);
-            axios.get('/userlogs/list/', {
+            axios.get('/userlogs/list', {
                 params: {
                     subscription_id: this.subscriptionIdProp
                 }
