@@ -436,14 +436,16 @@ export default {
     methods: {
 
         getLogs(){
+
+            console.log(this.subscriptionIdProp);
             axios.get('/userlogs/list/', {
                 params: {
-                    subscription_id: 16268
+                    subscription_id: this.subscriptionIdProp
                 }
             })
                 .then(response => {
                     this.subscriptionLogs = response.data.data;
-                    console.log(this.subscriptionLogs);
+                  //  console.log(this.subscriptionLogs);
                 })
                 .catch(function (error) {
                     console.log(error);
