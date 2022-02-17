@@ -70,12 +70,39 @@
                                             </select>
                                             <input v-else :value="getSubscriptionTitle(subscription.product_id)" id="product_id" class="col-sm-10 form-control" type="text" disabled>
                                         </div>
-                                        <div class="form-group col-sm-6">
+                                        <div class="form-row align-items-center col-sm-6">
+                                            <div class="col-3">
                                             <label for="price" class="col-form-label">Цена</label>
                                             <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" @change="selectPrice($event)" :disabled="isDisabled(subscription)">
                                                 <option v-if="subscription.price != null" :value="subscription.price" selected>{{ subscription.price }}</option>
                                                 <option v-for="(option, optionIndex) in getPrices(subscription.product_id)" :key="optionIndex" :value="option" v-if="option != subscription.price">{{ option }}</option>
                                             </select>
+                                            </div>
+                                            <div class="col-3">
+                                                <label for="price" class="col-form-label">Цена после акции</label>
+                                                <select id="price-promo" class="col-sm-10 form-control" @change="selectPrice($event)" :disabled="!promo">
+                                                    <option v-if="subscription.price != null" :value="subscription.price" selected>{{ subscription.price }}</option>
+                                                    <option v-for="(option, optionIndex) in getPrices(subscription.product_id)" :key="optionIndex" :value="option" v-if="option != subscription.price">{{ option }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-3">
+                                                <label for="price" class="col-form-label">Поднятие через</label>
+                                                <select id="month" class="col-sm-10 form-control" :disabled="!promo">
+                                                    <option>2 мес</option>
+                                                    <option>3 мес</option>
+                                                    <option selected>4 мес</option>
+                                                    <option>5 мес</option>
+                                                    <option>6 мес</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <br><p>
+                                                <div class="float-right">
+                                                    <input type="checkbox" v-model="promo" class="custom-control-input" id="customControlAutosizing">
+                                                    <label class="custom-control-label" for="customControlAutosizing">Акция</label>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="row">
@@ -377,6 +404,7 @@ export default {
     ],
     data() {
         return {
+            promo: '',
             teamsProp: [],
             userTeamIds: [],
             userRole: 'operator',
