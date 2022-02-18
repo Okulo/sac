@@ -53,6 +53,11 @@ class Product extends Model
         return $this->hasMany(Price::class, 'product_id');
     }
 
+    public function nextPrice()
+    {
+        return $this->hasOne(NextPrice::class, 'product_id');
+    }
+
     public function paymentTypes()
     {
         return $this->belongsToMany(PaymentType::class);

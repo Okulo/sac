@@ -36,6 +36,13 @@
                     <product-price-component :prices-prop="{{ json_encode($productPrices) }}"></product-price-component>
                 </div>
             </div>
+            <div class="form-group row">
+                <label for="code" class="col-sm-2 col-form-label">Цена после акции</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control" id="next-price" value="{{ $nextPrice }}" name="next-price">
+                </div>
+            </div>
+
             <hr>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Доступные типы оплат</label>
@@ -43,6 +50,7 @@
                     <product-payment-type-component :product-payment-types-prop="{{ json_encode($productPaymentTypes) }}" :payment-types-prop="{{ json_encode($paymentTypes) }}"></product-payment-type-component>
                 </div>
             </div>
+
             {{--<hr>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Операторы услуги</label>
