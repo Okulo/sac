@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="prices" class="col-sm-2 col-form-label">Доступные цены</label>
+                <label for="prices" class="col-sm-2 col-form-label">Цена по акции</label>
                 <div class="col-sm-10">
                     <product-price-component :prices-prop="{{ json_encode($productPrices) }}"></product-price-component>
                 </div>
@@ -43,6 +43,14 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label  class="col-sm-2">Включится после</label>
+                <select class="custom-select col-sm-2 " >
+                    <option value="1">Первого платежа</option>
+                    <option value="2" selected>Второго платежа</option>
+                    <option value="3">Третьего платежа</option>
+                </select>
+            </div>
             <hr>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Доступные типы оплат</label>
