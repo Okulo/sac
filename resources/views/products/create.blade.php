@@ -41,6 +41,15 @@
                     <input type="number" class="form-control" id="next-price" value="" name="next-price">
                 </div>
             </div>
+            <div class="form-group row">
+                <label  class="col-sm-2">Включится после</label>
+            <select name="period" class="custom-select col-sm-1 " >
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+            </select>
+                <div> &nbsp; &nbsp; <b>платежа </b></div>
+            </div>
 
             <hr>
             <div class="form-group row">

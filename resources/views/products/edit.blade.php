@@ -45,11 +45,16 @@
 
             <div class="form-group row">
                 <label  class="col-sm-2">Включится после</label>
-                <select class="custom-select col-sm-2 " >
-                    <option value="1">Первого платежа</option>
-                    <option value="2" selected>Второго платежа</option>
-                    <option value="3">Третьего платежа</option>
+                <select name="period" class="custom-select col-sm-1 " >
+                    @foreach ($month as $mth)
+                        <option value="{{ $mth }}"
+                                @if ($period == $mth)
+                                selected="selected"
+                            @endif
+                        >{{ $mth}}</option>
+                    @endforeach
                 </select>
+                <div> &nbsp; &nbsp; <b>платежа </b></div>
             </div>
             <hr>
             <div class="form-group row">

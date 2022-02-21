@@ -10,8 +10,9 @@ class NextPrice extends Model
     use HasFactory, ModelBase;
 
     protected $fillable = [
-        'price',
         'product_id',
+        'price',
+        'period',
     ];
 
     public function product()

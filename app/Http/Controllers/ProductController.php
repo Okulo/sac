@@ -152,6 +152,8 @@ class ProductController extends Controller
             'additionals' => $additionals,
             'productPrices' => $productPrices,
             'nextPrice' => $nextPrice->price ?? null,
+            'period' => $nextPrice->period ?? null,
+            'month'=> array(1, 2, 3),
             'reasons' => $reasons,
             'paymentTypes' => $paymentTypes,
             'productPaymentTypes' => PaymentTypeResource::collection($productPaymentTypes),
@@ -193,6 +195,7 @@ class ProductController extends Controller
         $chartIds = [];
         $paymentTypeIds = [];
         $nextPrice = $request['next-price'];
+        $period= $request['period'];
         $prices = $request['prices'] ?? [];
         // $productUsers = $request['productUsers'] ?? [];
         $productTeams = $request['productTeams'] ?? [];
@@ -227,6 +230,13 @@ class ProductController extends Controller
                 [ 'price' => $nextPrice ]
             );
         }
+        if($period){
+            $nextPrice  = NextPrice::updateOrCreate(
+                [ 'product_id' => $product->id],
+                [ 'period' => $period ]
+            );
+        }
+
 
         foreach ($productReasons as $reason) {
             $productReason = Reason::updateOrCreate([
