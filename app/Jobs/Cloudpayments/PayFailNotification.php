@@ -5,6 +5,7 @@ namespace App\Jobs\Cloudpayments;
 use App\Exceptions\NoticeException;
 use App\Models\CpNotification;
 use App\Models\Customer;
+use App\Models\NextPrice;
 use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\UserLog;
@@ -101,7 +102,7 @@ class PayFailNotification implements ShouldQueue
                         'from' => Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty'),
                         'to' => Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty')->addMonths(1),
                     ];
-        
+
                     $oldEndedAt = Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty');
                     $newEndedAt = Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty')->addMonths(1);
                     UserLog::create([
@@ -141,6 +142,14 @@ class PayFailNotification implements ShouldQueue
                     'subscription' => $subscriptionData,
                 ],
             ]);
+
+            $nextPriceProduct = NextPrice::where('product_id', $subscription->product_id)->get()->toArray();;
+
+            if(isset($nextPriceProduct)){
+                $nextPrice = $nextPriceProduct[0]['price'];
+
+            }
+
 
             if (! isset($payment)) {
                 throw new NoticeException('Не создался платеж. Transaction Id: ' . $this->data['TransactionId']);

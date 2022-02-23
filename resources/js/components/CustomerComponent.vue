@@ -70,12 +70,19 @@
                                             </select>
                                             <input v-else :value="getSubscriptionTitle(subscription.product_id)" id="product_id" class="col-sm-10 form-control" type="text" disabled>
                                         </div>
-                                        <div class="form-group col-sm-6">
+                                        <div class="form-group col-sm-3">
                                             <label for="price" class="col-form-label">Цена</label>
                                             <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" @change="selectPrice($event)" :disabled="isDisabled(subscription)">
                                                 <option v-if="subscription.price != null" :value="subscription.price" selected>{{ subscription.price }}</option>
                                                 <option v-for="(option, optionIndex) in getPrices(subscription.product_id)" :key="optionIndex" :value="option" v-if="option != subscription.price">{{ option }}</option>
                                             </select>
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                     <div style="border: 1px solid #62C584">
+                                         <li v-for="item in subscription.payments" >
+                                             {{ item }}
+                                         </li>
+                                     </div>
                                         </div>
                                     </div>
                                     <div class="row">

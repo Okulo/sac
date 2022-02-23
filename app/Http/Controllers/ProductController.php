@@ -227,7 +227,8 @@ class ProductController extends Controller
         if($nextPrice){
             $nextPrice  = NextPrice::updateOrCreate(
                 [ 'product_id' => $product->id],
-                [ 'price' => $nextPrice ]
+                [ 'price' => $nextPrice ],
+                [ 'period' => $period ]
             );
         }
         if($period){
