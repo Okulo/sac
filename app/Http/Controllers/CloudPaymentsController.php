@@ -87,7 +87,7 @@ class CloudPaymentsController extends Controller
         ];
 
         if ($subscription->payment_type == 'cloudpayments') {
-            $data['description'] = 'Подписка на ежемесячный онлайн-абонемент';
+            $data['description'] = $payment->subscription->product->title;
             $data['data']['cloudPayments']['recurrent'] = [
                 'interval' => 'Month',
                 'period' => 1,
