@@ -68,27 +68,8 @@
 @section('adminlte_js')
 <script>
 $( "#cloudpayment-widget-form" ).submit(function( event ) {
-    event.preventDefault();
-    var widget = new cp.CloudPayments();
 
-    var data = <?php echo json_encode($data, JSON_FORCE_OBJECT); ?>;
-    console.log(data);
-    widget.charge({ // options
-        publicId: '{{ $publicId }}', //id из личного кабинета
-        description: 'Подписка на ежемесячный онлайн-абонемент', //назначение
-        amount: {{ $payment->amount }}, //сумма
-        currency: 'KZT', //валюта
-        invoiceId: '{{ $payment->id }}', //номер заказа  (необязательно)
-        email: $('#email').val(), // Email
-        accountId: '{{ $customer->phone }}', //идентификатор плательщика (обязательно для создания подписки)
-        data: data
-    },
-    function (options) { // success
-        window.location.href = "{{ route('cloudpayments.thank_you', [$subscription->product->id]) }}";
-    },
-    function (reason, options) { // fail
-        window.location.href = "{{ route('cloudpayments.show_widget', [$subscription->id]) }}";
-    });
+    console.log('widget aaaa');
 });
 </script>
 @endsection

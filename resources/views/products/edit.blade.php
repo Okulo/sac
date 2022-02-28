@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="form-group row">
+          <!--  <div class="form-group row">
                 <label  class="col-sm-2">Включится после</label>
                 <select name="period" class="custom-select col-sm-1 " >
                     @foreach ($month as $mth)
@@ -55,7 +55,7 @@
                     @endforeach
                 </select>
                 <div> &nbsp; &nbsp; <b>платежа </b></div>
-            </div>
+            </div> -->
             <hr>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Доступные типы оплат</label>

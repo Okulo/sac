@@ -195,7 +195,7 @@ class ProductController extends Controller
         $chartIds = [];
         $paymentTypeIds = [];
         $nextPrice = $request['next-price'];
-        $period= $request['period'];
+        $period= $nextPrice->period ?? null;
         $prices = $request['prices'] ?? [];
         // $productUsers = $request['productUsers'] ?? [];
         $productTeams = $request['productTeams'] ?? [];
