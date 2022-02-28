@@ -23,6 +23,7 @@ use App\Models\Subscription;
 use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\NextPrice;
 
 class ProductController extends Controller
 {
@@ -134,6 +135,7 @@ class ProductController extends Controller
     {
         access(['can-head', 'can-host']);
         $productPrices = $product->prices()->pluck('price');
+        $nextPrice = $product->nextPrice()->latest()->first();
         $productTeams = $product->teams;
         $productCharts = $product->charts;
         $productAdditionals = $product->additionals;
@@ -149,6 +151,9 @@ class ProductController extends Controller
             'product' => $product,
             'additionals' => $additionals,
             'productPrices' => $productPrices,
+            'nextPrice' => $nextPrice->price ?? null,
+            'period' => $nextPrice->period ?? null,
+            'month'=> array(1, 2, 3),
             'reasons' => $reasons,
             'paymentTypes' => $paymentTypes,
             'productPaymentTypes' => PaymentTypeResource::collection($productPaymentTypes),
@@ -183,12 +188,14 @@ class ProductController extends Controller
         }
     }
 
-    private function updateOrCreate(array $request, ?Product $product, $type) 
+    private function updateOrCreate(array $request, ?Product $product, $type)
     {
         $priceIds = [];
         $reasonIds = [];
         $chartIds = [];
         $paymentTypeIds = [];
+        $nextPrice = $request['next-price'];
+        $period= $nextPrice->period ?? null;
         $prices = $request['prices'] ?? [];
         // $productUsers = $request['productUsers'] ?? [];
         $productTeams = $request['productTeams'] ?? [];
@@ -199,8 +206,12 @@ class ProductController extends Controller
 
         if ($type == 'update') {
             $product->update($request);
+//            $nextPrice = NextPrice::where('product_id', $product->id)
+//                ->update(['price' => $nextPrice]);
+
         } else if ($type == 'create') {
             $product = $product->create($request);
+
         }
 
         foreach ($prices as $item) {
@@ -212,6 +223,21 @@ class ProductController extends Controller
                 $priceIds[] = $price->id;
             }
         }
+
+        if($nextPrice){
+            $nextPrice  = NextPrice::updateOrCreate(
+                [ 'product_id' => $product->id],
+                [ 'price' => $nextPrice ],
+                [ 'period' => $period ]
+            );
+        }
+        if($period){
+            $nextPrice  = NextPrice::updateOrCreate(
+                [ 'product_id' => $product->id],
+                [ 'period' => $period ]
+            );
+        }
+
 
         foreach ($productReasons as $reason) {
             $productReason = Reason::updateOrCreate([

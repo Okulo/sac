@@ -3,8 +3,12 @@
 namespace App\Jobs\Cloudpayments;
 
 use App\Exceptions\NoticeException;
+use App\Http\Controllers\CloudPaymentsController;
 use App\Models\CpNotification;
+use App\Services\CloudPaymentsService;
+use Illuminate\Support\Facades\Http;
 use App\Models\Customer;
+use App\Models\NextPrice;
 use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\UserLog;
@@ -46,6 +50,7 @@ class PayFailNotification implements ShouldQueue
      */
     public function handle()
     {
+
         try {
             CpNotification::updateOrCreate([
                 'type' => CpNotification::PAY_FAIL,
@@ -101,7 +106,7 @@ class PayFailNotification implements ShouldQueue
                         'from' => Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty'),
                         'to' => Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty')->addMonths(1),
                     ];
-        
+
                     $oldEndedAt = Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty');
                     $newEndedAt = Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty')->addMonths(1);
                     UserLog::create([
@@ -141,6 +146,36 @@ class PayFailNotification implements ShouldQueue
                     'subscription' => $subscriptionData,
                 ],
             ]);
+
+            $nextPriceProduct = NextPrice::where('product_id', $subscription->product_id)->get()->toArray();;
+
+            if(isset($nextPriceProduct)){
+                if ( $nextPriceProduct[0]['price'] > 0){
+                    $nextPrice = $nextPriceProduct[0]['price'];
+
+                    $cloudpaymentService = new CloudPaymentsService();
+                    $data =  $cloudpaymentService->updateSubscription([
+                        'Id' => $subscription->cp_subscription_id,
+                        'Amount' => $nextPrice,
+                        // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
+                    ]);
+
+
+                    if ($data['Success'] ){
+
+                        print_r($data['Model']['AccountId']);
+                        UserLog::create([
+                            'subscription_id' => $data['Model']['AccountId'],
+                            'user_id' => null,
+                            'type' => 13,
+                            'data' => [
+                                'new' => $data['Model']['Amount'],
+                            ],
+                        ]);
+                    }
+
+                }
+            }
 
             if (! isset($payment)) {
                 throw new NoticeException('Не создался платеж. Transaction Id: ' . $this->data['TransactionId']);
