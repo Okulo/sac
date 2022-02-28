@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="title" class="col-sm-2 col-form-label">Цена после акции</label>
+                <label for="title" class="col-sm-2 col-form-label">Цена после акции (через месяц)</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control" id="next-price" value="" name="next-price">
                 </div>

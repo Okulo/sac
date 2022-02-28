@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="code" class="col-sm-2 col-form-label">Цена после акции</label>
+                <label for="code" class="col-sm-2 col-form-label">Цена после акции (через месяц)</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control" id="next-price" value="{{ $nextPrice }}" name="next-price">
                 </div>
