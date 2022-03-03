@@ -149,7 +149,7 @@ class PayFailNotification implements ShouldQueue
 
             $nextPriceProduct = NextPrice::where('product_id', $subscription->product_id)->get()->toArray();;
 
-            if(isset($nextPriceProduct)){
+            if(isset($nextPriceProduct)  && $this->data['Status'] == 'Completed'){
                 if ( $nextPriceProduct[0]['price'] > 0){
                     $nextPrice = $nextPriceProduct[0]['price'];
 
