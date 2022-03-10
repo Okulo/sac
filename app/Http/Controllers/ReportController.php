@@ -28,7 +28,7 @@ class ReportController extends Controller
             if ($item->request['Status'] == 'Declined'){
                 array_push($array, [
                     'notific_id' => $item->id,
-                    'request' => $item->request['Status'],
+                    'request' => $item->request,
                     'account_id' => $item->request['AccountId'],
                 ]);
             }

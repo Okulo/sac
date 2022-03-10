@@ -19,8 +19,8 @@
                     <div class="card-body">
 
                         <ul id="example-1">
-                            <li v-for="item in items" :key="item.message">
-                                {{ item.message }}
+                            <li v-for="item in items" >
+                                {{ item.account_id}}
                             </li>
                         </ul>
 
@@ -64,10 +64,7 @@
     export default {
         data() {
             return {
-                items: [
-                    { message: 'Foo' },
-                    { message: 'Bar' }
-                ]
+                items: []
             }
         },
         mounted() {
@@ -76,6 +73,7 @@
         ,
         methods: {
             getlist(){
+               let alldata = [];
                 axios.post('/reports/get-list', {
                     params: {
                         subscription_id: 1234
@@ -83,16 +81,20 @@
                 })
                     .then(response => {
 
-                       response.data.forEach(function(item) {
+                        this.items = alldata;
 
+                      //  console.log(response.data);
 
-                           // console.log(item.account_id);
-                           // console.log(item.request);
+                        response.data.forEach(function(item) {
+
+                            alldata.push(item.account_id);
+                       //     console.log(item.account_id);
+                            console.log(item.request.DateTime);
                            // console.log(item.notific_id);
 
-                            if(item.Status == 'Declined'){
-                                console.log(item.AccountId);
-                                console.log(item.Status);
+                            if(item.request.Status == 'Declined'){
+                               // console.log(item.account_id);
+                                //console.log(item.request.DateTime);
                             }
 
                        })
@@ -105,6 +107,8 @@
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
+
+                console.log(this.items);
             }
         }
     }
