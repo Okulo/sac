@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CpNotification;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -18,11 +19,32 @@ class ReportController extends Controller
 
     public function getList()
     {
+        $cp_data = CpNotification::whereBetween('created_at', ['2022-02-23 00:01:36', '2022-03-01 23:59:36'])
+            ->get();
 
-        return response()->json([
+       $array = [];
+        foreach ($cp_data as $item) {
+
+            if ($item->request['Status'] == 'Declined'){
+                array_push($array, [
+                    'notific_id' => $item->id,
+                    'request' => $item->request['Status'],
+                    'account_id' => $item->request['AccountId'],
+                ]);
+            }
+            //$array[] = $item->id;);
+
+
+        }
+        return $array;
+      //  print_r($array);
+
+
+        /* return response()->json([
             'status' => true,
             'data' => 'test'
         ]);
+        */
     }
 
     /**

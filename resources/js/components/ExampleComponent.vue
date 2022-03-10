@@ -1,8 +1,6 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <h2>Отчеты</h2>
-            <div class="col-md-12">
+        <div class="row">
+             <div class="col-md-12">
                 <div class="card mt-3">
                     <div class="card-header">
                         <div data-v-754b2df6="" class="input-group">
@@ -19,6 +17,13 @@
                     </div>
 
                     <div class="card-body">
+
+                        <ul id="example-1">
+                            <li v-for="item in items" :key="item.message">
+                                {{ item.message }}
+                            </li>
+                        </ul>
+
                         <table class="table table-striped table-sm">
                             <thead>
                             <tr>
@@ -53,11 +58,18 @@
                 </div>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
     export default {
+        data() {
+            return {
+                items: [
+                    { message: 'Foo' },
+                    { message: 'Bar' }
+                ]
+            }
+        },
         mounted() {
             console.log('Component mounted.')
         }
@@ -70,12 +82,28 @@
                     }
                 })
                     .then(response => {
-                        this.subscriptionLogs = response.data.data;
-                        console.log(response.data);
+
+                       response.data.forEach(function(item) {
+
+
+                           // console.log(item.account_id);
+                           // console.log(item.request);
+                           // console.log(item.notific_id);
+
+                            if(item.Status == 'Declined'){
+                                console.log(item.AccountId);
+                                console.log(item.Status);
+                            }
+
+                       })
+
+                     //   console.log(response.data);
+
+
                     })
                     .catch(function (error) {
                         console.log(error);
-                        Vue.$toast.error(error);
+                        Vue.$toast.error('error - '+ error);
                     });
             }
         }
