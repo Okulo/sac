@@ -22,7 +22,7 @@ class ReportController extends Controller
     public function getList()
     {
 
-        $cp_data = CpNotification::whereBetween('created_at', ['2022-03-07 00:00:36', '2022-03-11 23:59:36'])
+        $cp_data = CpNotification::whereBetween('created_at', ['2022-03-09 00:00:36', '2022-03-11 3:59:36'])
             ->orderBy('created_at','desc')
             ->get();
 

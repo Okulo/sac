@@ -1,25 +1,11 @@
 <template>
         <div class="row">
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <b-modal id="myModal">
+                Статус {{ cpData.Status }} <br>
+                Последний платёж {{cpData.LastTransactionDateIso}}<br>
+                Следующий платеж {{ cpData.NextTransactionDateIso }}
+            </b-modal>
 
 
             <div class="col-md-12">
@@ -37,7 +23,6 @@
                             <button id="getlist"  @click="getlist()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
                         </div>
                     </div>
-
                     <div class="card-body">
                         <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
                         <table class="table table-sm">
@@ -60,7 +45,7 @@
                                 <td>{{item.reason}}</td>
                                 <td>{{item.subscription_status}}</td>
                                 <td>{{item.subscription_id}}  <a v-if="item.subscription_id" href="#"><i class="fa fa-info-circle" style="color: #1B96FE"></i></a></td>
-                                <td>         <a class="custom-link" role="button" @click="getCpData(item.subscription_id)">СP</a></td>
+                                <td>         <a class="custom-link" v-b-modal="'myModal'" role="button" @click="getCpData(item.subscription_id)">СP</a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -78,6 +63,7 @@
         data() {
             return {
                 items: [],
+                cpData: '',
                 spinnerData: {
                     loading: false,
                     color: '#6cb2eb',
@@ -90,6 +76,10 @@
         }
         ,
         methods: {
+            sendInfo(item) {
+                this.selectedUser = item;
+            },
+
             getlist(){
 
                // $("#exampleModalCenter").modal("show");
@@ -159,6 +149,8 @@
                         console.log('getCpData');
                         console.log(response.data.Success);
                         console.log(response.data.Model);
+
+                        this.cpData = response.data.Model;
                     })
                     .catch(function (error) {
                         console.log(error);
