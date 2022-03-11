@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="table-responsive bg-white">
-    <index-component 
+    <index-component
         prefix-prop="customers"
         create-link-prop="{{ route('customers.create') }}"
     ></index-component>

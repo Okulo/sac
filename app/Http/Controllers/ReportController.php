@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CpNotification;
+use App\Models\Subscription;
+use App\Services\CloudPaymentsService;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -19,18 +21,34 @@ class ReportController extends Controller
 
     public function getList()
     {
-        $cp_data = CpNotification::whereBetween('created_at', ['2022-02-23 00:01:36', '2022-03-01 23:59:36'])
+
+        $cp_data = CpNotification::whereBetween('created_at', ['2022-03-07 00:00:36', '2022-03-11 23:59:36'])
+            ->orderBy('created_at','desc')
             ->get();
 
        $array = [];
         foreach ($cp_data as $item) {
 
             if ($item->request['Status'] == 'Declined'){
-                array_push($array, [
-                    'notific_id' => $item->id,
-                    'request' => $item->request,
-                    'account_id' => $item->request['AccountId'],
-                ]);
+                $subscription = Subscription::whereId($item->request['AccountId'])->first();
+
+                if(isset($subscription)){
+                    array_push($array, [
+                        'notific_id' => $item->id,
+                        'request' => $item->request,
+                        'account_id' => $item->request['AccountId'],
+                        'subscription' => $subscription,
+                    ]);
+                }
+                else{
+                    array_push($array, [
+                        'notific_id' => $item->id,
+                        'request' => $item->request,
+                        'account_id' => $item->request['AccountId'],
+                        'subscription' => 'null',
+                    ]);
+                }
+
             }
             //$array[] = $item->id;);
 
@@ -47,14 +65,18 @@ class ReportController extends Controller
         */
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function getSubscription( Request $request)
     {
-        //
+              if(isset($request->id)){
+                  $cloudPaymentsService = new CloudPaymentsService();
+                  $response = $cloudPaymentsService->getSubscription($request->id);
+                  return $response;
+              }
+              else{
+                  return 'Error';
+              }
+
     }
 
     /**
