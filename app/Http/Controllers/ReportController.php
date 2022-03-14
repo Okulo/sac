@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CpNotification;
+use App\Models\Customer;
 use App\Models\Subscription;
 use App\Services\CloudPaymentsService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -19,10 +21,20 @@ class ReportController extends Controller
         return view('reports.index');
     }
 
-    public function getList()
+    public function getList( Request $request)
     {
+        if( $request->period == 'week'){
+            $startDate = 1;
+            $endDate = 2;
+            dd(Carbon::now()->startOfDay());
+            dd(Carbon::now()->startOfDay());
+        }
+        else{
+            $startDate = Carbon::now('Asia/Almaty')->startOfDay();
+            $endDate = Carbon::now('Asia/Almaty');
+        }
 
-        $cp_data = CpNotification::whereBetween('created_at', ['2022-03-09 00:00:36', '2022-03-11 3:59:36'])
+        $cp_data = CpNotification::whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at','desc')
             ->get();
 
@@ -32,12 +44,17 @@ class ReportController extends Controller
             if ($item->request['Status'] == 'Declined'){
                 $subscription = Subscription::whereId($item->request['AccountId'])->first();
 
+
                 if(isset($subscription)){
+                    $customer = Customer::whereId($subscription['customer_id'])->first();
+
                     array_push($array, [
                         'notific_id' => $item->id,
                         'request' => $item->request,
                         'account_id' => $item->request['AccountId'],
                         'subscription' => $subscription,
+                        'customer' => $customer,
+                        //$subscription['customer_id'],
                     ]);
                 }
                 else{
