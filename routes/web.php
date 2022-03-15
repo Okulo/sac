@@ -201,8 +201,10 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
 
     Route::get('products/with-prices', 'ProductController@withPrices');
 
-    Route::get("/reports/get-reports", 'ReportController@index');
+    Route::get('/reports/get-reports/', 'ReportController@index');
+    Route::get('/reports/get-reports/{type}', 'ReportController@index');
     Route::post("/reports/get-list", [ReportController::class, "getList"])->name("reports.getList");
+    Route::post("/reports/get-pay-list", [ReportController::class, "getPayList"])->name("reports.getPayList");
     Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");
 
     Route::resources([

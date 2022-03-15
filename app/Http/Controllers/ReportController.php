@@ -16,7 +16,18 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($type = 1)
+    {
+        if ($type == 2) {
+            return view('reports.check-pay');
+        } elseif ($type == 3) {
+            dd(3);
+        } else {
+            return view('reports.index');
+        }
+    }
+
+    public function checkPayReport($type)
     {
         return view('reports.index');
     }
@@ -80,6 +91,19 @@ class ReportController extends Controller
             'data' => 'test'
         ]);
         */
+    }
+
+    public function getPayList()
+    {
+        //$cp_pay = Customer::whereId(15948)->first();
+
+        $cp_pay = \DB::table('cp_notifications')
+            //->select('id', 'type')
+            ->whereJsonContains('request->Status', 'Completed')
+            ->get();
+
+       return $cp_pay;
+
     }
 
 

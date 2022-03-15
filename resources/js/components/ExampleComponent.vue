@@ -177,7 +177,6 @@
                                 this.items.map(item => {
                                     item.subscription_id !== response.data.Model.Id ? item : item.cp_status = response.data.Model.Status;
                                     this.statusStyle = response.data.Model.Status;
-
                                 });
                             })
                             .catch(function (error) {
