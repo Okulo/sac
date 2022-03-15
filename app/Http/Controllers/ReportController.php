@@ -98,11 +98,27 @@ class ReportController extends Controller
         //$cp_pay = Customer::whereId(15948)->first();
 
         $cp_pay = \DB::table('cp_notifications')
-            //->select('id', 'type')
             ->whereJsonContains('request->Status', 'Completed')
+            ->orderBy('created_at','DESC')
             ->get();
 
-       return $cp_pay;
+     //  return $cp_pay;
+        $data = [];
+
+        foreach ($cp_pay as $item) {
+
+            foreach ($item as $d){
+                print_r($d);
+            }
+
+            array_push($data, [
+                'request' => $item->request,
+            ]);
+        }
+
+
+       // dd($data[1]['request']);
+
 
     }
 

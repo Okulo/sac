@@ -32,33 +32,22 @@
                         <table class="table table-sm">
                             <thead>
                             <tr>
-                                <th>ID</th>
-                                <th scope="col">Клиент</th>
-                                <th scope="col">Телефон</th>
-                                <th scope="col">Дата </th>
-                                <th scope="col">Причина</th>
-                                <th scope="col">Статус абон</th>
-                                <th scope="col">Подписка ID</th>
-                                <th scope="col">Статус подписки</th>
-                                <th>CP</th>
+                                <th scope="col">Дата</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Сумма </th>
+                                <th scope="col">Статус</th>
+                                <th scope="col">Транзакция ID</th>
+                                <th scope="col">ID подписки</th>
                             </tr>
                             </thead>
-                            <ul id="example-1">
-                                <li v-for="item in cpStatus" >
-                                    {{ item.cp_status }}
-                                </li>
-                            </ul>
                             <tbody v-for="item in items">
-                            <tr v-bind:class="item.cp_status">
-                                <td>{{item.account_id}}</td>
-                                <th scope="row">{{item.customer.name}}</th>
-                                <td>{{ item.customer.phone}}</td>
-                                <td>{{ item.date_time }}</td>
-                                <td>{{ item.reason }}</td>
-                                <td>{{ item.subscription_status }}</td>
-                                <td>{{ item.subscription_id }}</td>
-                                <td>{{ item.cp_status }}</td>
-                                <td><a class="custom-link" v-b-modal="'myModal'" role="button" @click="getCpData(item.subscription_id)">СP</a></td>
+                            <tr>
+                                <td>{{item.date}}</td>
+                                <th scope="row">{{item.account_id}}</th>
+                                <td>{{ item.amount}}</td>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.transaction}}</td>
+                                <td>{{ item.subs_id }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -101,17 +90,29 @@
 
                // $("#exampleModalCenter").modal("show");
 
-               let alldata = [];
-                this.spinnerData.loading = true;
+                let array = [];
+              //  this.spinnerData.loading = true;
                 axios.post('/reports/get-pay-list', {
                         period: this.period
                 })
                     .then(response => {
 
-                        response.data.forEach(function(item) {
+                        console.log(response);
 
-                            console.log(item);
-                        })
+                        // response.data.forEach(elem => {
+                        // array =  JSON.parse(elem.request);
+                        //
+                        //     this.items.push({
+                        //         account_id: array.AccountId,
+                        //         status: array.Status,
+                        //         amount: array.Amount,
+                        //         subs_id: array.SubscriptionId,
+                        //         date: array.DateTime,
+                        //         transaction: array.TransactionId,
+                        //
+                        //     });
+                        //
+                        // })
 
                     })
                     .catch(function (error) {
