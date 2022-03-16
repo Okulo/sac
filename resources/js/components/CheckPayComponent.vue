@@ -33,21 +33,23 @@
                             <thead>
                             <tr>
                                 <th scope="col">Дата</th>
+                                <th scope="col">Имя</th>
+                                <th scope="col">Тел.</th>
                                 <th scope="col">ID</th>
                                 <th scope="col">Сумма </th>
                                 <th scope="col">Статус</th>
-                                <th scope="col">Транзакция ID</th>
-                                <th scope="col">ID подписки</th>
+                                <th scope="col">Пользватель</th>
                             </tr>
                             </thead>
                             <tbody v-for="item in items">
                             <tr>
-                                <td>{{item.date}}</td>
-                                <th scope="row">{{item.account_id}}</th>
+                                <td>{{item.created_at}}</td>
+                                <th scope="row">{{item.name}}</th>
+                                <th scope="row">{{item.phone}}</th>
+                                <th scope="row">{{item.subscription_id}}</th>
                                 <td>{{ item.amount}}</td>
                                 <td>{{ item.status }}</td>
-                                <td>{{ item.transaction}}</td>
-                                <td>{{ item.subs_id }}</td>
+                                <td>{{ item.customer_id}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -97,7 +99,20 @@
                 })
                     .then(response => {
 
-                        console.log(response);
+                        response.data.forEach(elem =>{
+                           // console.log(elem.data);
+
+                                this.items.push({
+                                    created_at: elem.created_at,
+                                    subscription_id: elem.id,
+                                    amount: elem.price,
+                                    status: elem.status,
+                                    customer_id: elem.customer_id,
+                                    name: elem.name,
+                                    phone: elem.phone,
+                                });
+                        });
+
 
                         // response.data.forEach(elem => {
                         // array =  JSON.parse(elem.request);

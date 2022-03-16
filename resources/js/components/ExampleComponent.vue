@@ -144,7 +144,7 @@
                                 pay_status: item.request.Status,
                                 reason: item.request.Reason,
                                 subscription_id: item.request.SubscriptionId,
-                                subscription_status: item.subscription.status,
+                                subscription_status: item.sub_status,
                                 date_time:  moment(item.request.DateTime).add(6,'hours').format('YYYY-MM-DD, hh:mm:ss'),
                                 customer: item.customer,
                                 cp_status: ''

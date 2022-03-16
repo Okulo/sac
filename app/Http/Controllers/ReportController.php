@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CpNotification;
 use App\Models\Customer;
+use App\Models\Payment;
 use App\Models\Subscription;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
@@ -11,6 +12,27 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+
+    const STATUSES = [
+        'waiting' => 'Ожидает',
+        'paid' => 'Оплачен',
+        'rejected' => 'Отклонен',
+        'refused' => 'Отменен',
+    ];
+    const REASONS = [
+        'ExceedsApprovalAmount' => 'Достигнут лимит по сумме операций',
+        'InsufficientFunds' => 'Недостаточно средств',
+        'TransactionNotPermitted' => 'Транзакция не разрешена',
+        'DoNotHonor' => 'Не обслуживать',
+        'PickUpCardSpecialConditions' => 'Специальный отказ банка-эмитента',
+        'AuthenticationFailed' => 'Ошибка аутентификации',
+        'SystemError' => 'Технический сбой эквайера',
+        'SuspectedFraud' => 'Предполагаемое мошенничество',
+        'RestrictedCard2' => 'Карта заблокирована',
+        'NoSuchIssuer' => 'Нет таког эмитента',
+        'StolenCard' => 'Карта украдена',
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -35,10 +57,8 @@ class ReportController extends Controller
     public function getList( Request $request)
     {
         if( $request->period == 'week'){
-            $startDate = 1;
-            $endDate = 2;
-            dd(Carbon::now()->startOfDay());
-            dd(Carbon::now()->startOfDay());
+            $startDate = Carbon::now('Asia/Almaty')->subDays(7);
+            $endDate = Carbon::now('Asia/Almaty');;
         }
         else{
             $startDate = Carbon::now('Asia/Almaty')->startOfDay();
@@ -58,12 +78,14 @@ class ReportController extends Controller
 
                 if(isset($subscription)){
                     $customer = Customer::whereId($subscription['customer_id'])->first();
-
+                   // print_r($subscription->status);
                     array_push($array, [
                         'notific_id' => $item->id,
                         'request' => $item->request,
                         'account_id' => $item->request['AccountId'],
                         'subscription' => $subscription,
+                        'card_reason' => $subscription->Reason,
+                        'sub_status' => self::STATUSES[$subscription->status],
                         'customer' => $customer,
                         //$subscription['customer_id'],
                     ]);
@@ -74,6 +96,7 @@ class ReportController extends Controller
                         'request' => $item->request,
                         'account_id' => $item->request['AccountId'],
                         'subscription' => 'null',
+                        'customer' => 'null',
                     ]);
                 }
 
@@ -97,29 +120,46 @@ class ReportController extends Controller
     {
         //$cp_pay = Customer::whereId(15948)->first();
 
-        $cp_pay = \DB::table('cp_notifications')
-            ->whereJsonContains('request->Status', 'Completed')
+        $cp_note = \DB::table('cp_notifications')
+            //->whereJsonContains('request->Status', 'Completed')
+            ->where('request->Status', 'Completed')
             ->orderBy('created_at','DESC')
             ->get();
 
      //  return $cp_pay;
-        $data = [];
 
-        foreach ($cp_pay as $item) {
+        $notpaid = [];
 
-            foreach ($item as $d){
-                print_r($d);
+        foreach ($cp_note as $item) {
+
+
+            $obj = json_decode($item->request);
+            // echo $obj->AccountId.' - '.$obj->TransactionId.'<br>';
+
+            $subscription = \DB::table('subscriptions')
+                ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
+                ->where('subscriptions.id', '=' , $obj->AccountId)
+                ->where('subscriptions.status','=', 'waiting')
+                ->where('subscriptions.payment_type','=', 'cloudpayments')
+                ->select('subscriptions.*', 'customers.phone', 'customers.name')
+                ->get();
+
+//            $subscription = $subscription = Subscription::whereId($obj->AccountId)
+//                ->where('status','=', 'waiting')
+//                ->get();
+
+           $result = json_decode($subscription);
+
+            foreach ($result as $pay)
+            {
+               // echo $pay->subscription_id.' - '. $pay->customer_id.' - '.$pay->amount.' - '.$pay->status.' - '.$pay->paided_at.' - '.$pay->created_at.'<br>';
+                array_push($notpaid,$pay);
             }
 
-            array_push($data, [
-                'request' => $item->request,
-            ]);
+
         }
 
-
-       // dd($data[1]['request']);
-
-
+        return $notpaid;
     }
 
 
