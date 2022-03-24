@@ -96,7 +96,6 @@ class PayFailNotification implements ShouldQueue
                 'to' => null,
             ];
 
-            $updateData = [];
             if ($this->data['Status'] == 'Completed') {
                 $updateData = [
                     'status' => 'paid',
@@ -146,36 +145,6 @@ class PayFailNotification implements ShouldQueue
                     'subscription' => $subscriptionData,
                 ],
             ]);
-
-            $nextPriceProduct = NextPrice::where('product_id', $subscription->product_id)->get()->toArray();;
-
-            if(isset($nextPriceProduct)){
-                if ( $nextPriceProduct[0]['price'] > 0){
-                    $nextPrice = $nextPriceProduct[0]['price'];
-
-                    $cloudpaymentService = new CloudPaymentsService();
-                    $data =  $cloudpaymentService->updateSubscription([
-                        'Id' => $subscription->cp_subscription_id,
-                        'Amount' => $nextPrice,
-                        // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
-                    ]);
-
-
-                    if ($data['Success'] ){
-
-                        print_r($data['Model']['AccountId']);
-                        UserLog::create([
-                            'subscription_id' => $data['Model']['AccountId'],
-                            'user_id' => null,
-                            'type' => 13,
-                            'data' => [
-                                'new' => $data['Model']['Amount'],
-                            ],
-                        ]);
-                    }
-
-                }
-            }
 
             if (! isset($payment)) {
                 throw new NoticeException('Не создался платеж. Transaction Id: ' . $this->data['TransactionId']);
