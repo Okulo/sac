@@ -43,7 +43,7 @@ class ReportController extends Controller
         if ($type == 2) {
             return view('reports.check-pay');
         } elseif ($type == 3) {
-            dd(3);
+            return view('reports.refused');
         } else {
             return view('reports.index');
         }
