@@ -14,12 +14,12 @@
                     <div class="card-header">
                         <div data-v-754b2df6="" class="input-group">
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input v-model="period"  type="radio" value="day" id="period" class="custom-control-input" checked>
+                                <input v-model="period"  type="radio" value="week" id="period" class="custom-control-input" checked>
                                 <label class="custom-control-label" for="period">За неделю</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input v-model="period" type="radio" value="week" id="priod2" class="custom-control-input">
-                                <label class="custom-control-label" for="priod2">За все время</label>
+                                <input v-model="period" type="radio" value="month" id="priod2" class="custom-control-input">
+                                <label class="custom-control-label" for="priod2">За месяц</label>
                             </div>
                             <button id="getlist"  @click="getlist()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
                             &nbsp &nbsp &nbsp
@@ -32,24 +32,25 @@
                         <table class="table table-sm">
                             <thead>
                             <tr>
-                                <th scope="col">Дата</th>
+                                <th scope="col">ID</th>
                                 <th scope="col">Имя</th>
                                 <th scope="col">Тел.</th>
-                                <th scope="col">ID</th>
-                                <th scope="col">Сумма </th>
+                                <th scope="col">Тип оплаты</th>
                                 <th scope="col">Статус</th>
-                                <th scope="col">Пользватель</th>
+                                <th scope="col">Старт абон. </th>
+                                <th scope="col">Окончание</th>
                             </tr>
                             </thead>
                             <tbody v-for="item in items">
                             <tr>
-                                <td>{{item.created_at}}</td>
-                                <th scope="row">{{item.name}}</th>
-                                <th scope="row">{{item.phone}}</th>
-                                <th scope="row">{{item.subscription_id}}</th>
-                                <td>{{ item.amount}}</td>
-                                <td>{{ item.status }}</td>
-                                <td>{{ item.customer_id}}</td>
+                                <td>{{item.id}}</td>
+                                <th>{{item.name}}</th>
+                                <th>{{item.phone}}</th >
+                                <td>Прямой перевод</td>
+                                <td>Отказался</td>
+                                <td>{{ item.started_at}}</td>
+                                <td>{{ item.ended_at }}</td>
+
                             </tr>
                             </tbody>
                         </table>
@@ -94,20 +95,20 @@
 
                 let array = [];
               //  this.spinnerData.loading = true;
-                axios.post('/reports/get-pay-list', {
+                axios.post('/reports/get-refused-list', {
                         period: this.period
                 })
                     .then(response => {
 
                         response.data.forEach(elem =>{
-                           // console.log(elem.data);
+                          // console.log(elem.data);
 
                                 this.items.push({
-                                    created_at: elem.created_at,
-                                    subscription_id: elem.id,
-                                    amount: elem.price,
+                                    started_at: elem.started_at,
+                                    id: elem.id,
+                                    ended_at: elem.ended_at,
                                     status: elem.status,
-                                    customer_id: elem.customer_id,
+                                    payment_type: elem.payment_type,
                                     name: elem.name,
                                     phone: elem.phone,
                                 });

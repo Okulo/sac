@@ -9,6 +9,7 @@ use App\Models\Subscription;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use function Symfony\Component\String\s;
 
 class ReportController extends Controller
 {
@@ -162,6 +163,18 @@ class ReportController extends Controller
         return $notpaid;
     }
 
+    public function getRefusedList()
+    {
+        $subscription = \DB::table('subscriptions')
+            ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->where('subscriptions.status', 'refused')
+            ->where('subscriptions.payment_type', 'transfer')
+            ->select('subscriptions.*', 'customers.phone', 'customers.name')
+            ->get();
+
+
+        return $subscription;
+    }
 
     public function getSubscription( Request $request)
     {
