@@ -146,14 +146,43 @@ class CloudPaymentsController extends Controller
             ],
         ]);
 
+        // ниже нужно добавить информациюя по чеку
+
+        //                    Amount: "3990"
+        //                    cpId: "sc_11a38e8375ee3c6b1c7756312e0cd"
+        //                    product: "Антижир (Активные онлайн тренировки)"
+        //                    subscriptionId: 17933
+
+
         $cloudpaymentService = new CloudPaymentsService();
-       $data =  $cloudpaymentService->updateSubscription([
-            'Id' => $request->Id,
+        $data =  $cloudpaymentService->updateSubscription([
+            'Id' => $request->cpId,
             'Amount' => $request->Amount,
-            // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
+            'customerReceipt' => [
+                'Items' => [ //товарные позиции
+                    [
+                        'label' => $request->product, // наименование товара
+                        'price' => $request->Amount, // цена
+                        'quantity' => 1.00, //количество
+                        'amount' => $request->Amount, // сумма
+                        'vat' => 0, // ставка НДС
+                        'method' => 0, // тег-1214 признак способа расчета - признак способа расчета
+                        'object' => 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+                        'measurementUnit' => "шт" //единица измерения
+                    ],
+                ],
+                'calculationPlace' => "www.strela-academy.ru", //место осуществления расчёта, по умолчанию берется значение из кассы
+                'taxationSystem' => 0, //система налогообложения; необязательный, если у вас одна система налогообложения
+                'email' => '', //e-mail покупателя, если нужно отправить письмо с чеком
+                'phone' => '', //телефон покупателя в любом формате, если нужно отправить сообщение со ссылкой на чек
+                'isBso' => false,
+                'amounts' => [
+                    'electronic' =>  $request->Amount // Сумма оплаты электронными деньгами
+                ]
+            ],
         ]);
 
-      return $request;
+        return $request;
 
     }
 
