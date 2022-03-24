@@ -92,25 +92,48 @@
 
                // $("#exampleModalCenter").modal("show");
 
-                let array = [];
+
+
               //  this.spinnerData.loading = true;
-                axios.post('/reports/get-pay-list', {
+                axios.post('/reports/get-pay-list', {mp, run watch
                         period: this.period
                 })
                     .then(response => {
 
                         response.data.forEach(elem =>{
-                           // console.log(elem.data);
+                          console.log(elem.id+' - '+elem.descr+' - '+elem.subs_id);
 
-                                this.items.push({
-                                    created_at: elem.created_at,
-                                    subscription_id: elem.id,
-                                    amount: elem.price,
-                                    status: elem.status,
-                                    customer_id: elem.customer_id,
-                                    name: elem.name,
-                                    phone: elem.phone,
+                            axios.post('/cloudpayments/updateamount', {
+                                cpId: elem.id,
+                                Amount: 3990,
+                                product: elem.descr
+                            })
+                                .then(function (response) {
+                                    let message = "Стоимость подписки успешно изменена!";
+                                  //  console.log(response.data.Model);
+                                    axios.post('/cloudpayments/saveresponse', {
+                                        success: 'true',
+                                        model: response.data.Model,
+                                        subsid: elem.id
+                                    })
+
+                                    $('#change-price').hide();
+                                    Vue.$toast.success(message);
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                    Vue.$toast.error(error);
                                 });
+
+                                // this.items.push({
+                                //     created_at: elem.created_at,
+                                //     subscription_id: elem.id,
+                                //     amount: elem.price,
+                                //     status: elem.status,
+                                //     customer_id: elem.customer_id,
+                                //     name: elem.name,
+                                //     phone: elem.phone,
+                                // });
                         });
 
 

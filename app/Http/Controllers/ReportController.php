@@ -120,43 +120,21 @@ class ReportController extends Controller
     {
         //$cp_pay = Customer::whereId(15948)->first();
 
-        $cp_note = \DB::table('cp_notifications')
+        $cp_note = \DB::table('mytable')
             //->whereJsonContains('request->Status', 'Completed')
-            ->where('request->Status', 'Completed')
-            ->orderBy('created_at','DESC')
+            ->where('amount', 3990,00)
+            ->where('status','Работает')
+           // ->orderBy('created_at','DESC')
             ->get();
 
-     //  return $cp_pay;
+     return $cp_note;
+
+       // dd($cp_note);
 
         $notpaid = [];
 
         foreach ($cp_note as $item) {
-
-
-            $obj = json_decode($item->request);
-            // echo $obj->AccountId.' - '.$obj->TransactionId.'<br>';
-
-            $subscription = \DB::table('subscriptions')
-                ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
-                ->where('subscriptions.id', '=' , $obj->AccountId)
-                ->where('subscriptions.status','=', 'waiting')
-                ->where('subscriptions.payment_type','=', 'cloudpayments')
-                ->select('subscriptions.*', 'customers.phone', 'customers.name')
-                ->get();
-
-//            $subscription = $subscription = Subscription::whereId($obj->AccountId)
-//                ->where('status','=', 'waiting')
-//                ->get();
-
-           $result = json_decode($subscription);
-
-            foreach ($result as $pay)
-            {
-               // echo $pay->subscription_id.' - '. $pay->customer_id.' - '.$pay->amount.' - '.$pay->status.' - '.$pay->paided_at.' - '.$pay->created_at.'<br>';
-                array_push($notpaid,$pay);
-            }
-
-
+           // return  $item;
         }
 
         return $notpaid;

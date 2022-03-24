@@ -223,4 +223,6 @@ Route::get("/pull", [HomeController::class, "pull"])->name("pull");
 Route::get('cloudpayments/{subscriptionId}', 'CloudPaymentsController@showWidget')->name('cloudpayments.show_widget');
 Route::get('cloudpayments/{productId}/thank-you', 'CloudPaymentsController@thankYou')->name('cloudpayments.thank_you');
 Route::post('cloudpayments/updateamount', 'CloudPaymentsController@updateAmount')->name('cloudpayments.update');
+Route::post('/cloudpayments/saveresponse', 'CloudPaymentsController@saveCpResponse')->name('cloudpayments.saveresponse');
+
 
