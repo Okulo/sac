@@ -6,6 +6,7 @@ use App\Services\CloudPaymentsService;
 use App\Services\GitService;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use App\Providers\TelescopeServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if ($this->app->isLocal()) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+
         $this->registerServices();
+
     }
 
     /**
