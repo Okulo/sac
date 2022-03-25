@@ -163,13 +163,26 @@ class ReportController extends Controller
         return $notpaid;
     }
 
-    public function getRefusedList()
+    public function getRefusedList( Request $request)
     {
+        if( $request->period == 'week'){
+            $startDate = Carbon::now('Asia/Almaty')->subDays(7);
+            $endDate = Carbon::now('Asia/Almaty');;
+        }
+        else{
+            $startDate = Carbon::now('Asia/Almaty')->subMonth();
+            $endDate = Carbon::now('Asia/Almaty');
+        }
+
         $subscription = \DB::table('subscriptions')
             ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->join('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+            ->whereDate('subscriptions.started_at', '>=', $startDate)
+            ->whereDate('subscriptions.started_at', '<=', $endDate)
             ->where('subscriptions.status', 'refused')
             ->where('subscriptions.payment_type', 'transfer')
-            ->select('subscriptions.*', 'customers.phone', 'customers.name')
+            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
+            ->orderBy('subscriptions.started_at', 'desc')
             ->get();
 
 

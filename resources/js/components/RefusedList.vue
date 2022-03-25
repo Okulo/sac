@@ -28,7 +28,9 @@
 
                     </div>
                     <div class="card-body">
+                        <strong>Всего записей -      {{items.length}}</strong><p><br></p>
                         <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
+
                         <table class="table table-sm">
                             <thead>
                             <tr>
@@ -37,19 +39,24 @@
                                 <th scope="col">Тел.</th>
                                 <th scope="col">Тип оплаты</th>
                                 <th scope="col">Статус</th>
+                                <th scope="col">Причина</th>
                                 <th scope="col">Старт абон. </th>
                                 <th scope="col">Окончание</th>
+                                <th scope="col"></th>
                             </tr>
                             </thead>
+
                             <tbody v-for="item in items">
                             <tr>
-                                <td>{{item.id}}</td>
+                                <td>{{ item.id }}</td>
                                 <th>{{item.name}}</th>
                                 <th>{{item.phone}}</th >
                                 <td>Прямой перевод</td>
                                 <td>Отказался</td>
+                                <td>{{item.reason}}</td >
                                 <td>{{ item.started_at}}</td>
                                 <td>{{ item.ended_at }}</td>
+                                <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
 
                             </tr>
                             </tbody>
@@ -64,10 +71,10 @@
 
 <script>
 
-    import moment from 'moment';
-
     export default {
         data: () => ({
+                customerId: null,
+                subscriptionId: null,
                 items: [],
                 cpData: '',
                 cp: '',
@@ -78,12 +85,24 @@
                     size: '60px',
                 },
                 statusStyle : '',
-                period: 'day'
+                period: 'week'
         }),
         mounted() {
             console.log('Component mounted.')
-        }
-        ,
+        },
+        computed: {
+            //функция сортировки массива
+            sortedArray: function() {
+                function compare(a, b) {
+                    if (a.started_at > b.started_at)
+                        return -1;
+                    if (a.started_at < b.started_at)
+                        return 1;
+                    return 0;
+                }
+                return this.items.sort(compare);
+            }
+        },
         methods: {
             sendInfo(item) {
                 this.selectedUser = item;
@@ -91,15 +110,15 @@
 
             getlist(){
 
+                this.items = [];
                // $("#exampleModalCenter").modal("show");
-
-                let array = [];
+                this.spinnerData.loading = true;
               //  this.spinnerData.loading = true;
                 axios.post('/reports/get-refused-list', {
                         period: this.period
                 })
                     .then(response => {
-
+                        this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
                           // console.log(elem.data);
 
@@ -111,6 +130,8 @@
                                     payment_type: elem.payment_type,
                                     name: elem.name,
                                     phone: elem.phone,
+                                    customer_id: elem.customer_id,
+                                    reason: elem.title
                                 });
                         });
 

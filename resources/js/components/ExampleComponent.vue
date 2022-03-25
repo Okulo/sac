@@ -50,7 +50,7 @@
                             </ul>
                             <tbody v-for="item in items">
                             <tr v-bind:class="item.cp_status">
-                                <td>{{item.account_id}}</td>
+                                <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.account_id">{{item.account_id}}</a></td>
                                 <th scope="row">{{item.customer.name}}</th>
                                 <td>{{ item.customer.phone}}</td>
                                 <td>{{ item.date_time }}</td>
