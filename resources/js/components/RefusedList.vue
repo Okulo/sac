@@ -12,6 +12,36 @@
                 <h2>Список отказавшихся</h2>
                 <div class="card mt-3">
                     <div class="card-header">
+
+                        <div class="col-md-12">
+                                <datetime
+                                    type="date"
+                                    v-model="startDate"
+                                    input-class="form-control"
+                                    valueZone="Asia/Almaty"
+                                    value-zone="Asia/Almaty"
+                                    zone="Asia/Almaty"
+                                    :auto="true"
+                                ></datetime>
+
+                                <datetime
+                                    type="date"
+                                    v-model="endDate"
+                                    input-class="form-control"
+                                    valueZone="Asia/Almaty"
+                                    value-zone="Asia/Almaty"
+                                    zone="Asia/Almaty"
+                                    :auto="true"
+                                ></datetime>
+
+                            <p>{{ startDate }}</p>
+                            <p>{{ endDate }}</p>
+
+                            <button v-if="startDate && endDate" id="getlistWithDate"  @click="getlistWithDate()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
+
+                        </div>
+
+
                         <div data-v-754b2df6="" class="input-group">
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input v-model="period"  type="radio" value="week" id="period" class="custom-control-input" checked>
@@ -41,8 +71,7 @@
                                 <th scope="col">Статус</th>
                                 <th scope="col">Дата отказа</th>
                                 <th scope="col">Причина</th>
-                                <th scope="col">Старт абон. </th>
-                                <th scope="col">Окончание</th>
+                                <th scope="col">Оконч. абон</th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -56,7 +85,6 @@
                                 <td>Отказался</td>
                                 <td>{{ item.updated_at}}</td>
                                 <td>{{item.reason}}</td >
-                                <td>{{ item.started_at}}</td>
                                 <td>{{ item.ended_at }}</td>
                                 <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
 
@@ -72,9 +100,11 @@
 </template>
 
 <script>
-
+    import moment from 'moment';
     export default {
         data: () => ({
+                startDate: '',
+                endDate: '',
                 customerId: null,
                 subscriptionId: null,
                 items: [],
@@ -106,6 +136,9 @@
             }
         },
         methods: {
+            getlistWithDate(){
+                console.log(this.startDate+' - ' +this.endDate)
+            },
             sendInfo(item) {
                 this.selectedUser = item;
             },
@@ -127,8 +160,8 @@
                                 this.items.push({
                                     started_at: elem.started_at,
                                     id: elem.id,
-                                    ended_at: elem.ended_at,
-                                    updated_at: elem.updated_at,
+                                    ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
+                                    updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY'),
                                     status: elem.status,
                                     payment_type: elem.payment_type,
                                     name: elem.name,
