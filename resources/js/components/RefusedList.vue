@@ -33,28 +33,9 @@
                                     zone="Asia/Almaty"
                                     :auto="true"
                                 ></datetime>
-
-                            <p>{{ startDate }}</p>
-                            <p>{{ endDate }}</p>
-
-                            <button v-if="startDate && endDate" id="getlistWithDate"  @click="getlistWithDate()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
-
                         </div>
 
-
-                        <div data-v-754b2df6="" class="input-group">
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input v-model="period"  type="radio" value="week" id="period" class="custom-control-input" checked>
-                                <label class="custom-control-label" for="period">За неделю</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input v-model="period" type="radio" value="month" id="priod2" class="custom-control-input">
-                                <label class="custom-control-label" for="priod2">За месяц</label>
-                            </div>
-                            <button id="getlist"  @click="getlist()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
-                            &nbsp &nbsp &nbsp
-                            <button id="getCpStatus" v-if="cp"  @click="getCpStatus()"  type="button" class="btn btn-info btn-sm float-right">Получить статусы подпски</button>
-                        </div>
+                        <button id="getlist" v-if="startDate && endDate"  @click="getlist()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
 
                     </div>
                     <div class="card-body">
@@ -124,20 +105,11 @@
         },
         computed: {
             //функция сортировки массива
-            sortedArray: function() {
-                function compare(a, b) {
-                    if (a.started_at > b.started_at)
-                        return -1;
-                    if (a.started_at < b.started_at)
-                        return 1;
-                    return 0;
-                }
-                return this.items.sort(compare);
-            }
+
         },
         methods: {
             getlistWithDate(){
-                console.log(this.startDate+' - ' +this.endDate)
+                console.log(moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01')+' - ' +moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'))
             },
             sendInfo(item) {
                 this.selectedUser = item;
@@ -150,7 +122,9 @@
                 this.spinnerData.loading = true;
               //  this.spinnerData.loading = true;
                 axios.post('/reports/get-refused-list', {
-                        period: this.period
+                    period: this.period,
+                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
+                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59')
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
