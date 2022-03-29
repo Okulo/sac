@@ -177,12 +177,12 @@ class ReportController extends Controller
         $subscription = \DB::table('subscriptions')
             ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->join('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
-            ->whereDate('subscriptions.started_at', '>=', $startDate)
-            ->whereDate('subscriptions.started_at', '<=', $endDate)
+            ->whereDate('subscriptions.updated_at', '>=', $startDate)
+            ->whereDate('subscriptions.updated_at', '<=', $endDate)
             ->where('subscriptions.status', 'refused')
             ->where('subscriptions.payment_type', 'transfer')
             ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
-            ->orderBy('subscriptions.started_at', 'desc')
+            ->orderBy('subscriptions.updated_at', 'desc')
             ->get();
 
 

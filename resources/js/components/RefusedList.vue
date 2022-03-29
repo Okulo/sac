@@ -39,6 +39,7 @@
                                 <th scope="col">Тел.</th>
                                 <th scope="col">Тип оплаты</th>
                                 <th scope="col">Статус</th>
+                                <th scope="col">Дата отказа</th>
                                 <th scope="col">Причина</th>
                                 <th scope="col">Старт абон. </th>
                                 <th scope="col">Окончание</th>
@@ -53,6 +54,7 @@
                                 <th>{{item.phone}}</th >
                                 <td>Прямой перевод</td>
                                 <td>Отказался</td>
+                                <td>{{ item.updated_at}}</td>
                                 <td>{{item.reason}}</td >
                                 <td>{{ item.started_at}}</td>
                                 <td>{{ item.ended_at }}</td>
@@ -126,6 +128,7 @@
                                     started_at: elem.started_at,
                                     id: elem.id,
                                     ended_at: elem.ended_at,
+                                    updated_at: elem.updated_at,
                                     status: elem.status,
                                     payment_type: elem.payment_type,
                                     name: elem.name,
