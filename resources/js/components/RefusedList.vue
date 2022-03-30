@@ -12,8 +12,9 @@
                 <h2>Список отказавшихся</h2>
                 <div class="card mt-3">
                     <div class="card-header">
-
-                        <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-3">
+                                С даты октаза
                                 <datetime
                                     type="date"
                                     v-model="startDate"
@@ -23,7 +24,9 @@
                                     zone="Asia/Almaty"
                                     :auto="true"
                                 ></datetime>
-
+                            </div>
+                            <div class="col-3">
+                                По дату отказа
                                 <datetime
                                     type="date"
                                     v-model="endDate"
@@ -33,9 +36,13 @@
                                     zone="Asia/Almaty"
                                     :auto="true"
                                 ></datetime>
+                            </div>
+                            <div class="col-3">
+                                &nbsp<br>
+                                <button id="getlist" v-if="startDate && endDate"  @click="getlist()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            </div>
                         </div>
 
-                        <button id="getlist" v-if="startDate && endDate"  @click="getlist()"  type="button" class="btn btn-success btn-sm float-right">Получить данные</button>
 
                     </div>
                     <div class="card-body">
