@@ -54,6 +54,23 @@
                                 font-family: 'IskraCYR',Arial,sans-serif;
                             }
 
+
+                            #rec165302490{
+                                display: none;
+                            }
+
+                            #rec165302275{
+                                display: none;
+                            }
+
+                            #rec165302410{
+                                display: none;
+                            }
+
+                            #rec165339982{
+                                padding-top: 0px !important;
+                            }
+
                             @media(max-width: 992px){
                                 .nw-footer-grd {
                                     grid-template-columns: 1fr;
@@ -1341,8 +1358,8 @@
                                 <div class="t195">
                                     <div class="t-container">
                                         <div class="t-col t-col_6 t195__imgsection" itemscope itemtype="http://schema.org/ImageObject">
-                                            <meta itemprop="image" content="/tilda/static.tildacdn.com/tild3661-6233-4438-b837-646633613736/kisspng-vertebral-co.png">
-                                            <img class="t195__img t-img" data-tu-max-width="1200" data-tu-max-height="1200" src="/tilda/static.tildacdn.com/tild3661-6233-4438-b837-646633613736/-/empty/kisspng-vertebral-co.png" data-original="/tilda/static.tildacdn.com/tild3661-6233-4438-b837-646633613736/kisspng-vertebral-co.png"
+                                            <meta itemprop="image" content="https://www.strela-academy.ru/images/112233.jpg">
+                                            <img class="t195__img t-img" data-tu-max-width="1200" data-tu-max-height="1200" src="https://www.strela-academy.ru/images/112233.jpg" data-original="https://www.strela-academy.ru/images/112233.jpg"
                                                  imgfield="img" /><br />
                                             <div class="t195__sectitle t-descr" style="" field="imgtitle" itemprop="name"></div>
                                             <div class="t195__secdescr t-descr" style="" field="imgdescr" itemprop="description">
