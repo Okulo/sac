@@ -204,7 +204,6 @@ class ReportController extends Controller
         }
 
 
-
         $subscription = \DB::table('subscriptions')
             ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
@@ -212,8 +211,9 @@ class ReportController extends Controller
             //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
             ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
             ->where('subscriptions.status', 'refused')
+            ->whereNull('subscriptions.wa_status')
             ->where('subscriptions.payment_type', 'cloudpayments')
-           ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
+            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
             ->orderBy('subscriptions.ended_at', 'desc')
             ->get();
 
@@ -232,6 +232,15 @@ class ReportController extends Controller
                   return 'Error';
               }
 
+    }
+
+
+    public function addWaStatus(Request $request){
+        $updateWa = \DB::table('subscriptions')
+            ->where('id', $request->id)
+            ->update(['wa_status' => $request->waStatus]);
+
+        return $updateWa;
     }
 
     /**

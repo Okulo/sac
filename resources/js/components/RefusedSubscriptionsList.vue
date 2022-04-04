@@ -75,8 +75,7 @@
                                 <td>{{ item.updated_at }}</td>
                                 <td>{{item.reason}}</td >
                                 <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
-                                <td><button data-v-9097e738="" class="btn btn-outline-info">Обработнано</button></td>
-
+                                <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td>
                             </tr>
                             </tbody>
                         </table>
@@ -130,7 +129,7 @@
                     .then(response => {
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
-                             console.log(elem.data);
+                          //   console.log(elem.data);
 
                             this.items.push({
                                 started_at: elem.started_at,
@@ -170,8 +169,23 @@
 
 
             },
-
-
+            cheked(id){
+                if (confirm("ID - "+id+"  обработан?")){
+                    //console.log('id - '+id);
+                    axios.post('/reports/add-wa-status', {
+                        id: id,
+                        waStatus: 1
+                    })
+                        .then(response => {
+                           // console.log(response);
+                            this.getSubscriptionlist();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            Vue.$toast.error(' ' + error);
+                        });
+                }
+            },
             getlistWithDate(){
                 console.log(moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01')+' - ' +moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'))
             },
