@@ -45,7 +45,10 @@ class ReportController extends Controller
             return view('reports.check-pay');
         } elseif ($type == 3) {
             return view('reports.refused');
-        } else {
+        } elseif ($type == 4) {
+        return view('reports.refusedSubscriptions');
+        }
+        else {
             return view('reports.index');
         }
     }
@@ -178,6 +181,40 @@ class ReportController extends Controller
             ->where('subscriptions.payment_type', 'transfer')
             ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
             ->orderBy('subscriptions.updated_at', 'desc')
+            ->get();
+
+
+        return $subscription;
+    }
+
+    public function getRefusedSubscriptionsList( Request $request)
+    {
+        if ($request->startDate){
+            $startDate = $request->startDate;
+        }
+        else {
+            $startDate = Carbon::now('Asia/Almaty')->startOfDay();
+
+        }
+        if($request->endDate){
+            $endDate = $request->endDate;
+        }
+        else{
+            $endDate = Carbon::now('Asia/Almaty');
+        }
+
+
+
+        $subscription = \DB::table('subscriptions')
+            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+           ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+            //  ->whereDate('subscriptions.updated_at', '>=', $startDate)
+            //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
+            ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
+            ->where('subscriptions.status', 'refused')
+            ->where('subscriptions.payment_type', 'cloudpayments')
+           ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
+            ->orderBy('subscriptions.ended_at', 'desc')
             ->get();
 
 

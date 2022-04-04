@@ -42,6 +42,7 @@ $(document)
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('check-pay', require('./components/CheckPayComponent.vue').default);
 Vue.component('refused-list', require('./components/RefusedList.vue').default);
+Vue.component('refused-subscriptions-list', require('./components/RefusedSubscriptionsList.vue').default);
 Vue.component('index-component', require('./components/IndexComponent.vue').default);
 Vue.component('pulse-loader', require('vue-spinner/src/PulseLoader.vue').default);
 Vue.component('payment-show-recurrent', require('./components/PaymentShowRecurrentComponent.vue').default);
