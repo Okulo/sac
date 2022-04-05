@@ -12,7 +12,15 @@
                 <h2>Список отмененных подписок</h2>
                 <div class="card mt-3">
                     <div class="card-header">
-                        <div class="row">
+                        <div style="line-height: 25px; cursor: pointer;"  @click="filterOpen = !filterOpen">
+                            <small class="float-right">
+                                <a id="filter-toggle" class="btn btn-default btn-sm" title="Скрыть/показать">
+                                    <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
+                                </a>
+                            </small>
+                        </div>
+
+                               <div class="row" v-show="filterOpen" :class="{slide: filterOpen}">
                             <div class="col-3">
                                 С даты окончания
                                 <datetime
@@ -54,10 +62,10 @@
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Имя</th>
-                                <th scope="col">Тел.</th>
+                                <th scope="col">Телефон</th>
+                                <th scope="col">Оконч. абон</th>
                                 <th scope="col">Тип оплаты</th>
                                 <th scope="col">Статус</th>
-                                <th scope="col">Оконч. абон</th>
                                 <th scope="col">Дата отказа</th>
                                 <th scope="col">Причина</th>
                                 <th scope="col"></th>
@@ -69,9 +77,9 @@
                                 <td>{{ item.id }}</td>
                                 <th>{{item.name}}</th>
                                 <th>{{item.phone}}</th >
+                                <td>{{ item.ended_at}}</td>
                                 <td>Сloudpayments</td>
                                 <td>Отказался</td>
-                                <td>{{ item.ended_at}}</td>
                                 <td>{{ item.updated_at }}</td>
                                 <td>{{item.reason}}</td >
                                 <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
@@ -95,6 +103,7 @@
                 endDate: '',
                 customerId: null,
                 subscriptionId: null,
+                filterOpen: false,
                 items: [],
                 cpData: '',
                 cp: '',

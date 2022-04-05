@@ -189,34 +189,22 @@ class ReportController extends Controller
 
     public function getRefusedSubscriptionsList( Request $request)
     {
-        if ($request->startDate){
-            $startDate = $request->startDate;
-        }
-        else {
-            $startDate = Carbon::now('Asia/Almaty')->startOfDay();
 
-        }
-        if($request->endDate){
-            $endDate = $request->endDate;
-        }
-        else{
-            $endDate = Carbon::now('Asia/Almaty');
-        }
-
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-04-10 00:00:01';
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
         $subscription = \DB::table('subscriptions')
             ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
-            //  ->whereDate('subscriptions.updated_at', '>=', $startDate)
+            // ->whereDate('subscriptions.ended_at', '>=', '2022-03-15 00:00:00')
             //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
             ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
             ->where('subscriptions.status', 'refused')
             ->whereNull('subscriptions.wa_status')
             ->where('subscriptions.payment_type', 'cloudpayments')
             ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
-            ->orderBy('subscriptions.ended_at', 'desc')
+            ->orderBy('subscriptions.ended_at')
             ->get();
-
 
         return $subscription;
     }
