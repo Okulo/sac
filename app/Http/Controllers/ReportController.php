@@ -47,8 +47,9 @@ class ReportController extends Controller
             return view('reports.refused');
         } elseif ($type == 4) {
         return view('reports.refusedSubscriptions');
-        }
-        else {
+        } elseif ($type == 5) {
+            return view('reports.waitingPayment');
+        } else {
             return view('reports.index');
         }
     }
@@ -207,6 +208,28 @@ class ReportController extends Controller
             ->get();
 
         return $subscription;
+    }
+
+    public function getWaitingPay( Request $request)
+    {
+
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-04-10 00:00:01';
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
+
+        $waitingPayments = \DB::table('subscriptions')
+            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+            // ->whereDate('subscriptions.ended_at', '>=', '2022-03-15 00:00:00')
+            //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
+            //->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
+           // ->where('subscriptions.deleted_at', '', 'null')
+            ->whereNull('subscriptions.deleted_at')
+            ->where('subscriptions.status', 'waiting')
+            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
+            ->orderBy('subscriptions.ended_at')
+            ->get();
+
+        return $waitingPayments;
     }
 
     public function getSubscription( Request $request)
