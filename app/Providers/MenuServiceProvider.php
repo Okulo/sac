@@ -108,6 +108,17 @@ class MenuServiceProvider extends ServiceProvider
                 "url" => "statistics/financial",
             ]);
 
+            $event->menu->addIn('reports', [
+                "key" => "report_3",
+                "text" => 'Отказы (прямой перевод)',
+                "url" => "reports/get-reports/3",
+            ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_3",
+                "text" => 'Отмененные подписки',
+                "url" => "reports/get-reports/4",
+            ]);
+
             // $event->menu->addIn('statistics', [
             //     "key" => "statistic_type_3",
             //     "text" => 'Итоговые',

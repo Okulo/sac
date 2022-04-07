@@ -371,6 +371,18 @@ return [
                 'can-host',
             ],
         ],
+        // Отчеты
+        [
+            'key'  => 'reports',
+            'text' => 'Отчеты',
+            'url'  => '/reports',
+            'icon' => 'fas fa-list-alt',
+            "can"  => [
+                'can-operator',
+                'can-head',
+                'can-host',
+            ]
+        ],
     ],
 
     /*

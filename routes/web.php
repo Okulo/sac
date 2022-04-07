@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersBonusesController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\ReportController;
 use App\Models\Bonus;
 use App\Models\Card;
 use App\Models\Chart;
@@ -199,6 +200,15 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('payments/filter', 'PaymentController@getFilters');
 
     Route::get('products/with-prices', 'ProductController@withPrices');
+
+    Route::get('/reports/get-reports/', 'ReportController@index');
+    Route::get('/reports/get-reports/{type}', 'ReportController@index');
+    Route::post("/reports/get-list", [ReportController::class, "getList"])->name("reports.getList");
+    Route::post("/reports/get-pay-list", [ReportController::class, "getPayList"])->name("reports.getPayList");
+    Route::post("/reports/get-refused-list", [ReportController::class, "getRefusedList"])->name("reports.getRefusedList");
+    Route::post("/reports/get-refused-subscriptions-list", [ReportController::class, "getRefusedSubscriptionsList"])->name("reports.getRefusedSubscriptionsList");
+    Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");
+    Route::post("/reports/add-wa-status", [ReportController::class, "addWaStatus"])->name("reports.addWaStatus");
 
     Route::resources([
         'customers' => 'CustomerController',
