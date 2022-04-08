@@ -219,14 +219,16 @@ class ReportController extends Controller
         $waitingPayments = \DB::table('subscriptions')
             ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
             // ->whereDate('subscriptions.ended_at', '>=', '2022-03-15 00:00:00')
             //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
             //->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
            // ->where('subscriptions.deleted_at', '', 'null')
+            ->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23])
             ->whereNull('subscriptions.deleted_at')
             ->where('subscriptions.status', 'waiting')
-            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title')
-            ->orderBy('subscriptions.ended_at')
+            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','test_sac.products.title AS ptitle')
+            ->orderBy('subscriptions.updated_at', 'desc')
             ->get();
 
         return $waitingPayments;

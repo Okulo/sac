@@ -66,11 +66,13 @@
                             <th scope="col">ID</th>
                             <th scope="col">Имя</th>
                             <th scope="col">Телефон</th>
+                            <th scope="col">Услуга</th>
+                            <th scope="col">Старт абон</th>
                             <th scope="col">Оконч. абон</th>
-                            <th scope="col">Тип оплаты</th>
-                            <th scope="col">Статус</th>
-                            <th scope="col">старт абон</th>
+                            <!--  <th scope="col">Тип оплаты</th> -->
                             <th scope="col">Пробует</th>
+                            <th scope="col">Статус абон.</th>
+                            <td></td>
                           <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
@@ -80,12 +82,30 @@
                             <td>{{ item.id }}</td>
                             <th>{{item.name}}</th>
                             <th>{{item.phone}}</th >
-                            <td>{{ item.ended_at}}</td>
-                            <td>{{item.payment_type}}</td>
-                            <td>{{item.status}}</td>
+                            <td>{{ item.ptitle}}</td>
                             <td>{{ item.started_at }}</td>
+                            <td>{{ item.ended_at}}</td>
+                        <!--    <td>{{item.payment_type}}</td>
+                            <td>{{item.status}}</td>-->
+
                             <td>{{ item.tries_at }}</td>
+                            <td>
+
+                                <select data-v-754b2df6="" name="status" class="form-control form-control-custom"><option data-v-754b2df6="" class="status-tries" value="tries">
+                                    Пробует
+                                </option><option data-v-754b2df6="" class="status-waiting" value="waiting">
+                                    Жду оплату
+                                </option><option data-v-754b2df6="" class="status-paid" value="paid">
+                                    Оплачено
+                                </option><option data-v-754b2df6="" class="status-rejected" value="rejected">
+                                    Отклонена (3 раза)
+                                </option><option data-v-754b2df6="" class="status-refused" value="refused">
+                                    Отказался
+                                </option></select>
+
+                            </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
+                            <td><button data-v-754b2df6="" type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"><i data-v-754b2df6="" class="fa fa-save"></i></button></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
                         </tbody>
@@ -146,8 +166,8 @@
 
                             this.items.push({
                                 id: elem.id,
-                                started_at: elem.started_at,
-                                tries_at: elem.tries_at,
+                                started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
+                                tries_at: moment(elem.tries_at).locale('ru').format('DD MMM YY'),
                                 ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
                                 updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
                                 status: elem.status,
@@ -155,7 +175,8 @@
                                 name: elem.name,
                                 phone: elem.phone,
                                 customer_id: elem.customer_id,
-                                reason: elem.title
+                                reason: elem.title,
+                                ptitle: elem.ptitle
                             });
                         });
 
