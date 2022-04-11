@@ -72,6 +72,7 @@
                             <!--  <th scope="col">Тип оплаты</th> -->
                             <th scope="col">Пробует</th>
                             <th scope="col">Статус абон.</th>
+                            <th scope="col">Процесс</th>
                             <td></td>
                           <!--  <th scope="col"></th> -->
                         </tr>
@@ -103,6 +104,10 @@
                                     Отказался
                                 </option></select>
 
+                            </td>
+                            <td>
+                                    <input  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
+                                    <input  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="" id="notChecked">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
                             <td><button data-v-754b2df6="" type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"><i data-v-754b2df6="" class="fa fa-save"></i></button></td>
@@ -176,7 +181,8 @@
                                 phone: elem.phone,
                                 customer_id: elem.customer_id,
                                 reason: elem.title,
-                                ptitle: elem.ptitle
+                                ptitle: elem.ptitle,
+                                process_status: elem.process_status
                             });
                         });
 
