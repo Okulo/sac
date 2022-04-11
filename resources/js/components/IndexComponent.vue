@@ -3,9 +3,9 @@
         <div class="row">
             <div class="col-12" v-if="mainFilters.length > 0">
                 <div class="card mb-2" id="filter">
-                    <div 
-                        style="line-height: 25px; cursor: pointer;" 
-                        @click="filterOpen = !filterOpen" 
+                    <div
+                        style="line-height: 25px; cursor: pointer;"
+                        @click="filterOpen = !filterOpen"
                         class="card-header py-1"
                     >
                         Фильтр
@@ -31,7 +31,7 @@
                                         </select> -->
                                         <b-form-select class="select-multiple" v-model="queryParams[filter.name]" :options="filter.options" multiple :select-size="4"></b-form-select>
                                         <!-- <v-select v-model="queryParams[filter.name]" :options="filter.options" multiple :reduce="field => field.value" :filterable="false">
-                                            
+
                                         </v-select> -->
                                     </div>
                                     <div v-if="filter.type == 'checkbox'">
@@ -93,14 +93,14 @@
                 <div style="flex: 1 1 auto; margin-left: 7px; margin-right: 10px" v-for="(filter, filterIndex) in secondFilters" :key="filterIndex">
                     <input
                         v-if="filter.type == 'input-search'"
-                        type="text" 
-                        class="form-control" 
-                        :name="filter.name" 
+                        type="text"
+                        class="form-control"
+                        :name="filter.name"
                         :value="queryParams[filter.name]"
                         @keydown="inputSearch($event, filter.name, filter.type, 'keydown')"
                         @input="inputSearch($event, filter.name, filter.type, 'input')"
-                        :placeholder="filter.placeholder" 
-                        aria-label="search" 
+                        :placeholder="filter.placeholder"
+                        aria-label="search"
                         aria-describedby="search-icon"
                     >
                 </div>
@@ -151,17 +151,17 @@
                             <div v-if="item.type == 'hidden'">
                             </div>
                             <div v-else-if="item.type == 'select'">
-                                <select :name="name" v-model="item.value" class="form-control form-control-custom" :class="{ 
-                                    'status-tries': item.value == 'tries' && (prefix == 'subscriptions' || prefix == 'notifications'), 
-                                    'status-waiting': item.value == 'waiting' && (prefix == 'subscriptions' || prefix == 'notifications'), 
+                                <select :name="name" v-model="item.value" class="form-control form-control-custom" :class="{
+                                    'status-tries': item.value == 'tries' && (prefix == 'subscriptions' || prefix == 'notifications'),
+                                    'status-waiting': item.value == 'waiting' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-paid': item.value == 'paid' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-refused': item.value == 'refused' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-frozen': item.value == 'frozen' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-rejected': item.value == 'rejected' && (prefix == 'subscriptions' || prefix == 'notifications')
                                 }">
-                                    <option :class="{ 
-                                        'status-tries': collectionIndex == 'tries' && (prefix == 'subscriptions' || prefix == 'notifications'), 
-                                        'status-waiting': collectionIndex == 'waiting' && (prefix == 'subscriptions' || prefix == 'notifications'), 
+                                    <option :class="{
+                                        'status-tries': collectionIndex == 'tries' && (prefix == 'subscriptions' || prefix == 'notifications'),
+                                        'status-waiting': collectionIndex == 'waiting' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                         'status-paid': collectionIndex == 'paid' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                         'status-refused': collectionIndex == 'refused' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                         'status-frozen': collectionIndex == 'frozen' && (prefix == 'subscriptions' || prefix == 'notifications'),
@@ -193,14 +193,14 @@
                             <div v-else-if="item.type == 'checkbox'">
                                 <input type="checkbox"
                                     :name="name"
-                                    v-model="item.value" 
+                                    v-model="item.value"
                                     @change="saveItem(items, items.id.value, itemsIndex)">
                             </div>
                             <div v-else>
                                 <div class="custom-text" v-if="name == 'status'">
-                                    <span class="status" :class="{ 
-                                        'status-tries': item.value == 'Пробует' && prefix == 'subscriptions', 
-                                        'status-waiting': item.value == 'Жду оплату' && prefix == 'subscriptions', 
+                                    <span class="status" :class="{
+                                        'status-tries': item.value == 'Пробует' && prefix == 'subscriptions',
+                                        'status-waiting': item.value == 'Жду оплату' && prefix == 'subscriptions',
                                         'status-paid': item.value == 'Оплачено' && prefix == 'subscriptions',
                                         'status-refused': item.value == 'Отказался' && prefix == 'subscriptions',
                                         'status-frozen': item.value == 'Заморожен' && prefix == 'subscriptions',
@@ -381,7 +381,7 @@ export default {
             },
             setReasonParams(itemsIndex, data) {
                 this.reasonDataIndex = itemsIndex;
-                this.reasonProductId = data.product_id;  
+                this.reasonProductId = data.product_id;
             },
             openReasonModal(data, itemsIndex) {
                 this.$bvModal.show('reason-modal');
@@ -441,7 +441,7 @@ export default {
 
                 let multipleSelects = $(".select-multiple");
                 [].forEach.call(multipleSelects, function (select) {
-                    
+
                     let element = select.options;
                     for(var i = 0; i < element.length; i++){
                         element[i].selected = false;
@@ -456,7 +456,7 @@ export default {
                         sortType = matches[1];
                     }
                     let sortKey = this.queryParams.sort.replace(/\([^)]+\)/, '');
-                    
+
                     if (sortType == 'asc') {
                         this.queryParams['sort'] = key + '(desc)';
                     } else {
@@ -505,7 +505,7 @@ export default {
                     } else {
                         value = data[key];
                     }
-                    
+
                     if (typeof value === 'string' && selectMultipleNames.includes(key)) {
                         value = [value];
                     }

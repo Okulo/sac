@@ -51,10 +51,6 @@
                         </div>
                     </div>
 
-
-
-                    <td><button data-v-9097e738=""  @click="waitingPayList()" class="btn btn-outline-info">Пока будет кнопка показать список</button></td>
-
                 </div>
                 <div class="card-body">
                     <strong>Всего записей -      {{items.length}}</strong><p><br></p>
@@ -70,9 +66,8 @@
                             <th scope="col">Старт абон</th>
                             <th scope="col">Оконч. абон</th>
                             <!--  <th scope="col">Тип оплаты</th> -->
-                            <th scope="col">Пробует</th>
                             <th scope="col">Статус абон.</th>
-                            <th scope="col">Процесс</th>
+                            <th scope="col">В проц</th>
                             <td></td>
                           <!--  <th scope="col"></th> -->
                         </tr>
@@ -81,35 +76,41 @@
                         <tbody v-for="item in items">
                         <tr>
                             <td>{{ item.id }}</td>
-                            <th>{{item.name}}</th>
+                            <th>
+                                <a class="custom-link" role="button" @click="openModal(17438, 19228)">{{item.name}}</a>
+                            </th>
                             <th>{{item.phone}}</th >
                             <td>{{ item.ptitle}}</td>
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.ended_at}}</td>
                         <!--    <td>{{item.payment_type}}</td>
                             <td>{{item.status}}</td>-->
-
-                            <td>{{ item.tries_at }}</td>
                             <td>
 
-                                <select data-v-754b2df6="" name="status" class="form-control form-control-custom"><option data-v-754b2df6="" class="status-tries" value="tries">
+                                <select data-v-754b2df6="" name="status" class="form-control form-control-custom">
+                                    <option data-v-754b2df6="" class="status-waiting" value="waiting">
+                                        Жду оплату
+                                    </option>
+                                    <option data-v-754b2df6="" class="status-tries" value="tries">
                                     Пробует
-                                </option><option data-v-754b2df6="" class="status-waiting" value="waiting">
-                                    Жду оплату
-                                </option><option data-v-754b2df6="" class="status-paid" value="paid">
+                                </option>
+                                    <option data-v-754b2df6="" class="status-paid" value="paid">
                                     Оплачено
-                                </option><option data-v-754b2df6="" class="status-rejected" value="rejected">
+                                </option>
+                                    <option data-v-754b2df6="" class="status-rejected" value="rejected">
                                     Отклонена (3 раза)
-                                </option><option data-v-754b2df6="" class="status-refused" value="refused">
+                                </option>
+                                    <option data-v-754b2df6="" class="status-refused" value="refused">
                                     Отказался
-                                </option></select>
+                                </option>
+                                </select>
 
                             </td>
                             <td>
-                                    <input  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                    <input  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="" id="notChecked">
+                                <input  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
+                                <input  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="" id="notChecked">
                             </td>
-                            <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи абон.</a></td>
+                            <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Лог</a></td>
                             <td><button data-v-754b2df6="" type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"><i data-v-754b2df6="" class="fa fa-save"></i></button></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
@@ -125,7 +126,10 @@
 
 <script>
     import moment from 'moment';
+    import CustomerComponent from './CustomerComponent.vue';
+
     export default {
+
         data: () => ({
             startDate: '',
             endDate: '',
@@ -146,6 +150,7 @@
         }),
         mounted() {
             console.log('Component mounted.');
+            this.waitingPayList();
           //  this.getSubscriptionlist();
         },
         computed: {
@@ -191,6 +196,16 @@
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
+            },
+            openModal(customerId, subscriptionId) {
+                this.customerId = null;
+                this.subscriptionId = null;
+                this.customerId = customerId;
+                this.subscriptionId = subscriptionId;
+                console.log('cust+'+customerId);
+                console.log('subsc+'+subscriptionId);
+                // this.$refs['modal-customer'].show()
+                this.$bvModal.show('modal-customer');
             },
             getSubscriptionlist(){
                 this.items = [];
