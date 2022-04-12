@@ -121,6 +121,8 @@
                 </div>
             </div>
         </div>
+        <customer-component type-prop="edit" :subscription-id-prop="subscriptionId" :customer-id-prop="customerId"></customer-component>
+
     </div>
 </template>
 
@@ -129,7 +131,11 @@
     import CustomerComponent from './CustomerComponent.vue';
 
     export default {
-
+        components: { CustomerComponent },
+        props: [
+            'prefixProp',
+            'createLinkProp',
+        ],
         data: () => ({
             startDate: '',
             endDate: '',
@@ -202,10 +208,9 @@
                 this.subscriptionId = null;
                 this.customerId = customerId;
                 this.subscriptionId = subscriptionId;
-                console.log('cust+'+customerId);
                 console.log('subsc+'+subscriptionId);
                 // this.$refs['modal-customer'].show()
-                this.$bvModal.show('modal-customer');
+                this.$bvModal.show('modal-customer-edit');
             },
             getSubscriptionlist(){
                 this.items = [];
