@@ -65,8 +65,6 @@
                             <th scope="col">Услуга</th>
                             <th scope="col">Старт абон</th>
                             <th scope="col">Оконч. абон</th>
-                            <!--  <th scope="col">Тип оплаты</th> -->
-                            <th scope="col">Статус абон.</th>
                             <th scope="col">В проц.</th>
                             <td></td>
                           <!--  <th scope="col"></th> -->
@@ -86,40 +84,14 @@
                         <!--    <td>{{item.payment_type}}</td>
                             <td>{{item.status}}</td>-->
                             <td>
-
-                                <select data-v-754b2df6="" name="status" class="form-control form-control-custom">
-                                    <option data-v-754b2df6="" class="status-waiting" value="waiting">
-                                        Жду оплату
-                                    </option>
-                                    <option data-v-754b2df6="" class="status-tries" value="tries">
-                                    Пробует
-                                </option>
-                                    <option data-v-754b2df6="" class="status-paid" value="paid">
-                                    Оплачено
-                                </option>
-                                    <option data-v-754b2df6="" class="status-rejected" value="rejected">
-                                    Отклонена (3 раза)
-                                </option>
-                                    <option data-v-754b2df6="" class="status-refused" value="refused">
-                                    Отказался
-                                </option>
-                                </select>
-
-                            </td>
-                            <td>
                             <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-
-                                <input v-if="item.process_status == null" type="checkbox" :value="item.id" id="item.id" v-model="processed" @change="goProcess($event)">
+                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
+                                <input v-if="item.process_status == null" type="checkbox" :value="item.id" id="item.id" class="form-check-input" v-model="processed" @change="goProcess($event)">
                             </td>
-                            <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Лог</a></td>
-                            <td>
-                                <button  @click="saveItem(items, items.id.value, itemsIndex)" type="button" class="btn btn-danger btn-sm save-button" title="Сохранить">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                            </td>
+                            <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
                         </tbody>
