@@ -257,6 +257,16 @@ class ReportController extends Controller
         return $updateWa;
     }
 
+    public function setProcessedStatus( Request $request){
+        $setStatus = \DB::table('processed_subscription')
+            ->updateOrInsert(
+            ['subscription_id' =>   request('subId')],
+            ['process_status' => request('status')]
+        );
+
+        return $setStatus;
+    }
+
     /**
      * Store a newly created resource in storage.
      *

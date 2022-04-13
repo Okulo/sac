@@ -210,6 +210,8 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-refused-subscriptions-list", [ReportController::class, "getRefusedSubscriptionsList"])->name("reports.getRefusedSubscriptionsList");
     Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");
     Route::post("/reports/add-wa-status", [ReportController::class, "addWaStatus"])->name("reports.addWaStatus");
+    Route::post("/reports/set-processed-status", [ReportController::class, "setProcessedStatus"])->name("reports.setProcessedStatus");
+
 
     Route::resources([
         'customers' => 'CustomerController',

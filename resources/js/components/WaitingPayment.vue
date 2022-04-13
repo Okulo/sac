@@ -67,7 +67,7 @@
                             <th scope="col">Оконч. абон</th>
                             <!--  <th scope="col">Тип оплаты</th> -->
                             <th scope="col">Статус абон.</th>
-                            <th scope="col">В проц</th>
+                            <th scope="col">В проц.</th>
                             <td></td>
                           <!--  <th scope="col"></th> -->
                         </tr>
@@ -75,9 +75,9 @@
 
                         <tbody v-for="item in items">
                         <tr>
-                            <td>{{ item.id }}</td>
+                            <td>{{ item.id }}  </td> <!--- {{item.customer_id}} -->
                             <th>
-                                <a class="custom-link" role="button" @click="openModal(17438, 19228)">{{item.name}}</a>
+                                <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
                             </th>
                             <th>{{item.phone}}</th >
                             <td>{{ item.ptitle}}</td>
@@ -107,11 +107,19 @@
 
                             </td>
                             <td>
-                                <input  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                <input  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="" id="notChecked">
+                            <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
+                                <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
+                                 <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
+                                 -->
+
+                                <input v-if="item.process_status == null" type="checkbox" :value="item.id" id="item.id" v-model="processed" @change="goProcess($event)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Лог</a></td>
-                            <td><button data-v-754b2df6="" type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"><i data-v-754b2df6="" class="fa fa-save"></i></button></td>
+                            <td>
+                                <button  @click="saveItem(items, items.id.value, itemsIndex)" type="button" class="btn btn-danger btn-sm save-button" title="Сохранить">
+                                    <i class="fa fa-save"></i>
+                                </button>
+                            </td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
                         </tbody>
@@ -142,6 +150,7 @@
             customerId: null,
             subscriptionId: null,
             filterOpen: false,
+            processed: [],
             items: [],
             cpData: '',
             cp: '',
@@ -164,7 +173,25 @@
 
         },
         methods: {
+            goProcess: function(e) {
+                if (this.processed.length > 0){
 
+                    axios.post('/reports/set-processed-status',{
+                        subId: this.processed.toString(),
+                        status: 1
+                    })
+                        .then(response => {
+                            this.waitingPayList();
+                        })
+                        .catch(function (error) {
+                            console.log('err');
+                            console.log(error);
+                            Vue.$toast.error('error - '+ error);
+                        });
+
+                    console.log(this.processed);
+                }
+            },
             waitingPayList(){
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
@@ -208,8 +235,6 @@
                 this.subscriptionId = null;
                 this.customerId = customerId;
                 this.subscriptionId = subscriptionId;
-                console.log('subsc+'+subscriptionId);
-                // this.$refs['modal-customer'].show()
                 this.$bvModal.show('modal-customer-edit');
             },
             getSubscriptionlist(){
