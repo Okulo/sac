@@ -10,6 +10,14 @@
 
         <div class="col-md-12">
             <h2>Жду оплату</h2>
+
+           <div class="intro"> Сюда попадают те обонементы, за которые клиенты пообещали оплатить, но нужно проконтролировать,
+            что оплата прошла удачно. <br>Если оплата по абонементу выполнена,
+            то статус поменяется на оплачено автоматически
+            и клиента уже не будет в этом списке после обновления страницы.
+            <p></p>
+            Список обновляется при обновлении страницы
+           </div>
             <div class="card mt-3">
                 <div class="card-header">
                     <div style="line-height: 25px; cursor: pointer;"  @click="filterOpen = !filterOpen">
@@ -56,28 +64,29 @@
                     <strong>Всего записей -      {{items.length}}</strong><p><br></p>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
-                    <table class="table table-sm">
+                    <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Имя</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
-                            <th scope="col">Услуга</th>
-                            <th scope="col">Старт абон</th>
-                            <th scope="col">Оконч. абон</th>
-                            <th scope="col">В проц.</th>
+                            <th scope="col">Услуги</th>
+                            <th scope="col">Дата<br> старта</th>
+                            <th scope="col">Дата <br> окончания</th>
+                            <th scope="col">В <br>процессе</th>
                             <td></td>
                           <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
 
-                        <tbody v-for="item in items">
-                        <tr>
-                            <td>{{ item.id }}  </td> <!--- {{item.customer_id}} -->
-                            <th>
+                        <tbody>
+                        <tr v-for="(item, index) in items" :key="index">
+
+                            <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
+                            <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
-                            </th>
-                            <th>{{item.phone}}</th >
+                            </td>
+                            <td>{{item.phone}}</td>
                             <td>{{ item.ptitle}}</td>
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.ended_at}}</td>
@@ -385,6 +394,21 @@
     }
 </script>
 <style scoped>
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    tr{
+        font-size: 15px;
+    }
+    th{
+        font-size: 0.8rem;
+    }
+    .intro{
+        font-size: 15px;
+        padding: 10px 0;
+        border-top: 1px solid #dee2e6;
+    }
+
     .Active {
         color: #00d25c;
     }
