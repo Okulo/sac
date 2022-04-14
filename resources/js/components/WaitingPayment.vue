@@ -71,6 +71,7 @@
                             <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
+                            <th >Ост. дней</th>
                             <th scope="col">Дата<br> старта</th>
                             <th scope="col">Дата <br> окончания</th>
                             <th scope="col">В <br>процессе</th>
@@ -88,6 +89,7 @@
                             </td>
                             <td>{{item.phone}}</td>
                             <td>{{ item.ptitle}}</td>
+                            <td>{{item.calcDate}}</td>
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.ended_at}}</td>
                         <!--    <td>{{item.payment_type}}</td>
@@ -188,8 +190,13 @@
                         response.data.forEach(elem =>{
                             //   console.log(elem.data);
 
+                            var given = moment(elem.ended_at, "YYYY-MM-DD");
+                            var current = moment().startOf('day');
+                            var diff =moment.duration(given.diff(current)).asDays();
+
                             this.items.push({
                                 id: elem.id,
+                                calcDate:  diff,
                                 started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
                                 tries_at: moment(elem.tries_at).locale('ru').format('DD MMM YY'),
                                 ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
