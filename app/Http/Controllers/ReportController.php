@@ -212,27 +212,46 @@ class ReportController extends Controller
 
     public function getWaitingPay( Request $request)
     {
-
         ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-04-10 00:00:01';
         ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
-        $waitingPayments = \DB::table('subscriptions')
+        $subscriptions = Subscription::whereNull('subscriptions.deleted_at')
             ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
             ->leftJoin('processed_subscription', 'subscriptions.id', '=', 'processed_subscription.subscription_id')
-            // ->whereDate('subscriptions.ended_at', '>=', '2022-03-15 00:00:00')
-            //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
-            //->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
-           // ->where('subscriptions.deleted_at', '', 'null')
             ->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23])
-            ->whereNull('subscriptions.deleted_at')
             ->where('subscriptions.status', 'waiting')
             ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status')
             ->orderBy('subscriptions.updated_at', 'desc')
             ->get();
+       // $subscriptions->comments->count();
+//        foreach ($subscriptions as $subscription) {
+//           echo $subscription->id;
+//           echo "<br>";
+//
+//        }
 
-        return $waitingPayments;
+
+        return $subscriptions;
+
+//        $waitingPayments = \DB::table('subscriptions')
+//            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+//            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+//            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+//            ->leftJoin('processed_subscription', 'subscriptions.id', '=', 'processed_subscription.subscription_id')
+//            ->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23])
+//            ->whereNull('subscriptions.deleted_at')
+//            ->where('subscriptions.status', 'waiting')
+//            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status')
+//            ->orderBy('subscriptions.updated_at', 'desc')
+//            ->get();
+//
+//
+//        return $waitingPayments;
+
+
+
     }
 
     public function getSubscription( Request $request)
@@ -246,6 +265,17 @@ class ReportController extends Controller
                   return 'Error';
               }
 
+    }
+
+    public function getUserPayments( Request $request)
+    {
+        $payments = \DB::table('payments')
+            ->where('subscription_id', '=' , $request->subId)
+            ->where('status', '=' , 'Completed')
+            ->select('payments.*')
+            ->count();
+
+        return json_decode($payments);
     }
 
 

@@ -72,6 +72,7 @@
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
                             <th >Ост. дней</th>
+                            <th>Кол-во <br> платежей</th>
                             <th scope="col">Дата<br> старта</th>
                             <th scope="col">Дата <br> окончания</th>
                             <th scope="col">В <br>процессе</th>
@@ -89,7 +90,8 @@
                             </td>
                             <td>{{item.phone}}</td>
                             <td>{{ item.ptitle}}</td>
-                            <td>{{item.calcDate}}</td>
+                            <td>{{ item.calcDate }}</td>
+                            <td>{{item.paymentsCount}}</td>
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.ended_at}}</td>
                         <!--    <td>{{item.payment_type}}</td>
@@ -144,7 +146,7 @@
                 size: '60px',
             },
             statusStyle : '',
-            period: 'week'
+            period: ''
         }),
         mounted() {
             console.log('Component mounted.');
@@ -176,6 +178,7 @@
                 }
             },
             waitingPayList(){
+
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
@@ -188,11 +191,13 @@
                     .then(response => {
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
-                            //   console.log(elem.data);
 
+                            //   console.log(elem.data);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff =moment.duration(given.diff(current)).asDays();
+
+
 
                             this.items.push({
                                 id: elem.id,
@@ -208,8 +213,11 @@
                                 customer_id: elem.customer_id,
                                 reason: elem.title,
                                 ptitle: elem.ptitle,
-                                process_status: elem.process_status
+                                process_status: elem.process_status,
+                                paymentsCount: ''
                             });
+
+
                         });
 
                     })
@@ -217,6 +225,23 @@
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
+            },
+            getUserPayments(subId){
+                axios.post('/reports/get-user-payments', {
+                    subId: subId//elem.customer_id
+                })
+                    .then(response => {
+                       // console.log(response.data);
+                        return response.data;
+                        //     this.items.map(item => {
+                        //     item.paymentsCount = response.data;
+                        // });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error(' ' + error);
+                    });
+
             },
             openModal(customerId, subscriptionId) {
                 this.customerId = null;

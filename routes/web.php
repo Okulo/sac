@@ -211,6 +211,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");
     Route::post("/reports/add-wa-status", [ReportController::class, "addWaStatus"])->name("reports.addWaStatus");
     Route::post("/reports/set-processed-status", [ReportController::class, "setProcessedStatus"])->name("reports.setProcessedStatus");
+    Route::post("/reports/get-user-payments", [ReportController::class, "getUserPayments"])->name("reports.getUserPayments");
 
 
     Route::resources([
