@@ -264,6 +264,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
+                                <div class="col-sm-6">
+                                    <div class="recurrent_block">
+                              тут сылка на платеж
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="recurrent_button-block">
+                                        <button class="btn btn-info" @click="genPitechLink(subIndex)">Генерировать ссылку на Pitech</button>
+                                    </div>
+                                </div>
+                            </div>
                             <br><br>
                             <div v-show="type == 'edit'" class="row" style="margin-bottom: 15px;">
                                 <div class="col-sm-12">
@@ -435,7 +447,90 @@
             this.getOptions();
         },
         methods: {
+            genPitechLink(){
 
+
+
+
+                let data = {
+                    amount: 10,
+                    currency: "KZT",
+                    description: "«Көркем еңбек» пәнін 2- сыныпта оқыту барысында пәнаралық байланысты жүзеге асырудың тиімді жолдарын теориялық тұрғыдан айқындау",
+                    extOrdersId: "1",
+                    errorReturnUrl: "http://localhost/failure",
+                    successReturnUrl: "http://localhost/success",
+                    payload: {
+                        some: "some value",
+                        test: "test value",
+                        data: "data value"
+                    },
+                    extOrdersTime: "1",
+                    email: "aaa@aaa.aa",
+                    shortenPaymentUrl: "true",
+                    template: "studkz",
+                    language: "ru",
+                };
+
+                const username = '2N8JSane2QITxjaclYNeYps-QRoWSJTq'
+                const password = '7UtY_03z2abC2Nqa8VdBlbCsc0eUtMLZ'
+
+                const token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64')
+
+                const url = 'https://cards-stage.pitech.kz/gw/payments/cards/charge'
+
+                axios.post(url, {
+                    data,
+                    headers: {
+                        'Authorization': `Basic ${token}`
+                    }
+                }).then(response => {
+                            console.log(response);
+                        }).catch(err => {
+                                console.log(err);
+                        });
+
+                // const token = `2N8JSane2QITxjaclYNeYps-QRoWSJTq:7UtY_03z2abC2Nqa8VdBlbCsc0eUtMLZ`;
+                // const encodedToken = Buffer.from(token).toString('base64');
+                // const headers = { 'Authorization': 'Basic '+ encodedToken };
+                //
+                // axios.post('https://cards-stage.pitech.kz/gw/payments/cards/charge', data, { headers }).then(response => {
+                //     console.log(response);
+                // })
+                //     .catch(err => {
+                //         console.log(err);;
+                //     });
+
+
+                // axios.post('https://cards-stage.pitech.kz/gw/payments/cards/charge', {
+                //     auth: {
+                //         username: "2N8JSane2QITxjaclYNeYps-QRoWSJTq",
+                //         password: "7UtY_03z2abC2Nqa8VdBlbCsc0eUtMLZ"
+                //     },
+                //     "amount": 10,
+                //     "currency": "KZT",
+                //     "description": "«Көркем еңбек» пәнін 2- сыныпта оқыту барысында пәнаралық байланысты жүзеге асырудың тиімді жолдарын теориялық тұрғыдан айқындау",
+                //     "extOrdersId": "1",
+                //     "errorReturnUrl": "http://localhost/failure",
+                //     "successReturnUrl": "http://localhost/success",
+                //     "payload": {
+                //         "some": "some value",
+                //         "test": "test value",
+                //         "data": "data value"
+                //     },
+                //     "extOrdersTime": "1",
+                //     "email": "aaa@aaa.aa",
+                //     "shortenPaymentUrl": "true",
+                //     "template": "studkz",
+                //     "language": "ru"
+                // })
+                //     .then(response => {
+                //        // this.subscriptionLogs = response.data.data;
+                //         console.log(response);
+                //     })
+                //     .catch(function (error) {
+                //         console.log(error);
+                //     });
+            },
             getLogs(){
 
                 console.log(this.subscriptionIdProp);
