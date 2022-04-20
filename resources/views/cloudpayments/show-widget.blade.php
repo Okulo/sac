@@ -69,63 +69,18 @@
 @section('adminlte_js')
 <script>
 $( "#cloudpayment-widget-form" ).submit(function( event ) {
-    $('#loading').show();
     event.preventDefault();
+    var widget = new cp.CloudPayments();
+
     var data = JSON.parse('<?php echo $data; ?>');
-
-    var settings = {
-        "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
-        "method": "POST",
-        "timeout": 0,
-        "headers": {
-            "Authorization": "Basic "+ btoa('sdIchMKuSqZskpE9WoT-gHocJxcwLkn6:ZlpaRYNACmBaGU-sDiDQ3QS5DXUXDtO2'),
-            "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-            "amount": data.amount,
-            "currency": "KZT",
-            "description": data.description,
-            "extOrdersId": data.accountId,
-            "errorReturnUrl": "http://localhost/failure",
-            "successReturnUrl": "http://localhost/success",
-            "callbackSuccessUrl": "http://localhost/failure",
-            "callbackFailUrl": "http://localhost/success",
-            "payload": {
-                "phone": data.data.cloudPayments.customerReceipt.phone,
-                "test": "yes",
-                "location": "staging.strela-academy.ru"
-            },
-            "extOrdersTime": "1",
-            "email": "",
-            "shortenPaymentUrl": "true",
-            "template": "blue"
-        }),
-    };
-
-    console.log(data);
-    // console.log(data.amount);
-    // console.log(data.description);
-    // console.log(data.accountId);
-    // console.log(data.data.cloudPayments.customerReceipt.phone);
-
-    $.ajax(settings).done(function (response) {
-        $('#loading').hide();
-        console.log(response.paymentUrl);
-        window.location.href = response.paymentUrl;
+    //тут поставить параметр auth для отмены платежа
+    widget.charge(data,
+    function (options) { // success
+        window.location.href = "{{ route('cloudpayments.thank_you', [$payment->subscription->product->id]) }}";
+    },
+    function (reason, options) { // fail
+        window.location.href = "{{ route('cloudpayments.show_widget', [$payment->subscription->id]) }}";
     });
-
-
-    {{--var widget = new cp.CloudPayments();--}}
-
-    {{--var data = JSON.parse('<?php echo $data; ?>');--}}
-    {{--//тут поставить параметр auth для отмены платежа--}}
-    {{--widget.charge(data,--}}
-    {{--function (options) { // success--}}
-    {{--    window.location.href = "{{ route('cloudpayments.thank_you', [$payment->subscription->product->id]) }}";--}}
-    {{--},--}}
-    {{--function (reason, options) { // fail--}}
-    {{--    window.location.href = "{{ route('cloudpayments.show_widget', [$payment->subscription->id]) }}";--}}
-    {{--});--}}
 });
 </script>
 @endsection

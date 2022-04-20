@@ -254,6 +254,7 @@
                             <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
                                 <div class="col-sm-6">
                                     <div class="recurrent_block">
+                                        <img style="margin-right: 20px" src="/images/cp.png" alt="pitech" width="30px" />
                                         <a target="_blank" :href="subscription.recurrent.link">{{ subscription.recurrent.link }}</a>
                                         <input type="hidden" :id="'recurrent-link-' + subIndex" :value="subscription.recurrent.link">
                                     </div>
@@ -267,12 +268,17 @@
                             <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
                                 <div class="col-sm-6">
                                     <div class="recurrent_block">
-                              тут сылка на платеж
+
+                                        <img style="margin-right: 20px" src="/images/pitech1.png" alt="pitech" width="30px" />
+                                        <a target="_blank" :href="baseUrl+'/pitech/'+subscription.id">{{baseUrl}}/pitech/{{ subscription.id }}</a>
+                                        <input type="hidden" :id="'recurrent-link-' + subIndex" :value="subscription.recurrent.link">
+
+
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="recurrent_button-block">
-                                        <button class="btn btn-info" @click="genPitechLink(subIndex)">Генерировать ссылку на Pitech</button>
+                                        <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
                                     </div>
                                 </div>
                             </div>
@@ -391,6 +397,7 @@
         data() {
             return {
                 teamsProp: [],
+                baseUrl: window.location.origin,
                 userTeamIds: [],
                 userRole: 'operator',
                 subscriptionId: this.subscriptionIdProp,
