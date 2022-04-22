@@ -58,10 +58,7 @@
                 </form>
             </div>
         </div>
-        <a href="https://cloudpayments.kz" target="_blank"
-            style="width: 100%;text-align: center;display: block; margin-bottom: 30px" class="card__pay-systems">
-            <img src="/images/pay-systems.svg" alt="Платежные системы" style="width: 100%; max-width: 500px">
-        </a>
+
     </div>
 </div>
 @endsection

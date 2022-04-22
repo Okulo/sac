@@ -25,6 +25,7 @@ Route::post('upload-file', 'FileController@uploadFile');
 // Route::post('cloudpayments/change-status', 'CloudPaymentsController@changeStatus')->name('cloudpayments.changeStatus');
 
 
+Route::post('pitech/pay-success', 'pitechController@paySuccess')->name('pitech.paySuccess');
 Route::post('cloudpayments/check', 'CloudPaymentsController@checkNotification')->name('cloudpayments.notifications.check');
 Route::post('cloudpayments/pay-fail', 'CloudPaymentsController@payFailNotification')->name('cloudpayments.notifications.pay');
 Route::post('cloudpayments/confirm', 'CloudPaymentsController@confirmNotification')->name('cloudpayments.notifications.confirm');
