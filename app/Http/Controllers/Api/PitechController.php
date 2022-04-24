@@ -16,7 +16,7 @@ class pitechController extends Controller
             //PayFailNotification::dispatch($data)->onQueue('pitech_pay');
 
             PitechNotification::create([
-                'data' => serialize($data)
+                'data' => json_encode($data)
             ]);
 
             return response()->json([
