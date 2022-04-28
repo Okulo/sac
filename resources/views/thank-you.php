@@ -74,15 +74,11 @@ if($addSubscription){
                 ->where('paided_at', '<', $payment->paided_at)
                 ->where('id', '!=', $payment->id)
                 ->exists();
-            $paymentType = PaymentType::where('name', 'cloudpayments')->first();
-            if (! $paymentType) {
-                \Log::error('Отсутствует тип платежа. Payment ID: ' . $payment->id);
-            }
             $type = $similarPaymentExists ? ProductBonus::REPEATED_PAYMENT : ProductBonus::FIRST_PAYMENT;
 
 
             $bonus = ProductBonus::where('product_id', $payment->subscription->product_id)
-                ->where('payment_type_id', $paymentType->id)
+                ->where('payment_type_id', 2)
                 ->where('type', $type)
                 ->active()
                 ->first();
