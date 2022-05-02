@@ -14,7 +14,9 @@ use App\Models\Payment;
 use App\Models\PaymentType;
 use App\Models\ProductBonus;
 use App\Models\Subscription;
+use App\Models\UserLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 $payments = \DB::table('pitech_notifications')
     ->whereNull('deleted_at')
@@ -41,15 +43,9 @@ foreach ($payments as $pay){
             ->update(['status' => 'paid', 'ended_at' => $newEndedAt]);
 
         //   print_r($subscription->data);
-        echo "<br><br>";
-        echo  $result[0]['extOrdersId'];
-        echo "<br><br>";
 if($addSubscription){
 
-   $payment = Payment::updateOrCreate([
-            'transaction_id' => $result[0]['ordersId'],
-        ],
-        [
+    $paymentId = \DB::table('payments')->insertGetId([
             'subscription_id' => $subscription->id,
             'user_id' => $subscription->user_id,
             'product_id' => $subscription->product->id,
@@ -59,12 +55,13 @@ if($addSubscription){
             'status' => 'Completed',
             'amount' => $result[0]['totalAmount'],
             'paided_at' => $result[0]['ordersTime'],
+            'created_at' => $result[0]['eventTime'],
             'team_id' => $subscription->team_id,
             'data' =>  json_encode($result[0]),
-           //     'pitech' =>  $result,
-          //      'subscription' => $subscription,
-          // ],
+            'transaction_id' => $result[0]['ordersId'],
         ]);
+
+    $payment = Payment::whereId($paymentId)->first();
 
         // Присвоение бонуса к платежу
         if (isset($payment->type) && isset($payment->subscription_id) && isset($payment->status) && $payment->status == 'Completed') {
@@ -86,13 +83,24 @@ if($addSubscription){
                 \Log::error('Отсутствует бонус. Payment ID: ' . $payment->id);
             } else {
                 $payment->product_bonus_id = $bonus->id;
-                echo "тут ".$pay->id."<br><br><br>";
                 \DB::table('pitech_notifications')
                     ->where('id', $pay->id)
                     ->update(['deleted_at' => "2022-04-27 01:01:01"]);
             }
         }
-        $payment->save();
+
+
+    UserLog::create([
+        'subscription_id' => $subscription->id,
+        'user_id' => Auth::id(),
+        'type' => UserLog::SUBSCRIPTION_STATUS,
+        'data' => [
+            'old' => $subscription->status,
+            'new' => 'paid',
+        ],
+    ]);
+
+    $payment->save();
 
 
             }
@@ -113,7 +121,7 @@ if($addSubscription){
         echo "<br>";
         echo $result[0]['ordersState'];
         echo "<br>";
-        echo $result[0]['authAmount'];
+        echo "сумма - ".$result[0]['authAmount'];
         echo "<br><br><br>";
 
 }

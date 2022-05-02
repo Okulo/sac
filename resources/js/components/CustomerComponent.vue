@@ -271,14 +271,14 @@
 
                                         <img style="margin-right: 20px" src="/images/pitech1.png" alt="pitech" width="30px" />
                                         <a target="_blank" :href="baseUrl+'/pitech/'+subscription.id">{{baseUrl}}/pitech/{{ subscription.id }}</a>
-                                        <input type="hidden" :id="'recurrent-link-' + subIndex" :value="subscription.recurrent.link">
+                                        <input type="hidden" :id="'pitech-link-' + subIndex" :value="baseUrl+'/pitech/'+subscription.id">
 
 
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="recurrent_button-block">
-                                        <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
+                                        <button class="btn btn-info" @click="copyPitechLink(subIndex)">Копировать</button>
                                     </div>
                                 </div>
                             </div>
@@ -725,6 +725,46 @@
             },
             copyRecurrentLink(index) {
                 var input = $('#recurrent-link-' + index);
+                var success   = true,
+                    range     = document.createRange(),
+                    selection;
+
+                // For IE.
+                if (window.clipboardData) {
+                    window.clipboardData.setData("Text", input.val());
+                } else {
+                    // Create a temporary element off screen.
+                    var tmpElem = $('<div>');
+                    tmpElem.css({
+                        position: "absolute",
+                        left:     "-1000px",
+                        top:      "-1000px",
+                    });
+                    // Add the input value to the temp element.
+                    tmpElem.text(input.val());
+                    $("body").append(tmpElem);
+                    // Select temp element.
+                    range.selectNodeContents(tmpElem.get(0));
+                    selection = window.getSelection ();
+                    selection.removeAllRanges ();
+                    selection.addRange (range);
+                    // Lets copy.
+                    try {
+                        success = document.execCommand("copy", false, null);
+                    }
+                    catch (e) {
+                        copyToClipboardFF(input.val());
+                    }
+                    if (success) {
+                        Vue.$toast.success('Ссылка скопирована!');
+
+                        // remove temp element.
+                        tmpElem.remove();
+                    }
+                }
+            },
+            copyPitechLink(index) {
+                var input = $('#pitech-link-' + index);
                 var success   = true,
                     range     = document.createRange(),
                     selection;

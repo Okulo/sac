@@ -54,7 +54,7 @@ class CustomerController extends Controller
                         'title' => Subscription::PAYMENT_TYPE[$paymentType],
                         'statuses' => [],
                     ];
-        
+
                     switch ($paymentType) {
                         case 'tries':
                             $statuses = Subscription::STATUSES;
@@ -75,6 +75,12 @@ class CustomerController extends Controller
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                         case 'simple_payment':
+                            $statuses = Subscription::STATUSES;
+                            unset($statuses['tries']);
+                            unset($statuses['frozen']);
+                            $data[$product->id][$paymentType]['statuses'] = $statuses;
+                            break;
+                        case 'pitech':
                             $statuses = Subscription::STATUSES;
                             unset($statuses['tries']);
                             unset($statuses['frozen']);
@@ -229,7 +235,7 @@ class CustomerController extends Controller
     {
         $customerExists = Customer::where('id', ($data['customer']['id'] ?? null))->where('phone', $data['customer']['phone'])->exists();
         $updateCustomer = isset($data['customer']['id']);
-        
+
         if ($updateCustomer) { // Обновить клиента
             if ($customerExists) { // Обновить существующего клиента
                 $customer = Customer::updateOrCreate([

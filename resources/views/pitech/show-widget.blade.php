@@ -94,7 +94,8 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
             "extClientRef": data.customerId,
             "extOrdersTime": "1",
             "email": "",
-            "shortenPaymentUrl": "true",
+            "shortenPaymentUrl": true,
+            'saveCard': true,
             "template": "blue"
         }),
     };
