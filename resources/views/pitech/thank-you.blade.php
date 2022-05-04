@@ -742,6 +742,9 @@ foreach ($payments as $pay){
                 [
                     'customer_id' => $payment->customer_id,
                     'cp_account_id' => $payment->subscription_id ?? null,
+                    'first_six' => "000000",
+                    'last_four' => "0000",
+                    'exp_date' => "00/00",
                     'token' => $payment->data['cardsId'],
                     'type' => 'pitech',
                     'name' => $payment->data['card']['owner'] ?? '',
