@@ -245,7 +245,7 @@
                                 </div> -->
                                 </b-modal>
                             </div>
-                            <div class="row" v-if="customer.card && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
+                            <div class="row" v-if="customer.card && (customer.card.type != 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
                                 <div class="col-sm-12">
                                     <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
                                     <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
@@ -280,6 +280,15 @@
                                     <div class="recurrent_button-block">
                                         <button class="btn btn-info" @click="copyPitechLink(subIndex)">Копировать</button>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 15px" >
+                                <div class="form-group col-sm-6">
+                                    <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
+                                </div>
+                                <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
+                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
+                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="paymentByPitechCard(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                 </div>
                             </div>
                             <br><br>
@@ -346,6 +355,7 @@
                                             <a :href="payment.url" target="_blank">ID: {{ payment.id }}</a>
                                             <span> | </span>
                                             {{ payment.title }}
+                                            <span v-if="payment.type == 'pitech' && payment.status == 'Completed'" >Оплачено через Pitech</span>
                                             <a v-if="payment.type == 'transfer' && payment.status == 'Completed'" target="_blank" :href="payment.check">(чек оплаты)</a>
                                             <span> | </span>
                                             <a :href="payment.user.url" target="_blank">{{ payment.user.name }}</a>
@@ -445,7 +455,7 @@
                 this.customer = newVal;
             }
         },
-        mounted() {
+            mounted() {
             if (this.type == 'create') {
                 this.addProduct();
             } else if (this.type == 'edit') {
@@ -454,92 +464,8 @@
             this.getOptions();
         },
         methods: {
-            genPitechLink(){
 
-
-
-
-                let data = {
-                    amount: 10,
-                    currency: "KZT",
-                    description: "«Көркем еңбек» пәнін 2- сыныпта оқыту барысында пәнаралық байланысты жүзеге асырудың тиімді жолдарын теориялық тұрғыдан айқындау",
-                    extOrdersId: "1",
-                    errorReturnUrl: "http://localhost/failure",
-                    successReturnUrl: "http://localhost/success",
-                    payload: {
-                        some: "some value",
-                        test: "test value",
-                        data: "data value"
-                    },
-                    extOrdersTime: "1",
-                    email: "aaa@aaa.aa",
-                    shortenPaymentUrl: "true",
-                    template: "studkz",
-                    language: "ru",
-                };
-
-                const username = '2N8JSane2QITxjaclYNeYps-QRoWSJTq'
-                const password = '7UtY_03z2abC2Nqa8VdBlbCsc0eUtMLZ'
-
-                const token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64')
-
-                const url = 'https://cards-stage.pitech.kz/gw/payments/cards/charge'
-
-                axios.post(url, {
-                    data,
-                    headers: {
-                        'Authorization': `Basic ${token}`
-                    }
-                }).then(response => {
-                            console.log(response);
-                        }).catch(err => {
-                                console.log(err);
-                        });
-
-                // const token = `2N8JSane2QITxjaclYNeYps-QRoWSJTq:7UtY_03z2abC2Nqa8VdBlbCsc0eUtMLZ`;
-                // const encodedToken = Buffer.from(token).toString('base64');
-                // const headers = { 'Authorization': 'Basic '+ encodedToken };
-                //
-                // axios.post('https://cards-stage.pitech.kz/gw/payments/cards/charge', data, { headers }).then(response => {
-                //     console.log(response);
-                // })
-                //     .catch(err => {
-                //         console.log(err);;
-                //     });
-
-
-                // axios.post('https://cards-stage.pitech.kz/gw/payments/cards/charge', {
-                //     auth: {
-                //         username: "2N8JSane2QITxjaclYNeYps-QRoWSJTq",
-                //         password: "7UtY_03z2abC2Nqa8VdBlbCsc0eUtMLZ"
-                //     },
-                //     "amount": 10,
-                //     "currency": "KZT",
-                //     "description": "«Көркем еңбек» пәнін 2- сыныпта оқыту барысында пәнаралық байланысты жүзеге асырудың тиімді жолдарын теориялық тұрғыдан айқындау",
-                //     "extOrdersId": "1",
-                //     "errorReturnUrl": "http://localhost/failure",
-                //     "successReturnUrl": "http://localhost/success",
-                //     "payload": {
-                //         "some": "some value",
-                //         "test": "test value",
-                //         "data": "data value"
-                //     },
-                //     "extOrdersTime": "1",
-                //     "email": "aaa@aaa.aa",
-                //     "shortenPaymentUrl": "true",
-                //     "template": "studkz",
-                //     "language": "ru"
-                // })
-                //     .then(response => {
-                //        // this.subscriptionLogs = response.data.data;
-                //         console.log(response);
-                //     })
-                //     .catch(function (error) {
-                //         console.log(error);
-                //     });
-            },
             getLogs(){
-
                 console.log(this.subscriptionIdProp);
                 axios.get('/userlogs/list', {
                     params: {
@@ -557,6 +483,10 @@
             },
             selectPrice(event) {
                 this.currentPrice = event.target.value;
+            },
+            paymentByPitechCard(subId, cardId){
+                console.log(subId);
+                console.log(cardId);
             },
             changeAmount(cpId, subId, product){
 
@@ -643,6 +573,37 @@
                         document.getElementById('subscription-' + subscriptionId).disabled = false;
                         Vue.$toast.error(err.response.data.message);
                     });
+            },
+            manualPitech(customer, subId, product, price){
+                if (confirm('Вы действительно хотите списать средства')) {
+                    this.spinnerData.loading = true;
+
+                    axios.post('/pitech/manualPayment', {
+                        customer: customer,
+                        subId: subId,
+                        product: product,
+                        price: price
+                    }).then(response => {
+                        this.spinnerData.loading = false;
+                        if(response.data.paymentResponseCode == "OK"){
+                            console.log(response);
+                            Vue.$toast.success('Оплата прошла успешно.  Обновите страницу!');
+                        }
+                        else if(response.data.code){
+                            console.log(response);
+                            Vue.$toast.error('Ошибка '+response.data.code);
+                        }
+                        else {
+                            console.log(response);
+                            Vue.$toast.error('Карта не найдена! ');
+                        }
+
+                    })
+                        .catch(err => {
+                            this.spinnerData.loading = false;
+                            Vue.$toast.error(err);
+                        });
+                }
             },
             getSubscriptionTitle(productId) {
                 if (productId) {

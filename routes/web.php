@@ -229,6 +229,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
 Route::get("/pull", [HomeController::class, "pull"])->name("pull");
 Route::get('cloudpayments/{subscriptionId}', 'CloudPaymentsController@showWidget')->name('cloudpayments.show_widget');
 Route::get('pitech/{subscriptionId}', 'CloudPaymentsController@showPitechWidget')->name('cloudpayments.show_pitech_widget');
+Route::post('pitech/manualPayment', 'CloudPaymentsController@manualPitechPayment')->name('pitech.manual');
 Route::get('cloudpayments/{productId}/thank-you', 'CloudPaymentsController@thankYou')->name('cloudpayments.thank_you');
 Route::post('cloudpayments/updateamount', 'CloudPaymentsController@updateAmount')->name('cloudpayments.update');
 

@@ -8,7 +8,7 @@ use App\Models\Subscription;
 use App\Services\CloudPaymentsService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use App\Models\Card;
 use App\Models\UserLog;
 use Illuminate\Support\Facades\Auth;
 
@@ -241,6 +241,51 @@ class CloudPaymentsController extends Controller
         ]);
     }
 
+    public function manualPitechPayment( Request $request){
+       // dd($request->subscriptionId);
+        $card = Card::where('customer_id', $request->customer)->where('type','pitech')->first();
+        if (isset($card)){
+
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "amount": '.$request->price.',
+                    "currency": "KZT",
+                    "description": "'.$request->product.'",
+                    "extClientRef": "'.$card->customer_id.'",
+                    "extOrdersId": "'.$card->cp_account_id.'",
+                    "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-fail",
+                    "successReturnUrl": "http://test.strela-academy.ru/thank-you",
+                    "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "cardsId": "'.$card->token.'"
+                }
+                ',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            return $response;
+        }
+        else{
+            return null;
+        }
+    }
     public function updateAmount( Request $request)
     {
 

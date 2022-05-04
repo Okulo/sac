@@ -55,7 +55,7 @@ if($addSubscription){
             'status' => 'Completed',
             'amount' => $result[0]['totalAmount'],
             'paided_at' => $result[0]['ordersTime'],
-            'created_at' => $result[0]['eventTime'],
+           // 'created_at' => $result[0]['eventTime'],
             'team_id' => $subscription->team_id,
             'data' =>  json_encode($result[0]),
             'transaction_id' => $result[0]['ordersId'],
