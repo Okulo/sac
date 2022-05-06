@@ -287,7 +287,7 @@
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
                                 <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
-                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
+                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span></span>
                                     <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="paymentByPitechCard(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                 </div>
                             </div>
@@ -485,8 +485,29 @@
                 this.currentPrice = event.target.value;
             },
             paymentByPitechCard(subId, cardId){
-                console.log(subId);
-                console.log(cardId);
+                this.spinnerData.loading = true;
+                if(!subId || !cardId){
+                    alert('Сохраните пожалуйста карточку');
+                }
+                axios.post('/pitech/payWithCard', { subId, cardId })
+                    .then(response => {
+                        this.spinnerData.loading = false;
+                        console.log(response);
+                        if(response.data.code){
+                            Vue.$toast.error(response.data.code+" - "+JSON.stringify(response.data.parameters));
+                        }
+                        else if(!response.data){
+                            Vue.$toast.error('Ошибка оплаты');
+                        }
+                        else {
+                            Vue.$toast.success('Запрос на оплату успешно отпрвлен. Проверьте через одну минуту. ');
+                        }
+                    })
+                    .catch(err => {
+                        this.spinnerData.loading = false;
+                        Vue.$toast.error(err);
+                    });
+
             },
             changeAmount(cpId, subId, product){
 

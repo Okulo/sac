@@ -286,6 +286,58 @@ class CloudPaymentsController extends Controller
             return null;
         }
     }
+    public function payPitechWithCard( Request $request){
+        $subscriptionId = $request->get('subId');
+        $cardId = $request->get('cardId');
+        $subscription = Subscription::whereId($subscriptionId)->firstOrFail();
+        $card = $subscription->customer->cards()->whereId($cardId)->firstOrFail();
+
+       // $subscription->price;
+       // $card->token;
+       // $subscription->id;
+       // $subscription->customer_id;
+       // $subscription->product->title;
+
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => '{
+                        "amount": ' . $subscription->price . ',
+                        "currency": "KZT",
+                        "description": "' . $subscription->product->title . '",
+                        "extClientRef": "' . $subscription->customer_id . '",
+                        "extOrdersId": "' . $subscription->id . '",
+                        "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-fail",
+                        "successReturnUrl": "http://test.strela-academy.ru/thank-you",
+                        "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "cardsId": "' . $card->token . '"
+                    }
+                    ',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+        } catch (\Throwable $e) {
+            throw new \Exception('Ошибка при запросе на ручное списание денег. Попробуйте позднее', 500);
+        }
+        return $response;
+
+    }
     public function updateAmount( Request $request)
     {
 
