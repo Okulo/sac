@@ -246,6 +246,7 @@ class CloudPaymentsController extends Controller
         $card = Card::where('customer_id', $request->customer)->where('type','pitech')->first();
         if (isset($card)){
 
+            //dd($request->customer);
 
             $curl = curl_init();
 
@@ -262,8 +263,8 @@ class CloudPaymentsController extends Controller
                     "amount": '.$request->price.',
                     "currency": "KZT",
                     "description": "'.$request->product.'",
-                    "extClientRef": "'.$card->customer_id.'",
-                    "extOrdersId": "'.$card->cp_account_id.'",
+                    "extClientRef": "'.$request->customer.'",
+                    "extOrdersId": "'.$request->subId.'",
                     "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "http://test.strela-academy.ru/thank-you",
                     "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",

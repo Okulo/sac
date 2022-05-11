@@ -86,6 +86,7 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
             "successReturnUrl": "http://test.strela-academy.ru/thank-you",
             "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
             "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+            "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
             "payload": {
                 "phone": data.data.cloudPayments.customerReceipt.phone,
                 "test": "yes",

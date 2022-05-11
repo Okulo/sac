@@ -698,8 +698,49 @@ foreach ($payments as $pay){
     //  print_r($payment->id);
 
     $result = json_decode($pay->data,true);
-    //dd($result);
 
+    if($result[0]['callbackType'] == 'FAIL'){
+
+        $subscription = Subscription::whereId($result[0]['extOrdersId'])->first();
+        if ($subscription){
+                $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
+                //      ->where('id', $result[0]['extOrdersId'])
+                ->limit(1)
+                ->update(['status' => 'rejected']);
+            if($addSubscription){
+
+                if(!Payment::where('transaction_id', $result[0]['ordersId'])->first()){
+                    $paymentAdd = Payment::create([
+                        'subscription_id' => $subscription->id,
+                        'user_id' => $subscription->user_id,
+                        'product_id' => $subscription->product->id,
+                        'customer_id' => $subscription->customer->id,
+                        'quantity' => 1,
+                        'type' => 'pitech',
+                        'status' => 'Declined',
+                        'amount' => $result[0]['totalAmount'],
+                        'paided_at' => $result[0]['ordersTime'],
+                        // 'created_at' => $result[0]['eventTime'],
+                        'team_id' => $subscription->team_id,
+                        'data' =>  json_encode($result[0]),
+                        'transaction_id' => $result[0]['ordersId'],
+                    ]);
+
+                    UserLog::create([
+                        'subscription_id' => $subscription->id,
+                        'user_id' => Auth::id(),
+                        'type' => UserLog::SUBSCRIPTION_STATUS,
+                        'data' => [
+                            'old' => $subscription->status,
+                            'new' => 'rejected',
+                        ],
+                    ]);
+                }
+            }
+        }
+
+    }
+    else {
     $subscription = Subscription::whereId($result[0]['extOrdersId'])->first();
 
     if ($subscription){
@@ -790,8 +831,7 @@ foreach ($payments as $pay){
             ]);
 
             $payment->save();
-
-
+            }
         }
     }
 

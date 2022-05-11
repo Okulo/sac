@@ -283,7 +283,7 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-                                <div class="form-group col-sm-6">
+                                <div v-if="subscription.status == 'rejected'" class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
                                 <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
