@@ -251,7 +251,10 @@ class CloudPaymentsController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                //тестовый режим
+                //CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                // боевой
+                CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -273,7 +276,7 @@ class CloudPaymentsController extends Controller
                 }
                 ',
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
                 ),
             ));
@@ -303,7 +306,10 @@ class CloudPaymentsController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                // тестовый включаем
+                // CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                // ниже боевой
+                CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -325,7 +331,7 @@ class CloudPaymentsController extends Controller
                     }
                     ',
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
                 ),
             ));

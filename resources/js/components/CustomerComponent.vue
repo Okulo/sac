@@ -283,7 +283,7 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-                                <div v-if="subscription.status == 'rejected'" class="form-group col-sm-6">
+                                <div v-if="subscription.status == 'rejected' && customer.card" class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
                                 <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
@@ -355,7 +355,7 @@
                                             <a :href="payment.url" target="_blank">ID: {{ payment.id }}</a>
                                             <span> | </span>
                                             {{ payment.title }}
-                                            <span v-if="payment.type == 'pitech' && payment.status == 'Completed'" >Оплачено через Pitech</span>
+<!--                                            <span v-if="payment.type == 'pitech' && payment.status == 'Completed'" >Оплачено через Pitech</span>-->
                                             <a v-if="payment.type == 'transfer' && payment.status == 'Completed'" target="_blank" :href="payment.check">(чек оплаты)</a>
                                             <span> | </span>
                                             <a :href="payment.user.url" target="_blank">{{ payment.user.name }}</a>

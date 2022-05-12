@@ -70,11 +70,12 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
     event.preventDefault();
     var data = JSON.parse('<?php echo $data; ?>');
     var settings = {
-        "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
+        // тестовый "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
+        "url": "https://cards.pitech.kz/gw/payments/cards/charge",
         "method": "POST",
         "timeout": 0,
         "headers": {
-            "Authorization": "Basic "+ btoa('sdIchMKuSqZskpE9WoT-gHocJxcwLkn6:ZlpaRYNACmBaGU-sDiDQ3QS5DXUXDtO2'),
+            "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
             "Content-Type": "application/json"
         },
         "data": JSON.stringify({

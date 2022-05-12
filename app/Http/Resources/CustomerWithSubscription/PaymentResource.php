@@ -79,7 +79,20 @@ class PaymentResource extends JsonResource
             } elseif ($this->status == 'new') {
                 $title = "{$createdAt}, абонемент заморожен с " . Carbon::parse(date(DATE_ATOM, strtotime($this->data['subscription']['from'])))->isoFormat('DD MMM YYYY') . ' - по ' . Carbon::parse(date(DATE_ATOM, strtotime($this->data['subscription']['to'])))->isoFormat('DD MMM YYYY');
             }
-        } else {
+        }elseif ($this->type == 'pitech'){
+            if ($this->status == 'new') {
+                $title = "{$createdAt}, создана разовая оплата оператором на сумму {$amount} тг";
+            } elseif ($this->status == 'Completed') {
+                $title = "{$paidedAt}, успешная оплата картой Pitech {$amount} тг.";
+            } elseif ($this->status == 'Declined') {
+                $description = $this->data['message'] ?? null;
+                $title = "{$paidedAt}, ошибка при оплате картой Pitech на сумму {$amount} тг (Описание: {$description})";
+            } elseif ($this->status == 'Authorized') {
+                $description = $this->data['cloudpayments']['CardHolderMessage'] ?? null;
+                $title = "{$updatedAt},  оплата прошла успешно на {$amount} тг. Осталось подтвердить оплату. (Описание: {$description})";
+            }
+        }
+        else {
             $title = '';
         }
         $data['title'] = $title ?? null;

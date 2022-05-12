@@ -703,6 +703,7 @@ foreach ($payments as $pay){
 
         $subscription = Subscription::whereId($result[0]['extOrdersId'])->first();
         if ($subscription){
+            $payDate =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty');
                 $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
                 //      ->where('id', $result[0]['extOrdersId'])
                 ->limit(1)
@@ -710,7 +711,7 @@ foreach ($payments as $pay){
             if($addSubscription){
 
                 if(!Payment::where('transaction_id', $result[0]['ordersId'])->first()){
-                    $paymentAdd = Payment::create([
+                    $paymentAdd =   \DB::table('payments')->insert([
                         'subscription_id' => $subscription->id,
                         'user_id' => $subscription->user_id,
                         'product_id' => $subscription->product->id,
@@ -719,7 +720,7 @@ foreach ($payments as $pay){
                         'type' => 'pitech',
                         'status' => 'Declined',
                         'amount' => $result[0]['totalAmount'],
-                        'paided_at' => $result[0]['ordersTime'],
+                        'paided_at' =>  $payDate,
                         // 'created_at' => $result[0]['eventTime'],
                         'team_id' => $subscription->team_id,
                         'data' =>  json_encode($result[0]),
