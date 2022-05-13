@@ -31,6 +31,10 @@ class HomeController extends Controller
         return view('pitech.thank-you');
     }
 
+    public function failure()
+    {
+        return view('pitech.failure');
+    }
     public function dashboard()
     {
         return view('dashboard');
