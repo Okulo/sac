@@ -98,6 +98,15 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
             "email": "",
             "shortenPaymentUrl": true,
             'saveCard': true,
+            "fiscalization": true,
+            "positions":[
+                {
+                    "count": 1,
+                    "unitName": "pc",
+                    "price": data.amount,
+                    "name": data.description
+                }
+            ],
             "template": "blue"
         }),
     };
