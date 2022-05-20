@@ -129,7 +129,7 @@
                                             :disabled="isDisabled(subscription)"
                                         ></datetime>
                                     </div>
-                                    <div v-else-if="subscription.payment_type == 'transfer' || subscription.payment_type == 'cloudpayments'">
+                                    <div v-else-if="subscription.payment_type == 'transfer' || subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'pitech'">
                                         <div v-show="!subscription.is_edit_ended_at">
                                             <span class="ended_at-span">{{ showDate(subscription.ended_at) }}</span>
                                             <button class="btn btn-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
@@ -283,7 +283,7 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-                                <div v-if="subscription.status == 'rejected' && customer.card" class="form-group col-sm-6">
+                                <div v-if="(customer.card) && (new Date() > new Date(subscription.ended_at))" class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
                                 <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">

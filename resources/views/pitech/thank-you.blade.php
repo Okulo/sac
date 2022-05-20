@@ -859,7 +859,6 @@ form.errors :invalid {
 //    echo "<br>";
 //    echo "сумма - ".$result[0]['authAmount'];
 //    echo "<br><br><br>";
-
-}
+//}
 
 ?>

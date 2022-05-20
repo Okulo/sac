@@ -105,8 +105,8 @@ class UpdatePayments extends Command
             }
             else {
                 $subscription = Subscription::whereId($result[0]['extOrdersId'])->first();
-
-                if ($subscription){
+                $issetPay = Payment::where('transaction_id', $result[0]['ordersId'])->first();
+                if ($subscription && !$issetPay){
 
                     $payDate =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty');
                     $newEndedAt =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty')->addMonths(1);
@@ -114,7 +114,7 @@ class UpdatePayments extends Command
                     $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
                         //      ->where('id', $result[0]['extOrdersId'])
                         ->limit(1)
-                        ->update(['status' => 'paid', 'ended_at' => $newEndedAt]);
+                        ->update(['status' => 'paid', 'payment_type' => 'pitech', 'ended_at' => $newEndedAt]);
 
                     //   print_r($subscription->data);
                     if($addSubscription){
@@ -128,7 +128,7 @@ class UpdatePayments extends Command
                             'type' => 'pitech',
                             'status' => 'Completed',
                             'amount' => $result[0]['totalAmount'],
-                            'paided_at' => $result[0]['ordersTime'],
+                            'paided_at' => $payDate,
                             // 'created_at' => $result[0]['eventTime'],
                             'team_id' => $subscription->team_id,
                             'data' =>  json_encode($result[0]),
@@ -179,19 +179,19 @@ class UpdatePayments extends Command
                                 \DB::table('pitech_notifications')
                                     ->where('id', $pay->id)
                                     ->update(['deleted_at' => $now]);
+
+                                UserLog::create([
+                                    'subscription_id' => $subscription->id,
+                                    'user_id' => Auth::id(),
+                                    'type' => UserLog::SUBSCRIPTION_STATUS,
+                                    'data' => [
+                                        'old' => $subscription->status,
+                                        'new' => 'paid',
+                                    ],
+                                ]);
                             }
                         }
 
-
-                        UserLog::create([
-                            'subscription_id' => $subscription->id,
-                            'user_id' => Auth::id(),
-                            'type' => UserLog::SUBSCRIPTION_STATUS,
-                            'data' => [
-                                'old' => $subscription->status,
-                                'new' => 'paid',
-                            ],
-                        ]);
 
                         $payment->save();
                     }

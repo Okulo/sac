@@ -268,10 +268,10 @@ class CloudPaymentsController extends Controller
                     "description": "'.$request->product.'",
                     "extClientRef": "'.$request->customer.'",
                     "extOrdersId": "'.$request->subId.'",
-                    "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-fail",
-                    "successReturnUrl": "http://test.strela-academy.ru/thank-you",
-                    "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                    "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
+                    "successReturnUrl": "https://www.strela-academy.ru/thank-you",
+                    "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
                     "cardsId": "'.$card->token.'"
                 }
                 ',
@@ -323,10 +323,10 @@ class CloudPaymentsController extends Controller
                         "description": "' . $subscription->product->title . '",
                         "extClientRef": "' . $subscription->customer_id . '",
                         "extOrdersId": "' . $subscription->id . '",
-                        "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-fail",
-                        "successReturnUrl": "http://test.strela-academy.ru/thank-you",
-                        "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                        "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
+                        "successReturnUrl": "https://www.strela-academy.ru/thank-you",
+                        "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                        "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
                         "cardsId": "' . $card->token . '"
                     }
                     ',
