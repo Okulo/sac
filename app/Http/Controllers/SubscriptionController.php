@@ -259,19 +259,26 @@ class SubscriptionController extends Controller
 
         $cloudpaymentService = new CloudPaymentsService();
         try {
+            $createPayment =  $this->writeOffPaymentByToken($request);
             UserLog::create([
                 'subscription_id' => $subscription->id,
                 'user_id' => Auth::id(),
                 'type' => UserLog::MANUAL_WRITE_OFF,
                 'data' => [],
             ]);
+            $date_start = Carbon::parse($subscription->ended_at)->addMonth();
+            $new_date = Carbon::parse($date_start)->format('Y-m-d H:i:s');
+
             $subscription->update([
                 'manual_write_off_at' => Carbon::now(),
+                'status' => 'waiting',
+                'ended_at' => $new_date,
             ]);
+
             $cloudpaymentService->updateSubscription([
                 'Id' => $subscription->cp_subscription_id,
-                // 'StartDate' => Carbon::yesterday()->format('Y-m-d\TH:i:s'),
-                'Description' => 'Дата списания: ' . Carbon::yesterday()->format('Y-m-d\TH:i:s'),
+                'StartDate' => $new_date,
+                'Description' => 'Дата списания: ' . Carbon::yesterday()->format('Y-m-d H:i:s'),
             ]);
         } catch (\Throwable $e) {
             throw new \Exception('Ошибка при запросе на ручное списание денег. Попробуйте позднее', 500);

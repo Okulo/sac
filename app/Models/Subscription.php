@@ -34,9 +34,9 @@ class Subscription extends Model
     const PAYMENT_TYPE = [
         'tries' => 'Пробует бесплатно',
         'transfer' => 'Прямой перевод',
-        'cloudpayments' => 'Подписка',
+        'cloudpayments' => 'Подписка Cloudpayments',
         'simple_payment' => 'Разовое списание',
-        'pitech' => 'Pitech',
+        'pitech' => 'Подписка Pitech',
     ];
 
     protected $fillable = [

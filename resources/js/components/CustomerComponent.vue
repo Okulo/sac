@@ -177,7 +177,7 @@
                             </div>
                             <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null">
                                 <div class="form-group col-sm-6">
-                                    <button type="button" class="btn btn-dark" :id="'subscription-' + subscription.id" @click="manualWriteOffPayment(subscription.id)">Ручное списание</button>
+                                    <button type="button" class="btn btn-dark" :id="'subscription-' + subscription.id" @click="manualWriteOffPayment(subscription.id, customer.card.id)">Ручное списание</button>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'transfer'">
@@ -265,7 +265,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
+                            <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'pitech' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
                                 <div class="col-sm-6">
                                     <div class="recurrent_block">
 
@@ -283,7 +283,7 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-                                <div v-if="(customer.card) && (new Date() > new Date(subscription.ended_at))" class="form-group col-sm-6">
+                                <div v-if="(customer.card && customer.card.type == 'pitech') && (new Date() > new Date(subscription.ended_at))" class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
                                 <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
@@ -578,12 +578,13 @@
                     return false;
                 }
             },
-            manualWriteOffPayment(subscriptionId) {
+            manualWriteOffPayment(subscriptionId, cardId) {
                 document.getElementById('subscription-' + subscriptionId).disabled = true;
                 this.spinnerData.loading = true;
 
                 axios.post('/subscriptions/manualWriteOffPayment', {
-                    subscriptionId: subscriptionId
+                    subscriptionId: subscriptionId,
+                    cardId: cardId
                 }).then(response => {
                     this.spinnerData.loading = false;
                     document.getElementById('subscription-' + subscriptionId).disabled = false;

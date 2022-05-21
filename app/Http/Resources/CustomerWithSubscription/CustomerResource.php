@@ -24,7 +24,7 @@ class CustomerResource extends JsonResource
             'subscriptions' => SubscriptionResource::collection($this->subscriptions),
         ];
 
-        $customerCard = $this->cards->first();
+        $customerCard = $this->cards->last();
 
         if (isset($customerCard)) {
             $data['card'] = [
