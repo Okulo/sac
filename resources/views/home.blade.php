@@ -1,4 +1,4 @@
-<!DOCTYPE html><html> 
+<!DOCTYPE html><html>
 <!-- Mirrored from www.strela-academy.ru/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 30 Nov 2020 18:07:52 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head><meta charset="utf-8" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!--metatextblock--><title>Академия Стрела</title><meta name="description" content="Шаблон сайта стиудии йоги" /><meta property="og:url" content="index.html" /><meta property="og:title" content="Академия Стрела" /><meta property="og:description" content="Шаблон сайта стиудии йоги" /><meta property="og:type" content="website" /><meta property="og:image" content="/tilda/static.tildacdn.com/lib/unsplash/596ba62b-55bb-dc43-fc08-19eb54ee0e04/-/resize/504x/photo.jpg" /> <link rel="canonical" href="index.html"><!--/metatextblock--><meta property="fb:app_id" content="257953674358265" /><meta name="format-detection" content="telephone=no" /><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="/tilda/tilda.ws/index.html"><link rel="dns-prefetch" href="/tilda/static.tildacdn.com/index.html"><link rel="shortcut icon" href="/tilda/static.tildacdn.com/img/tildafavicon.ico" type="image/x-icon" /><!-- Assets --><link rel="stylesheet" href="/tilda/static.tildacdn.com/css/tilda-grid-3.0.min.css" type="text/css" media="all" /><link rel="stylesheet" href="/tilda/tilda.ws/project1997668/tilda-blocks-2.122e63.css?t=1589530578" type="text/css" media="all" /><link rel="stylesheet" href="/tilda/static.tildacdn.com/css/tilda-animation-1.0.min.css" type="text/css" media="all" /><script type="text/javascript" src="/tilda/static.tildacdn.com/js/rentafont_webfonts.js" charset="utf-8"></script><script type="text/javascript"> WebFontConfig = {"id": "MTE5Mzkzb3JkZXIxMTA4MTM=", "fonts": ["2543","2540"], by_style: 1, by_id: 1};</script><script src="/tilda/static.tildacdn.com/js/jquery-1.10.2.min.js"></script><script src="/tilda/static.tildacdn.com/js/tilda-scripts-2.8.min.js"></script><script src="/tilda/tilda.ws/project1997668/tilda-blocks-2.72e63.js?t=1589530578"></script><script src="/tilda/static.tildacdn.com/js/lazyload-1.3.min.js" charset="utf-8"></script><script src="/tilda/static.tildacdn.com/js/tilda-animation-1.0.min.js" charset="utf-8"></script><script type="text/javascript">window.dataLayer = window.dataLayer || [];</script><script type="text/javascript">if((/bot|google|yandex|baidu|bing|msn|duckduckbot|teoma|slurp|crawler|spider|robot|crawling|facebook/i.test(navigator.userAgent))===false && typeof(sessionStorage)!='undefined' && sessionStorage.getItem('visited')!=='y'){	var style=document.createElement('style');	style.type='text/css';	style.innerHTML='@media screen and (min-width: 980px) {.t-records {opacity: 0;}.t-records_animated {-webkit-transition: opacity ease-in-out .2s;-moz-transition: opacity ease-in-out .2s;-o-transition: opacity ease-in-out .2s;transition: opacity ease-in-out .2s;}.t-records.t-records_visible {opacity: 1;}}';	document.getElementsByTagName('head')[0].appendChild(style);	$(document).ready(function() { $('.t-records').addClass('t-records_animated'); setTimeout(function(){ $('.t-records').addClass('t-records_visible'); sessionStorage.setItem('visited','y'); },400);	});
@@ -59,7 +59,7 @@
     <script type="text/javascript" src="/tilda/www.strela-academy.ru/js/jquery-1.10.1.html"></script>
     <script type="text/javascript" src="/tilda/www.strela-academy.ru/js/other.html"></script>
     <script type="text/javascript">
-    
+
     <!-- Facebook Pixel Code -->
 <script>
   !function(f,b,e,v,n,t,s)
@@ -77,7 +77,7 @@
   src="/tilda/www.facebook.com/trfd34.gif?id=3306696539554480&amp;ev=PageView&amp;noscript=1"
 /></noscript>
 <!-- End Facebook Pixel Code -->
-    
+
         window.dataLayer = window.dataLayer || [];
     </script>
     <script type="text/javascript">
@@ -224,42 +224,42 @@
                         #success {
                             display: none;
                         }
-                        
+
                         #rec165939307 input::-webkit-input-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 input::-moz-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 input:-moz-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 input:-ms-input-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 textarea::-webkit-input-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 textarea::-moz-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 textarea:-moz-placeholder {
                             color: #707070;
                             opacity: 0.5;
                         }
-                        
+
                         #rec165939307 textarea:-ms-input-placeholder {
                             color: #707070;
                             opacity: 0.5;
@@ -380,7 +380,7 @@
                             $.ajax({
                                 url: "http://ezhprines.kz/transport/botmama.php",
                                 // dataType: "json", // Для использования JSON формата получаемых данных
-                                method: "POST", // Что бы воспользоваться POST методом, меняем данную строку на POST   
+                                method: "POST", // Что бы воспользоваться POST методом, меняем данную строку на POST
                                 data: {
                                     platform: "tg",
                                     users: localStorage.getItem('id'),
@@ -432,6 +432,9 @@
                                 <li class="t228__list_item"><a class="t-menu__link-item" href="#rec165359716" data-menu-submenu-hook="" style="color:#ffffff;font-weight:600;" data-menu-item-number="4">Пример занятий</a> </li>
                                 <li class="t228__list_item"><a class="t-menu__link-item" href="#rec165301079" data-menu-submenu-hook="" style="color:#ffffff;font-weight:600;" data-menu-item-number="5">Гарантии</a> </li>
                                 <li class="t228__list_item"><a class="t-menu__link-item" href="#rec165302490" data-menu-submenu-hook="" style="color:#ffffff;font-weight:600;" data-menu-item-number="6">Отзывы</a> </li>
+                                <li class="t228__list_item"><a class="t-menu__link-item" href="/offer-pitech.pdf"
+                                                               target="_blank" data-menu-submenu-hook="" style="color:#ffffff;font-weight:600;"
+                                                               data-menu-item-number="6">Публичная оферта</a> </li>
                             </ul>
                         </div>
                     </div>
@@ -458,7 +461,7 @@
                                         </a>
                                     </div>
                                     <div class="t228__right_buttons_but">
-                                        <a href="#popup:doc" target="" class="t-btn " style="color:#fcf9f9;border-radius:20px; -moz-border-radius:20px; -webkit-border-radius:20px;font-weight:700;text-transform:uppercase;box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0);">
+                                        <a href="/payments.pdf" target="_blank" class="t-btn " style="color:#fcf9f9;border-radius:20px; -moz-border-radius:20px; -webkit-border-radius:20px;font-weight:700;text-transform:uppercase;box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0);">
                                             <table style="width:100%; height:100%;">
                                                 <tr>
                                                     <td>ОБ ОПЛАТЕ</td>
@@ -607,7 +610,7 @@
                     -webkit-transform: translate3d(0, 0, 0);
                     transform: translate3d(0, 0, 0);
                 }
-                
+
                 #rec164165135 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects,
                 #rec164165135 .t-submit[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects {
                     position: absolute;
@@ -627,19 +630,19 @@
                     -webkit-animation-iteration-count: infinite;
                     animation-iteration-count: infinite;
                 }
-                
+
                 #rec164165135 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects_md,
                 #rec164165135 .t-submit[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects_md {
                     -webkit-animation-name: flash-md;
                     animation-name: flash-md;
                 }
-                
+
                 #rec164165135 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects_lg,
                 #rec164165135 .t-submit[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects_lg {
                     -webkit-animation-name: flash-lg;
                     animation-name: flash-lg;
                 }
-                
+
                 #rec164165135 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_effects,
                 #rec164165135 .t-submit[data-btneffects-first="btneffects-flash"] .t-btn_effects {
                     background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, .1)), to(rgba(255, 255, 255, .4)));
@@ -655,7 +658,7 @@
                     -ms-transform: skewX(-45deg);
                     transform: skewX(-45deg);
                 }
-                
+
                 @-webkit-keyframes flash {
                     20% {
                         -webkit-transform: translateX(100%);
@@ -666,7 +669,7 @@
                         transform: translateX(100%);
                     }
                 }
-                
+
                 @keyframes flash {
                     20% {
                         -webkit-transform: translateX(100%);
@@ -677,7 +680,7 @@
                         transform: translateX(100%);
                     }
                 }
-                
+
                 @-webkit-keyframes flash-md {
                     30% {
                         -webkit-transform: translateX(100%);
@@ -688,7 +691,7 @@
                         transform: translateX(100%);
                     }
                 }
-                
+
                 @keyframes flash-md {
                     30% {
                         -webkit-transform: translateX(100%);
@@ -699,7 +702,7 @@
                         transform: translateX(100%);
                     }
                 }
-                
+
                 @-webkit-keyframes flash-lg {
                     40% {
                         -webkit-transform: translateX(100%);
@@ -710,7 +713,7 @@
                         transform: translateX(100%);
                     }
                 }
-                
+
                 @keyframes flash-lg {
                     40% {
                         -webkit-transform: translateX(100%);
@@ -738,7 +741,7 @@
                 #rec164165135 .t-btn:not(.t-animate_no-hover):hover {
                     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2) !important;
                 }
-                
+
                 #rec164165135 .t-btn:not(.t-animate_no-hover) {
                     -webkit-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
                     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -1054,37 +1057,37 @@
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 input::-moz-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 input:-moz-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 input:-ms-input-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 textarea::-webkit-input-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 textarea::-moz-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 textarea:-moz-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
                                         }
-                                        
+
                                         #rec165939307 textarea:-ms-input-placeholder {
                                             color: #707070;
                                             opacity: 0.5;
@@ -1865,7 +1868,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <script type="text/javascript">
                     $(document).ready(function() {
                         function getTimeRemaining(endtime) {
@@ -1932,7 +1935,7 @@
                         -webkit-transform: translate3d(0, 0, 0);
                         transform: translate3d(0, 0, 0);
                     }
-                    
+
                     #rec165339982 .t-btn[data-btneffects-first="btneffects-ripple"] .t-btn_effects,
                     #rec165339982 .t-submit[data-btneffects-first="btneffects-ripple"] .t-btn_effects {
                         position: absolute;
@@ -1941,7 +1944,7 @@
                         left: 0;
                         right: 0;
                     }
-                    
+
                     #rec165339982 .t-btn[data-btneffects-first="btneffects-ripple"] .t-btn_effects::after,
                     #rec165339982 .t-submit[data-btneffects-first="btneffects-ripple"] .t-btn_effects::after {
                         content: '';
@@ -1965,17 +1968,17 @@
                         -webkit-animation-iteration-count: infinite;
                         animation-iteration-count: infinite;
                     }
-                    
+
                     #rec165339982 .t-btn[data-btneffects-first="btneffects-ripple"] .t-btn_effects_md::after,
                     #rec165339982 .t-submit[data-btneffects-first="btneffects-ripple"] .t-btn_effects_md::after {
                         left: -130%;
                     }
-                    
+
                     #rec165339982 .t-btn[data-btneffects-first="btneffects-ripple"] .t-btn_effects_lg::after,
                     #rec165339982 .t-submit[data-btneffects-first="btneffects-ripple"] .t-btn_effects_lg::after {
                         left: -150%;
                     }
-                    
+
                     @-webkit-keyframes ripple {
                         20% {
                             opacity: 0;
@@ -1988,7 +1991,7 @@
                             transform: scale(2.5);
                         }
                     }
-                    
+
                     @keyframes ripple {
                         20% {
                             opacity: 0;
@@ -2021,9 +2024,20 @@
                     <div class="t-container">
                         <div class="t134__title" field="title" style="color:#ffffff;">© Все права защищены.Академия Стрела. 2019 г.</div>
                         <div class="t134__descr" field="descr" style="color:#ffffff;">Копирование уроков без согласия администрации запрещено.</div>
+                        <div class="t134__descr" field="descr" style="color:#ffffff;">
+                         <a class="t-menu__link-item" href="/offer.pdf"
+                                                           target="_blank" data-menu-submenu-hook="" style="color:#ffffff;font-weight:600;"
+                                                           data-menu-item-number="6">Публичная оферта (CloudPayments)</a>
+                        </div>
                         <div class="t-col t-col_10 t-prefix_1" style="margin-top: 30px;">
                             <img src="/tilda/static.tildacdn.com/tild3363-3830-4231-a366-646362646136/mastercard.png" style="width: 80%; max-width: 200px; height: auto;" class="t134__img" imgfield="img">
                             <img src="/tilda/static.tildacdn.com/tild6432-6433-4564-b761-653933636361/visa.png" style="width: 80%; max-width: 200px; height: auto;" class="t134__img" imgfield="img">
+                        </div>
+
+                        <div class="t134__descr" field="descr" style=" color:#ffffff;">
+                            <a href="#popup:doc" target="" class="t-btn " style="color:#fcf9f9; margin-top: 20px">
+                                <div>Способы оплаты (CloudPayments)</div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -2076,5 +2090,5 @@
 
 <!-- Mirrored from www.strela-academy.ru/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 30 Nov 2020 18:08:47 GMT -->
 </html>
- 
+
 </div> </div></div></div></div><!--/allrecords--><!-- Tilda copyright. Don't remove this line --><div class="t-tildalabel " id="tildacopy" data-tilda-sign="1997668#9547239"><a href="https://tilda.cc/?upm=1997668" class="t-tildalabel__link"><div class="t-tildalabel__wrapper"><div class="t-tildalabel__txtleft">Made on </div><div class="t-tildalabel__wrapimg"><img src="/tilda/static.tildacdn.com/img/tildacopy.png" class="t-tildalabel__img"></div><div class="t-tildalabel__txtright">Tilda</div></div></a></div><!-- Stat --> <script type="text/javascript">if (! window.mainTracker) { window.mainTracker = 'tilda'; }	(function (d, w, k, o, g) { var n=d.getElementsByTagName(o)[0],s=d.createElement(o),f=function(){n.parentNode.insertBefore(s,n);}; s.type = "text/javascript"; s.async = true; s.key = k; s.id = "tildastatscript"; s.src=g; if (w.opera=="[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else { f(); } })(document, window, '277a883b06c77e8f98a7b6d595c2a7b5','script','/tilda/stat.tildacdn.com/js/tildastat-0.2.min.js');</script> </body></html>

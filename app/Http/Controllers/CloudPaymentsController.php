@@ -124,7 +124,7 @@ class CloudPaymentsController extends Controller
     {
         $subscription = Subscription::whereId($subscriptionId)
             ->whereNull('cp_subscription_id')
-            ->whereIn('payment_type', ['cloudpayments', 'simple_payment'])
+            ->whereIn('payment_type', ['cloudpayments', 'simple_payment', 'pitech'])
             ->where('status', '!=', 'paid')
             ->firstOr(function () {
                 abort(404);

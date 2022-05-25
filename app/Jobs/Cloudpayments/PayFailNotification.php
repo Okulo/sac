@@ -69,7 +69,7 @@ class PayFailNotification implements ShouldQueue
 
             $subscription = Subscription::where('cp_subscription_id', $this->data['SubscriptionId'])->whereNotNull('cp_subscription_id')->first();
 
-            if (! isset($subscription)) {
+            if (!isset($subscription)) {
                 $jsonData = '';
                 if (isset($this->data['Data']) && is_string($this->data['Data'])) {
                     $jsonData = json_decode($this->data['Data']);
@@ -91,10 +91,20 @@ class PayFailNotification implements ShouldQueue
                 throw new NoticeException('Не найден клиент. Transaction Id: ' . $this->data['TransactionId']);
             }
 
-            $subscriptionData = [
-                'from' => null,
-                'to' => null,
-            ];
+            if(isset($subscription->ended_at)){
+                $subscriptionData = [
+                    'from' => Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty'),
+                    'to' => Carbon::createFromFormat('Y-m-d H:i:s', $subscription->ended_at, 'Asia/Almaty')->addMonths(1),
+                ];
+            }
+            else {
+                $subscriptionData = [
+                    'from' => null,
+                    'to' => null,
+                ];
+            }
+
+
 
             if ($this->data['Status'] == 'Completed') {
                 $updateData = [
