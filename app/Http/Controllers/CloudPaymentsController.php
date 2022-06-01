@@ -193,7 +193,7 @@ class CloudPaymentsController extends Controller
             ],
         ];
 
-        if ($subscription->payment_type == 'cloudpayments') {
+        if ($subscription->payment_type == 'cloudpayments' || $subscription->payment_type == 'pitech') {
             $data['description'] = $payment->subscription->product->title;
             $data['data']['cloudPayments']['recurrent'] = [
                 'interval' => 'Month',
@@ -243,7 +243,7 @@ class CloudPaymentsController extends Controller
 
     public function manualPitechPayment( Request $request){
        // dd($request->subscriptionId);
-        $card = Card::where('customer_id', $request->customer)->where('type','pitech')->first();
+        $card = Card::where('customer_id', $request->customer)->where('type','pitech')->latest()->first();
         if (isset($card)){
 
             //dd($request->customer);
@@ -276,6 +276,8 @@ class CloudPaymentsController extends Controller
                 }
                 ',
                 CURLOPT_HTTPHEADER => array(
+                    // 'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    //бой
                     'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
                 ),
@@ -331,6 +333,8 @@ class CloudPaymentsController extends Controller
                     }
                     ',
                 CURLOPT_HTTPHEADER => array(
+                    //'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    // бой
                     'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
                 ),

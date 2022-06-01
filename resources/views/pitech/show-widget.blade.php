@@ -75,6 +75,8 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
         "method": "POST",
         "timeout": 0,
         "headers": {
+            // "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
+            //бой
             "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
             "Content-Type": "application/json"
         },
