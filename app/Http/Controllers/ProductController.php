@@ -350,6 +350,7 @@ class ProductController extends Controller
         $data = [];
         foreach ($products as $product) {
             $data[$product->id] = [
+                'id' => $product->id,
                 'title' => $product->title,
                 'prices' => [],
             ];

@@ -215,16 +215,26 @@ class ReportController extends Controller
         ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-04-10 00:00:01';
         ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
-        $subscriptions = Subscription::whereNull('subscriptions.deleted_at')
+        $query = Subscription::whereNull('subscriptions.deleted_at')
             ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
             ->leftJoin('processed_subscription', 'subscriptions.id', '=', 'processed_subscription.subscription_id')
-            ->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23])
-            ->where('subscriptions.status', 'waiting')
-            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status')
-            ->orderBy('subscriptions.updated_at', 'desc')
-            ->get();
+            ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
+            ->where('subscriptions.status', 'waiting');
+
+              if ($request->product != null) {
+                  $query->where('subscriptions.product_id', $request->product );
+              }
+              if ($request->product == null) {
+                  $query->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23]);
+              }
+
+            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status')
+            ->orderBy('subscriptions.updated_at', 'desc');
+            $subscriptions = $query->get();
+            return $subscriptions;
+
        // $subscriptions->comments->count();
 //        foreach ($subscriptions as $subscription) {
 //           echo $subscription->id;
@@ -233,7 +243,6 @@ class ReportController extends Controller
 //        }
 
 
-        return $subscriptions;
 
 //        $waitingPayments = \DB::table('subscriptions')
 //            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')

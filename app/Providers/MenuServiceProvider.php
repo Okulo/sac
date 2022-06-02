@@ -118,6 +118,11 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Отмененные подписки',
                 "url" => "reports/get-reports/4",
             ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_5",
+                "text" => 'Жду оплату',
+                "url" => "reports/get-reports/5",
+            ]);
 
             // $event->menu->addIn('statistics', [
             //     "key" => "statistic_type_3",

@@ -29,7 +29,8 @@
                     </div>
 
                     <div class="row" v-show="filterOpen" :class="{slide: filterOpen}">
-                        <div class="col-3">
+
+                        <div class="col-4">
                             С даты окончания
                             <datetime
                                 type="date"
@@ -41,7 +42,7 @@
                                 :auto="true"
                             ></datetime>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             По дату окончания
                             <datetime
                                 type="date"
@@ -53,10 +54,23 @@
                                 :auto="true"
                             ></datetime>
                         </div>
-                        <div class="col-3">
-                            &nbsp<br>
-                            <button id="getlist" v-if="startDate && endDate"  @click="getSubscriptionlist()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
-                        </div>
+                        <div class="col-4"></div>
+
+                        <div class="col-4">
+                            <br>
+                            <b>Услуги</b>
+                            <p></p>
+                            <select v-model="product" class="select-multiple custom-select">
+                                <option v-for="product in products" v-bind:value="product.id">
+                                    {{ product.title }}
+                                </option>
+                            </select>
+                         </div>
+                    </div>
+
+                    <div class="col-3">
+                        &nbsp<br>
+                        <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                     </div>
 
                 </div>
@@ -146,12 +160,18 @@
                 size: '60px',
             },
             statusStyle : '',
-            period: ''
+            period: '',
+            products: {},
+            product: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
           //  this.getSubscriptionlist();
+        },
+
+        created() {
+            this.getProductsWithPrices();
         },
         computed: {
             //функция сортировки массива
@@ -184,9 +204,9 @@
                 this.spinnerData.loading = true;
                 //  this.spinnerData.loading = true;
                 axios.post('/reports/get-waiting-pay-list', {
-                    period: this.period,
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59')
+                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
+                    product: this.product
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
@@ -243,6 +263,11 @@
                     });
 
             },
+            getProductsWithPrices() {
+                axios.get(`/products/with-prices`).then(response => {
+                    this.products = response.data;
+                });
+            },
             openModal(customerId, subscriptionId) {
                 this.customerId = null;
                 this.subscriptionId = null;
@@ -258,7 +283,8 @@
                 axios.post('/reports/get-refused-subscriptions-list', {
                     period: this.period,
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59')
+                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
+                    product: this.product
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
