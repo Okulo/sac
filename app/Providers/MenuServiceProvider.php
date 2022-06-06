@@ -123,6 +123,11 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Жду оплату',
                 "url" => "reports/get-reports/5",
             ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_6",
+                "text" => 'Жду оплату (пробует)',
+                "url" => "reports/get-reports/6",
+            ]);
 
             // $event->menu->addIn('statistics', [
             //     "key" => "statistic_type_3",

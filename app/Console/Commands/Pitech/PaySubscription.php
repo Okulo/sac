@@ -75,17 +75,19 @@ class PaySubscription extends Command
                     $data =  $this->pitechSubscriptionPayment ($subscription['price'], $productTitle, $subscription['customer_id'], $subscription['id'], $card['token'] );
                     // $data = '{"merchantName":"Strela-Academy","extOrdersId":"21223","amount":2990.0,"uuid":"f84d5c0f-e53e-4a07-97cd-1ddd2c776880","orderDate":"2022-05-27","ordersId":"120983513568625","currency":"KZT","state":"SUCCESS","card":{"mask":"548318-######-0293","owner":"RASHID","issuer":"mastercard"},"bankReferenceId":"220527193442","bankReferenceTime":"2022-05-27T19:34:42.859+0600","approvalCode":"193442","paymentResponseCode":"OK","paymentUrl":"https://cards-stage.pitech.kz/pay/order?ordersId=120983513568625&orderDate=2022-05-27&uuid=f84d5c0f-e53e-4a07-97cd-1ddd2c776880","successReturnUrl":"http://test.strela-academy.ru/thank-you","errorReturnUrl":"http://test.strela-academy.ru/api/pitech/pay-fail","clientsId":1358,"extClientRef":"19331","cardsId":"card_sJkRp8spG-pd0AA5tHyHLPaCJTNJW_fu","payload":{},"ipDetails":{"ip":"37.99.42.217","continentCode":"AS","continentName":"Asia","countryCode":"KZ","countryName":"Kazakhstan","regionCode":"ALA","regionName":"Almaty","zip":"480000","latitude":43.2499885559082,"longitude":76.94998931884766},"description":"Йога + пилатес (Онлайн тренировки)","paymentType":"RECURRENT","expirationTime":"2022-05-27T19:49:39.503","merchantsId":1043,"fiscalization":false,"linkedOrders":[]}';
                     $result = json_decode($data);
-                    if($result->state == 'SUCCESS'){
-                        UserLog::create([
-                            'subscription_id' => $subscription['id'],
-                            'user_id' => Auth::id() ?? null,
-                            'type' => UserLog::PITECH_AUTO_RENEWAL,
-                            'data' => [
-                                'old' => $subscription['ended_at'],
-                                'new' => $newEndedAt,
-                                'request' => $result,
-                            ],
-                        ]);
+                    if(isset($result->state)){
+                        if($result->state == 'SUCCESS'){
+                            UserLog::create([
+                                'subscription_id' => $subscription['id'],
+                                'user_id' => Auth::id() ?? null,
+                                'type' => UserLog::PITECH_AUTO_RENEWAL,
+                                'data' => [
+                                    'old' => $subscription['ended_at'],
+                                    'new' => $newEndedAt,
+                                    'request' => $result,
+                                ],
+                            ]);
+                        }
                     }
                 }
             }

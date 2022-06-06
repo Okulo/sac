@@ -49,6 +49,8 @@ class ReportController extends Controller
         return view('reports.refusedSubscriptions');
         } elseif ($type == 5) {
             return view('reports.waitingPayment');
+        } elseif ($type == 6) {
+            return view('reports.waitingPaymentTries');
         } else {
             return view('reports.index');
         }
@@ -212,6 +214,7 @@ class ReportController extends Controller
 
     public function getWaitingPay( Request $request)
     {
+        $today  = Carbon::now();
         ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-04-10 00:00:01';
         ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
@@ -227,11 +230,26 @@ class ReportController extends Controller
                   $query->where('subscriptions.product_id', $request->product );
               }
               if ($request->product == null) {
-                  $query->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23]);
+                  $query->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23,24,25]);
               }
 
-            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status')
-            ->orderBy('subscriptions.updated_at', 'desc');
+              if ($request->tries != 1) {
+                $query->where('subscriptions.tries_at','<', $today);
+                }
+              if ($request->tries == 1) {
+                  $query->where('subscriptions.tries_at','>', $today );
+                }
+
+            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status');
+
+              if ($request->tries != 1) {
+                  $query->orderBy('subscriptions.ended_at', 'asc');
+              }
+              if ($request->tries == 1) {
+                  $query->orderBy('subscriptions.tries_at', 'asc');
+              }
+
+
             $subscriptions = $query->get();
             return $subscriptions;
 

@@ -20,16 +20,13 @@
            </div>
             <div class="card mt-3">
                 <div class="card-header">
-                    <div style="line-height: 25px; cursor: pointer;"  @click="filterOpen = !filterOpen">
-                        <small class="float-right">
-                            <a id="filter-toggle" class="btn btn-default btn-sm" title="Скрыть/показать">
-                                <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
-                            </a>
-                        </small>
-                    </div>
-
-                    <div class="row" v-show="filterOpen" :class="{slide: filterOpen}">
-
+                    Фильтр
+                    <small class="float-right">
+                        <a id="filter-toggle"  @click="filterOpen = !filterOpen" class="btn btn-default btn-sm" title="Скрыть/показать">
+                            <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
+                        </a>
+                    </small>
+                    <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
                         <div class="col-4">
                             С даты окончания
                             <datetime
@@ -66,12 +63,13 @@
                                 </option>
                             </select>
                          </div>
+
+                        <div class="col-12">
+                            &nbsp<br>
+                            <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                        </div>
                     </div>
 
-                    <div class="col-3">
-                        &nbsp<br>
-                        <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
-                    </div>
 
                 </div>
                 <div class="card-body">
@@ -86,7 +84,7 @@
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
                             <th >Ост. дней</th>
-                            <th>Кол-во <br> платежей</th>
+                            <!--  <th>Кол-во <br> платежей</th> -->
                             <th scope="col">Дата<br> старта</th>
                             <th scope="col">Дата <br> окончания</th>
                             <th scope="col">В <br>процессе</th>
@@ -105,11 +103,11 @@
                             <td>{{item.phone}}</td>
                             <td>{{ item.ptitle}}</td>
                             <td>{{ item.calcDate }}</td>
-                            <td>{{item.paymentsCount}}</td>
-                            <td>{{ item.started_at }}</td>
-                            <td>{{ item.ended_at}}</td>
-                        <!--    <td>{{item.payment_type}}</td>
-                            <td>{{item.status}}</td>-->
+                            <!--   <td>{{item.paymentsCount}}</td> -->
+                             <td>{{ item.started_at }}</td>
+                             <td>{{ item.ended_at}}</td>
+                         <!--    <td>{{item.payment_type}}</td>
+                             <td>{{item.status}}</td>-->
                             <td>
                             <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
@@ -215,8 +213,7 @@
                             //   console.log(elem.data);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
-                            var diff =moment.duration(given.diff(current)).asDays();
-
+                            var diff = moment.duration(given.diff(current)).asDays();
 
 
                             this.items.push({
