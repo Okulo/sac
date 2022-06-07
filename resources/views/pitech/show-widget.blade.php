@@ -70,7 +70,8 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
     event.preventDefault();
     var data = JSON.parse('<?php echo $data; ?>');
     var settings = {
-        // тестовый "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
+        //тестовый
+        // "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
         "url": "https://cards.pitech.kz/gw/payments/cards/charge",
         "method": "POST",
         "timeout": 0,
@@ -85,15 +86,14 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
             "currency": "KZT",
             "description": data.description,
             "extOrdersId": data.accountId,
-            "errorReturnUrl": "https://www.strela-academy.ru/failure",
+            "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
             "successReturnUrl": "https://www.strela-academy.ru/thank-you",
             "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
             "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-            "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
             "payload": {
                 "phone": data.data.cloudPayments.customerReceipt.phone,
                 "test": "yes",
-                "location": "staging.strela-academy.ru"
+                "location": "www.strela-academy.ru"
             },
             "extClientRef": data.customerId,
             "extOrdersTime": "1",

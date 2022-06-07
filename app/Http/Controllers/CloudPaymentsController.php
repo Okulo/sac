@@ -246,8 +246,6 @@ class CloudPaymentsController extends Controller
         $card = Card::where('customer_id', $request->customer)->where('type','pitech')->latest()->first();
         if (isset($card)){
 
-            //dd($request->customer);
-
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -272,6 +270,15 @@ class CloudPaymentsController extends Controller
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
                     "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
                     "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "fiscalization": true,
+                    "positions":[
+                        {
+                        "count": 1,
+                        "unitName": "pc",
+                        "price": '.$request->price.',
+                        "name": "'.$request->product.'"
+                        }
+                    ],
                     "cardsId": "'.$card->token.'"
                 }
                 ',
@@ -309,9 +316,9 @@ class CloudPaymentsController extends Controller
 
             curl_setopt_array($curl, array(
                 // тестовый включаем
-                // CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                //CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
                 // ниже боевой
-                CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
+                CURLOPT_URL => 'https://cards.pitech.kzcards.pitech.kz/gw/payments/tokens/charge',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -325,15 +332,24 @@ class CloudPaymentsController extends Controller
                         "description": "' . $subscription->product->title . '",
                         "extClientRef": "' . $subscription->customer_id . '",
                         "extOrdersId": "' . $subscription->id . '",
-                        "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
-                        "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                        "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-                        "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-                        "cardsId": "' . $card->token . '"
+                    "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
+                    "successReturnUrl": "https://www.strela-academy.ru/thank-you",
+                    "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "fiscalization": true,
+                    "positions":[
+                        {
+                        "count": 1,
+                        "unitName": "pc",
+                        "price": '.$subscription->price.',
+                        "name": "'.$subscription->product->title.'"
+                        }
+                    ],
+                    "cardsId": "' . $card->token .'"
                     }
                     ',
                 CURLOPT_HTTPHEADER => array(
-                    //'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                    // 'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
                     // бой
                     'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
