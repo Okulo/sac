@@ -169,6 +169,9 @@
                 <input type="submit" value="Сохранить" class="btn btn-success" />
             </div>
         </form>
+        <div class="form-group float-right">
+            <button id="archive" class="btn btn-danger">Архивировать</button>
+        </div>
         <a href="{{ route('products.index') }}">К списку</a>
     </div>
 </div>
@@ -189,5 +192,27 @@
         });
         @endforeach
     @endif
+
+        $( "#archive" ).click(function() {
+            if (confirm('Архивировать услугу')) {
+                let id = <?=$product->id;?>;
+                $.ajax({
+                    url: "/products/delete-product",
+                    // dataType: "json", // Для использования JSON формата получаемых данных
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    method: "POST", // Что бы воспользоваться POST методом, меняем данную строку на POST
+                    data: {
+                        id: id
+                    },
+                    success: function(data) {
+                        location.href = "/products/";
+                    },
+                    error: function(data) {
+                        console.log('error'); // Возвращаемые данные выводим в консоль
+                    }
+                });
+            }
+        });
+
 </script>
 @stop

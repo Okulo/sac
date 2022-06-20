@@ -201,6 +201,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('payments/filter', 'PaymentController@getFilters');
 
     Route::get('products/with-prices', 'ProductController@withPrices');
+    Route::post('products/delete-product', 'ProductController@deleteProduct');
 
     Route::get('/reports/get-reports/', 'ReportController@index');
     Route::get('/reports/get-reports/{type}', 'ReportController@index');

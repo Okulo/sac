@@ -365,4 +365,17 @@ class ProductController extends Controller
 
         return response()->json($data, 200);
     }
+
+    public function deleteProduct(Request $request)
+    {
+        $today  = Carbon::now();
+        $update = Product::where('id',$request->id)
+               ->update(['deleted_at' => $today]);
+        if ($update) {
+            return response()->json('success', 200);
+        }
+        else {
+            return response()->json('error', 500);
+        }
+    }
 }

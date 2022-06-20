@@ -109,7 +109,7 @@ class UpdatePayments extends Command
                 if ($subscription && !$issetPay){
 
                     $payDate =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty');
-                    $newEndedAt =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty')->addMonths(1);
+                    $newEndedAt =  Carbon::parse($subscription->ended_at)->setTimezone('Asia/Almaty')->addMonths(1);
 
                     $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
                         //      ->where('id', $result[0]['extOrdersId'])
