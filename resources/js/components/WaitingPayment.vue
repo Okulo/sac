@@ -113,8 +113,8 @@
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                <input v-if="item.process_status == null" type="checkbox" :value="item.id" id="item.id" class="form-check-input" v-model="processed" @change="goProcess($event)">
+                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                                <input v-else type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
@@ -176,15 +176,15 @@
 
         },
         methods: {
-            goProcess: function(e) {
-                if (this.processed.length > 0){
-
+            goProcess: function(id) {
                     axios.post('/reports/set-processed-status',{
-                        subId: this.processed.toString(),
+                        subId: id,
                         status: 1
                     })
                         .then(response => {
-                            this.waitingPayList();
+                           // this.waitingPayList();
+                            Vue.$toast.success('Статус успешно изменен');
+                            console.log(response);
                         })
                         .catch(function (error) {
                             console.log('err');
@@ -192,8 +192,23 @@
                             Vue.$toast.error('error - '+ error);
                         });
 
-                    console.log(this.processed);
-                }
+            },
+            unprocess: function(id) {
+                axios.post('/reports/set-processed-status',{
+                    subId: id,
+                    status: 0
+                })
+                    .then(response => {
+                        // this.waitingPayList();
+                        Vue.$toast.success('Статус успешно изменен');
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log('err');
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
+
             },
             waitingPayList(){
 
