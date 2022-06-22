@@ -51,7 +51,10 @@ class ReportController extends Controller
             return view('reports.waitingPayment');
         } elseif ($type == 6) {
             return view('reports.waitingPaymentTries');
-        } else {
+        } elseif ($type == 7) {
+             return view('reports.archivedProducts');
+        }
+        else {
             return view('reports.index');
         }
     }
@@ -304,6 +307,16 @@ class ReportController extends Controller
 
         return json_decode($payments);
     }
+
+    public function getArchivedProducts( Request $request)
+    {
+        $products = \DB::table('products')
+            ->whereNotNull('deleted_at')
+            ->get();
+
+        return json_decode($products);
+    }
+
 
 
     public function addWaStatus(Request $request){

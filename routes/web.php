@@ -202,6 +202,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
 
     Route::get('products/with-prices', 'ProductController@withPrices');
     Route::post('products/delete-product', 'ProductController@deleteProduct');
+    Route::post('products/restore-product', 'ProductController@restoreProduct');
 
     Route::get('/reports/get-reports/', 'ReportController@index');
     Route::get('/reports/get-reports/{type}', 'ReportController@index');
@@ -209,6 +210,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-pay-list", [ReportController::class, "getPayList"])->name("reports.getPayList");
     Route::post("/reports/get-refused-list", [ReportController::class, "getRefusedList"])->name("reports.getRefusedList");
     Route::post("/reports/get-waiting-pay-list", [ReportController::class, "getWaitingPay"])->name("reports.getWaitingPay");
+    Route::post("/reports/get-archived-products", [ReportController::class, "getArchivedProducts"])->name("reports.");
     Route::post("/reports/get-refused-subscriptions-list", [ReportController::class, "getRefusedSubscriptionsList"])->name("reports.getRefusedSubscriptionsList");
     Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");
     Route::post("/reports/add-wa-status", [ReportController::class, "addWaStatus"])->name("reports.addWaStatus");

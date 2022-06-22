@@ -378,4 +378,19 @@ class ProductController extends Controller
             return response()->json('error', 500);
         }
     }
+
+    public function restoreProduct(Request $request)
+    {
+
+        $update = $affected = \DB::table('products')
+            ->where('id', $request->id)
+            ->update(['deleted_at' => null]);
+
+        if ($update) {
+            return response()->json('success', 200);
+        }
+        else {
+            return response()->json('error', 500);
+        }
+    }
 }

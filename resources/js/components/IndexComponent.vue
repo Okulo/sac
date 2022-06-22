@@ -89,6 +89,7 @@
             </div>
         </div>
         <div class="mb-2">
+            <span v-if="prefix == 'products'" style="float: right; line-height: 28px; padding-right: 20px;"> <a href="/reports/get-reports/7">Услуги в архиве</a> </span>
             <div class="input-group" >
                 <div style="flex: 1 1 auto; margin-left: 7px; margin-right: 10px" v-for="(filter, filterIndex) in secondFilters" :key="filterIndex">
                     <input

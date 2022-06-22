@@ -42,6 +42,7 @@ $(document)
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('check-pay', require('./components/CheckPayComponent.vue').default);
 Vue.component('refused-list', require('./components/RefusedList.vue').default);
+Vue.component('arhived-products', require('./components/ArchivedProducts.vue').default);
 Vue.component('waiting-payment', require('./components/WaitingPayment.vue').default);
 Vue.component('waiting-payment-tries', require('./components/WaitingPaymentTries.vue').default);
 Vue.component('refused-subscriptions-list', require('./components/RefusedSubscriptionsList.vue').default);
