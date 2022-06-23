@@ -54,6 +54,9 @@ class ReportController extends Controller
         } elseif ($type == 7) {
              return view('reports.archivedProducts');
         }
+        elseif ($type == 8) {
+            return view('reports.simplePayEnds');
+        }
         else {
             return view('reports.index');
         }
@@ -317,7 +320,23 @@ class ReportController extends Controller
         return json_decode($products);
     }
 
+    public function simplePayEndsList( Request $request)
+    {
+        $endDate = Carbon::now()->addDays(5);
+        $today = Carbon::now();
 
+        $subscriptions = \DB::table('subscriptions')
+            ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->whereBetween('subscriptions.ended_at', [$today,$endDate])
+            ->where('subscriptions.status', 'paid')
+            ->where('subscriptions.payment_type', 'transfer')
+            ->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
+            ->orderBy('subscriptions.ended_at')
+            ->get();
+
+        return json_decode($subscriptions);
+    }
 
     public function addWaStatus(Request $request){
         $updateWa = \DB::table('subscriptions')
