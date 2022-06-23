@@ -113,15 +113,15 @@
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                                <input v-if="item.process_status == 1 " class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                                 <input v-else type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
                         </tbody>
                     </table>
-
 
                 </div>
             </div>
@@ -147,7 +147,7 @@
             customerId: null,
             subscriptionId: null,
             filterOpen: false,
-            processed: [],
+            processed: '',
             items: [],
             cpData: '',
             cp: '',
@@ -179,12 +179,13 @@
             goProcess: function(id) {
                     axios.post('/reports/set-processed-status',{
                         subId: id,
+                        report_type: 5,
                         status: 1
                     })
                         .then(response => {
                            // this.waitingPayList();
                             Vue.$toast.success('Статус успешно изменен');
-                            console.log(response);
+
                         })
                         .catch(function (error) {
                             console.log('err');
@@ -196,11 +197,13 @@
             unprocess: function(id) {
                 axios.post('/reports/set-processed-status',{
                     subId: id,
+                    report_type: 5,
                     status: 0
                 })
                     .then(response => {
                         // this.waitingPayList();
                         Vue.$toast.success('Статус успешно изменен');
+                        console.log('unprocess');
                         console.log(response);
                     })
                     .catch(function (error) {

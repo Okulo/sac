@@ -179,6 +179,7 @@
             goProcess: function(id) {
                 axios.post('/reports/set-processed-status',{
                     subId: id,
+                    report_type: 6,
                     status: 1
                 })
                     .then(response => {
@@ -196,6 +197,7 @@
             unprocess: function(id) {
                 axios.post('/reports/set-processed-status',{
                     subId: id,
+                    report_type: 6,
                     status: 0
                 })
                     .then(response => {

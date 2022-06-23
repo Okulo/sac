@@ -349,7 +349,7 @@ class ReportController extends Controller
     public function setProcessedStatus( Request $request){
         $setStatus = \DB::table('processed_subscription')
             ->updateOrInsert(
-            ['subscription_id' =>   request('subId')],
+            ['subscription_id' =>   request('subId'),'report_type' => request('report_type')],
             ['process_status' => request('status')]
         );
 

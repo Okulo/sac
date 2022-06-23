@@ -18,56 +18,6 @@
            </div>
             <div class="card mt-3">
                 <div class="card-header">
-                    Фильтр
-                    <small class="float-right">
-                        <a id="filter-toggle"  @click="filterOpen = !filterOpen" class="btn btn-default btn-sm" title="Скрыть/показать">
-                            <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
-                        </a>
-                    </small>
-                    <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
-                        <div class="col-4">
-                            С даты окончания
-                            <datetime
-                                type="date"
-                                v-model="startDate"
-                                input-class="form-control"
-                                valueZone="Asia/Almaty"
-                                value-zone="Asia/Almaty"
-                                zone="Asia/Almaty"
-                                :auto="true"
-                            ></datetime>
-                        </div>
-                        <div class="col-4">
-                            По дату окончания
-                            <datetime
-                                type="date"
-                                v-model="endDate"
-                                input-class="form-control"
-                                valueZone="Asia/Almaty"
-                                value-zone="Asia/Almaty"
-                                zone="Asia/Almaty"
-                                :auto="true"
-                            ></datetime>
-                        </div>
-                        <div class="col-4"></div>
-
-                        <div class="col-4">
-                            <br>
-                            <b>Услуги</b>
-                            <p></p>
-                            <select v-model="product" class="select-multiple custom-select">
-                                <option v-for="product in products" v-bind:value="product.id">
-                                    {{ product.title }}
-                                </option>
-                            </select>
-                         </div>
-
-                        <div class="col-12">
-                            &nbsp<br>
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
-                        </div>
-                    </div>
-
 
                 </div>
                 <div class="card-body">
@@ -177,6 +127,7 @@
             goProcess: function(id) {
                     axios.post('/reports/set-processed-status',{
                         subId: id,
+                        report_type: 8,
                         status: 1
                     })
                         .then(response => {
@@ -194,6 +145,7 @@
             unprocess: function(id) {
                 axios.post('/reports/set-processed-status',{
                     subId: id,
+                    report_type: 8,
                     status: 0
                 })
                     .then(response => {
@@ -223,7 +175,7 @@
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
-                            console.log(elem);
+                          //  console.log(elem);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
@@ -393,21 +345,6 @@
                             });
                         });
 
-
-                        // response.data.forEach(elem => {
-                        // array =  JSON.parse(elem.request);
-                        //
-                        //     this.items.push({
-                        //         account_id: array.AccountId,
-                        //         status: array.Status,
-                        //         amount: array.Amount,
-                        //         subs_id: array.SubscriptionId,
-                        //         date: array.DateTime,
-                        //         transaction: array.TransactionId,
-                        //
-                        //     });
-                        //
-                        // })
 
                     })
                     .catch(function (error) {
