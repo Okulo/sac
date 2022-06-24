@@ -246,7 +246,7 @@ class ReportController extends Controller
                   $query->where('subscriptions.tries_at','>', $today );
                 }
 
-            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status');
+            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status','processed_subscription.report_type');
 
               if ($request->tries != 1) {
                   $query->orderBy('subscriptions.ended_at', 'asc');
@@ -314,7 +314,7 @@ class ReportController extends Controller
     public function getArchivedProducts( Request $request)
     {
         $products = \DB::table('products')
-            ->whereNotNull('deleted_at')
+            ->whereNotNull('archived')
             ->get();
 
         return json_decode($products);
@@ -328,14 +328,20 @@ class ReportController extends Controller
         $subscriptions = \DB::table('subscriptions')
             ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
-            ->whereBetween('subscriptions.ended_at', [$today,$endDate])
+            ->where('subscriptions.ended_at', '<',$endDate)
             ->where('subscriptions.status', 'paid')
-            ->where('subscriptions.payment_type', 'transfer')
-            ->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
-            ->orderBy('subscriptions.ended_at')
-            ->get();
+            ->where('subscriptions.payment_type', 'transfer');
+        if ($request->product){
+            $subscriptions->where('subscriptions.product_id', $request->product );
+        }
 
-        return json_decode($subscriptions);
+            $subscriptions->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
+            ->orderBy('subscriptions.ended_at', 'DESC')
+            ->limit(200)
+            ->get();
+        $query = $subscriptions->get();
+        return $query;
+        //return json_decode($subscriptions);
     }
 
     public function addWaStatus(Request $request){

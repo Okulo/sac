@@ -41,7 +41,7 @@ class ProductController extends Controller
         access(['can-head', 'can-host']);
 
         $query = Product::query();
-        $products = $query->latest()->filter($filters)->paginate($this->perPage)->appends(request()->all());
+        $products = $query->latest()->whereNull('archived')->filter($filters)->paginate($this->perPage)->appends(request()->all());
 
         return response()->json(new ProductCollection($products), 200);
     }
@@ -366,11 +366,11 @@ class ProductController extends Controller
         return response()->json($data, 200);
     }
 
-    public function deleteProduct(Request $request)
+    public function archiveProduct(Request $request)
     {
         $today  = Carbon::now();
         $update = Product::where('id',$request->id)
-               ->update(['deleted_at' => $today]);
+               ->update(['archived' => 1]);
         if ($update) {
             return response()->json('success', 200);
         }
@@ -384,7 +384,7 @@ class ProductController extends Controller
 
         $update = $affected = \DB::table('products')
             ->where('id', $request->id)
-            ->update(['deleted_at' => null]);
+            ->update(['archived' => null]);
 
         if ($update) {
             return response()->json('success', 200);

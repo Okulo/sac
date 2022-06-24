@@ -40,7 +40,8 @@ class SubscriptionController extends Controller
     public function getFilters()
     {
         access(['can-operator', 'can-head', 'can-host']);
-        $products = Product::get()->pluck('title', 'id');
+       //   $products = Product::get()->pluck('title', 'id');
+        $products = \DB::table('products')->whereNull('archived')->get()->pluck('title', 'id');
         $teams = Team::get()->pluck('name', 'id')->toArray();
         $teams[9999] = 'Без команды';
 

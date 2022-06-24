@@ -113,7 +113,7 @@
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-                                <input v-if="item.process_status == 1 " class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                                <input v-if="item.process_status == 1 && item.report_type == 5 " class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                                 <input v-else type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
 
                             </td>
@@ -228,11 +228,10 @@
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
-                            //   console.log(elem.data);
+                            //  console.log(elem);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
-
 
                             this.items.push({
                                 id: elem.id,
@@ -249,6 +248,7 @@
                                 reason: elem.title,
                                 ptitle: elem.ptitle,
                                 process_status: elem.process_status,
+                                report_type: elem.report_type,
                                 paymentsCount: ''
                             });
 

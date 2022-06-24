@@ -12,13 +12,34 @@
             <h2>Заканчиваются по прямым переводам</h2>
 
            <div class="intro">
-               Сюда попадают те обонементы, ...
+               Сюда попадают абонементы у которых осталось 5 и менее дней до окончания абонемента по прямому переводу
             <p></p>
             Список обновляется при обновлении страницы
            </div>
             <div class="card mt-3">
                 <div class="card-header">
+                    Фильтр
+                    <small class="float-right">
+                        <a id="filter-toggle"  @click="filterOpen = !filterOpen" class="btn btn-default btn-sm" title="Скрыть/показать">
+                            <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
+                        </a>
+                    </small>
+                    <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
+                        <br>
+                        <b>Услуги</b>
+                        <p></p>
+                        <div class="col-4">
+                           <select v-model="product" class="select-multiple custom-select">
+                                <option v-for="product in products" v-bind:value="product.id">
+                                    {{ product.title }}
+                                </option>
+                            </select>
+                        </div>
 
+                        <div class="col-4">
+                            <button id="getlist" v-if="startDate && endDate || product"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <strong>Всего записей -      {{items.length}}</strong><p><br></p>
@@ -61,7 +82,7 @@
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                                <input v-if="item.process_status == 1 && item.report_type == 8" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                                 <input v-else type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
@@ -167,8 +188,6 @@
                 this.spinnerData.loading = true;
                 //  this.spinnerData.loading = true;
                 axios.post('/reports/simple-pay-ends-list', {
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product
                 })
                     .then(response => {

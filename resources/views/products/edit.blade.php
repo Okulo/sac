@@ -197,7 +197,7 @@
             if (confirm('Архивировать услугу')) {
                 let id = <?=$product->id;?>;
                 $.ajax({
-                    url: "/products/delete-product",
+                    url: "/products/archive-product",
                     // dataType: "json", // Для использования JSON формата получаемых данных
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     method: "POST", // Что бы воспользоваться POST методом, меняем данную строку на POST
