@@ -228,7 +228,6 @@ class ReportController extends Controller
             ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
-            ->leftJoin('processed_subscription', 'subscriptions.id', '=', 'processed_subscription.subscription_id')
             ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
             ->where('subscriptions.status', 'waiting');
 
@@ -246,7 +245,7 @@ class ReportController extends Controller
                   $query->where('subscriptions.tries_at','>', $today );
                 }
 
-            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status','processed_subscription.report_type');
+            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle');
 
               if ($request->tries != 1) {
                   $query->orderBy('subscriptions.ended_at', 'asc');
@@ -330,15 +329,15 @@ class ReportController extends Controller
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
             ->where('subscriptions.ended_at', '<',$endDate)
             ->where('subscriptions.status', 'paid')
+            ->whereNull('subscriptions.deleted_at')
             ->where('subscriptions.payment_type', 'transfer');
         if ($request->product){
             $subscriptions->where('subscriptions.product_id', $request->product );
         }
 
             $subscriptions->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
-            ->orderBy('subscriptions.ended_at', 'DESC')
-            ->limit(200)
-            ->get();
+            ->orderBy('subscriptions.ended_at', 'ASC')
+            ->limit(200);
         $query = $subscriptions->get();
         return $query;
         //return json_decode($subscriptions);
@@ -350,6 +349,14 @@ class ReportController extends Controller
             ->update(['wa_status' => $request->waStatus]);
 
         return $updateWa;
+    }
+
+    public function getProcessedStatus( Request $request){
+        $setStatus = \DB::table('processed_subscription')
+            ->where('report_type', $request->type)
+            ->get();
+
+        return $setStatus;
     }
 
     public function setProcessedStatus( Request $request){

@@ -24,6 +24,7 @@ class UserLog extends Model
     const MANUAL_WRITE_OFF    = 12; // 12) Кнопка ручное списание
     const CHANGE_SUBSCRIPTION_PRICE = 13; // 12) изменена цена подписки
     const PITECH_AUTO_RENEWAL = 14;  // 14) Автопродление абонемента (подписка Pitech)
+    const SAVE_CARD_ERROR = 15;  // 15) ошибка при сохранении карты
 
     const TYPES = [
         self::END_DATE              => 'Дата окончания',
@@ -40,6 +41,7 @@ class UserLog extends Model
         self::MANUAL_WRITE_OFF      => 'Ручное списание',
         self::CHANGE_SUBSCRIPTION_PRICE  => 'Изменена стоимость подписки',
         self::PITECH_AUTO_RENEWAL   => 'Автопродление абонемента (подписка Pitech)',
+        self::SAVE_CARD_ERROR       => 'Ошибка при сохранении карты',
     ];
 
     protected $fillable = [
@@ -123,6 +125,10 @@ class UserLog extends Model
                 break;
             case self::CHANGE_SUBSCRIPTION_PRICE:
                 $message = '<b style="color: green">Новая запись: </b>' . $this->data['new'];
+                return $message;
+                break;
+            case self::SAVE_CARD_ERROR:
+                $message = '<b style="color: red">Ошибка</b>';
                 return $message;
                 break;
             case self::MANUAL_WRITE_OFF:

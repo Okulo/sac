@@ -109,12 +109,19 @@
                          <!--    <td>{{item.payment_type}}</td>
                              <td>{{item.status}}</td>-->
                             <td>
+
                             <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-                                <input v-if="item.process_status == 1 && item.report_type == 5 " class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
-                                <input v-else type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <div v-for="status in processedStatus">
+                                    <span v-if="item.id == status.subscription_id">
+                                        <input v-if="status.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                                    </span>
+                                </div>
+
+
 
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
@@ -149,6 +156,7 @@
             filterOpen: false,
             processed: '',
             items: [],
+            processedStatus: [],
             cpData: '',
             cp: '',
             cpStatus: [],
@@ -165,6 +173,7 @@
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
+            this.getProcessedStatus();
           //  this.getSubscriptionlist();
         },
 
@@ -214,7 +223,7 @@
 
             },
             waitingPayList(){
-
+                this.getProcessedStatus();
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
@@ -222,7 +231,8 @@
                 axios.post('/reports/get-waiting-pay-list', {
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product
+                    product: this.product,
+                    reportType: 5
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
@@ -289,6 +299,31 @@
                 this.customerId = customerId;
                 this.subscriptionId = subscriptionId;
                 this.$bvModal.show('modal-customer-edit');
+            },
+            getProcessedStatus(){
+                axios.post('/reports/get-processed-status', {
+                    period: this.period,
+                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
+                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
+                    product: this.product,
+                    type: 5
+                })
+                    .then(response => {
+                        response.data.forEach(elem =>{
+                             //console.log(elem.subscription_id);
+                            this.processedStatus.push({
+                                process_status:elem.process_status,
+                                report_type: elem.report_type,
+                                subscription_id: elem.subscription_id
+                            });
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
             },
             getSubscriptionlist(){
                 this.items = [];

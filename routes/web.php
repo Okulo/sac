@@ -210,6 +210,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-pay-list", [ReportController::class, "getPayList"])->name("reports.getPayList");
     Route::post("/reports/simple-pay-ends-list", [ReportController::class, "simplePayEndsList"])->name("reports.simplePayEndsList");
     Route::post("/reports/get-refused-list", [ReportController::class, "getRefusedList"])->name("reports.getRefusedList");
+    Route::post("/reports/get-processed-status", [ReportController::class, "getProcessedStatus"])->name("reports.getProcessedStatus");
     Route::post("/reports/get-waiting-pay-list", [ReportController::class, "getWaitingPay"])->name("reports.getWaitingPay");
     Route::post("/reports/get-archived-products", [ReportController::class, "getArchivedProducts"])->name("reports.getArchivedProducts");
     Route::post("/reports/get-refused-subscriptions-list", [ReportController::class, "getRefusedSubscriptionsList"])->name("reports.getRefusedSubscriptionsList");
