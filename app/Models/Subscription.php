@@ -28,6 +28,7 @@ class Subscription extends Model
         'paid' => 'Оплачено',
         'rejected' => 'Отклонена (3 раза)',
         'refused' => 'Отказался',
+        'trial' => 'Триал период',
         // 'frozen' => 'Заморожен',
     ];
 

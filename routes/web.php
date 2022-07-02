@@ -237,6 +237,7 @@ Route::get('cloudpayments/{subscriptionId}', 'CloudPaymentsController@showWidget
 Route::get('pitech/{subscriptionId}', 'CloudPaymentsController@showPitechWidget')->name('cloudpayments.show_pitech_widget');
 Route::post('pitech/manualPayment', 'CloudPaymentsController@manualPitechPayment')->name('pitech.manual');
 Route::post('pitech/payWithCard', 'CloudPaymentsController@payPitechWithCard')->name('pitech.payWithCard');
+Route::post('pitech/get-customer-id', 'CloudPaymentsController@getCustomerId')->name('pitech.getCustomerId');
 Route::get('cloudpayments/{productId}/thank-you', 'CloudPaymentsController@thankYou')->name('cloudpayments.thank_you');
 Route::post('cloudpayments/updateamount', 'CloudPaymentsController@updateAmount')->name('cloudpayments.update');
 

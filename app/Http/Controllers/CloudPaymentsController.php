@@ -241,6 +241,13 @@ class CloudPaymentsController extends Controller
         ]);
     }
 
+    public function getCustomerId(Request $request)
+    {
+       $customer = Subscription::where('id',$request->subscription)->get();
+
+       return $customer;
+    }
+
     public function manualPitechPayment( Request $request){
        // dd($request->subscriptionId);
         $card = Card::where('customer_id', $request->customer)->where('type','pitech')->latest()->first();

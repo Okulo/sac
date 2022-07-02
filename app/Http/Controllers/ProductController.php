@@ -352,6 +352,8 @@ class ProductController extends Controller
             $data[$product->id] = [
                 'id' => $product->id,
                 'title' => $product->title,
+                'block_amount' => $product->block_amount,
+                'trial_period' => $product->trial_period,
                 'prices' => [],
             ];
             if (count($product->prices) > 0) {

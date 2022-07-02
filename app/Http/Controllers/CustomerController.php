@@ -65,6 +65,7 @@ class CustomerController extends Controller
                         case 'cloudpayments':
                             $statuses = Subscription::STATUSES;
                             unset($statuses['tries']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                         case 'transfer':
@@ -72,18 +73,21 @@ class CustomerController extends Controller
                             unset($statuses['tries']);
                             unset($statuses['frozen']);
                             unset($statuses['rejected']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                         case 'simple_payment':
                             $statuses = Subscription::STATUSES;
                             unset($statuses['tries']);
                             unset($statuses['frozen']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                         case 'pitech':
                             $statuses = Subscription::STATUSES;
                             unset($statuses['tries']);
                             unset($statuses['frozen']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                     }

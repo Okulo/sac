@@ -42,6 +42,18 @@
                     <input type="number" class="form-control" id="next-price" value="{{ $nextPrice }}" name="next-price">
                 </div>
             </div>
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 col-form-label">Сумма блокировки</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control" id="block_amount" value="{{ $product->block_amount}}" name="block_amount">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 col-form-label">Триал период ( дней )</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control" id="trial_period" value="{{ $product->trial_period}}" name="trial_period">
+                </div>
+            </div>
 
           <!--  <div class="form-group row">
                 <label  class="col-sm-2">Включится после</label>
@@ -205,7 +217,7 @@
                         id: id
                     },
                     success: function(data) {
-                        location.href = "/products/";
+                        window.location.href = "https://www.strela-academy.ru/products";
                     },
                     error: function(data) {
                         console.log('error'); // Возвращаемые данные выводим в консоль

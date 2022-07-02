@@ -77,7 +77,7 @@ class UpdatePayments extends Command
                                 'quantity' => 1,
                                 'type' => 'pitech',
                                 'status' => 'Declined',
-                                'amount' => $result[0]['totalAmount'],
+                                'amount' => $result[0]['totalAmount'] ?? 0,
                                 'paided_at' =>  $payDate,
                                 // 'created_at' => $result[0]['eventTime'],
                                 'team_id' => $subscription->team_id,

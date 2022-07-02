@@ -110,9 +110,28 @@
                                 </div>
                                 <div class="form-group col-sm-6" v-if="subscription.payment_type != 'simple_payment'">
                                     <label for="tries_at" class="col-form-label">Дата окончания абонемента и следующего платежа</label>
-                                    <div v-if="subscription.payment_type == 'tries'">
+                                    <div v-if="subscription.payment_type == 'tries' && subscription.status != 'trial'">
                                         <div v-show="!subscription.is_edit_ended_at">
                                             <span class="ended_at-span">{{ showDate(subscription.tries_at) }}</span>
+                                            <button class="btn btn-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
+                                        </div>
+                                        <datetime
+                                            v-show="subscription.is_edit_ended_at"
+                                            :name="'subscriptions.' + subIndex + '.tries_at'"
+                                            type="date"
+                                            v-model="subscription.tries_at"
+                                            input-class="col-sm-10 my-class form-control"
+                                            valueZone="Asia/Almaty"
+                                            value-zone="Asia/Almaty"
+                                            zone="Asia/Almaty"
+                                            format="dd LLLL"
+                                            :auto="true"
+                                            :disabled="isDisabled(subscription)"
+                                        ></datetime>
+                                    </div>
+                                    <div v-if="subscription.payment_type == 'tries' && subscription.status == 'trial'">
+                                        <div v-show="!subscription.is_edit_ended_at">
+                                            <span class="ended_at-span">{{ showDateWithTrial(subscription.started_at, products[subscription.product_id].trial_period) }}</span>
                                             <button class="btn btn-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
                                         </div>
                                         <datetime
@@ -163,7 +182,7 @@
                                         <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-6" id="change-price" v-if="currentPrice">
+                                <div class="col-sm-6" id="change-price" v-if="currentPrice && subscription.status != 'trial'">
                                     <hr>
                                     <label class="col-form-label">Изменить цену подписки</label>
 
@@ -282,7 +301,25 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row" v-if="subscription.status == 'trial' && subscription.id && !customer.card" style="margin-bottom: 15px">
+                                <div class="col-sm-6">
+                                    <div class="recurrent_block">
+                                        <span class="cardLink">
+                                            <div id="genBtn">  Привязка карты на сумму - <input :value="getProductBlockAmount(subscription.product_id)" style="width: 60px" type="number"  disabled="true"> &nbsp &nbsp &nbsp &nbsp &nbsp
+                                            <button  class="btn btn-outline-success" @click="genlink(subscription.id)">Генерировать ссылку</button><p></p>
+                                        </div>
+                                        <img id="pitechlogo" style="margin-right: 20px; display: none" src="/images/pitech1.png" alt="pitech" width="30px" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="recurrent_button-block">
+                                        <button class="btn btn-info" @click="copyGenLink(subIndex)">Копировать</button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row" style="margin-bottom: 15px" >
+
                                 <div v-if="(customer.card && customer.card.type == 'pitech') && (new Date() > new Date(subscription.ended_at))" class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
@@ -355,7 +392,7 @@
                                             <a :href="payment.url" target="_blank">ID: {{ payment.id }}</a>
                                             <span> | </span>
                                             {{ payment.title }}
-<!--                                            <span v-if="payment.type == 'pitech' && payment.status == 'Completed'" >Оплачено через Pitech</span>-->
+                                            <!--                                            <span v-if="payment.type == 'pitech' && payment.status == 'Completed'" >Оплачено через Pitech</span>-->
                                             <a v-if="payment.type == 'transfer' && payment.status == 'Completed'" target="_blank" :href="payment.check">(чек оплаты)</a>
                                             <span> | </span>
                                             <a :href="payment.user.url" target="_blank">{{ payment.user.name }}</a>
@@ -432,6 +469,9 @@
                 paymentTypes: {},
                 statuses: {},
                 quantities: {},
+                summa: 20,
+                customerIdTmp: '',
+                subIdTmp: '',
                 typesColor: {
                     frozen: 'green',
                     transfer: 'red',
@@ -455,7 +495,7 @@
                 this.customer = newVal;
             }
         },
-            mounted() {
+        mounted() {
             if (this.type == 'create') {
                 this.addProduct();
             } else if (this.type == 'edit') {
@@ -464,7 +504,50 @@
             this.getOptions();
         },
         methods: {
+            genlink(subId){
 
+                this.subIdTmp = subId;
+                axios.post('/pitech/get-customer-id', { subscription: subId })
+                   .then(response => {
+                        this.customerIdTmp = response.data[0].customer_id;
+                        this.getLinkPitech();
+                        //  console.log(this.subscriptionLogs);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error(error);
+                    });
+            },
+            getLinkPitech(){
+                var settings = {
+                    "url": "https://cards-stage.pitech.kz/gw/cards/save",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "extClientRef": this.customerIdTmp,
+                        "successReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "amount": this.summa,
+                        "extOrdersId": this.subIdTmp,
+                        "currency": "KZT",
+                        "createdBy": "user"
+                    }),
+                };
+
+                $.ajax(settings).done(function (response) {
+
+                    $(".cardLink").html("<a href='"+response.paymentUrl+"' target='_blank'>"+response.paymentUrl+"</a> <input type='hidden' id='cardLinkInput' value='"+response.paymentUrl+"'>");
+                    $('#genBtn').hide();
+                    $('#pitechlogo').show();
+                    console.log(response);
+                });
+            },
             getLogs(){
                 console.log(this.subscriptionIdProp);
                 axios.get('/userlogs/list', {
@@ -634,6 +717,13 @@
                     return 'Новый абонемент';
                 }
             },
+            getProductBlockAmount(productId) {
+                if (productId) {
+                    return this.products[productId].block_amount;
+                } else {
+                    return 'Новый абонемент';
+                }
+            },
             openTransferModal() {
                 $('#modalTransfer').modal('toggle');
             },
@@ -692,6 +782,9 @@
             showDate(date) {
                 return moment(date).locale('ru').format('DD MMM YY');
             },
+            showDateWithTrial(date, days) {
+                return moment(date).locale('ru').add(days, 'days').format('DD MMM YY');
+            },
             closeModal() {
                 this.customer = {
                     name: '',
@@ -708,6 +801,46 @@
             },
             copyRecurrentLink(index) {
                 var input = $('#recurrent-link-' + index);
+                var success   = true,
+                    range     = document.createRange(),
+                    selection;
+
+                // For IE.
+                if (window.clipboardData) {
+                    window.clipboardData.setData("Text", input.val());
+                } else {
+                    // Create a temporary element off screen.
+                    var tmpElem = $('<div>');
+                    tmpElem.css({
+                        position: "absolute",
+                        left:     "-1000px",
+                        top:      "-1000px",
+                    });
+                    // Add the input value to the temp element.
+                    tmpElem.text(input.val());
+                    $("body").append(tmpElem);
+                    // Select temp element.
+                    range.selectNodeContents(tmpElem.get(0));
+                    selection = window.getSelection ();
+                    selection.removeAllRanges ();
+                    selection.addRange (range);
+                    // Lets copy.
+                    try {
+                        success = document.execCommand("copy", false, null);
+                    }
+                    catch (e) {
+                        copyToClipboardFF(input.val());
+                    }
+                    if (success) {
+                        Vue.$toast.success('Ссылка скопирована!');
+
+                        // remove temp element.
+                        tmpElem.remove();
+                    }
+                }
+            },
+            copyGenLink(index) {
+                var input = $('#cardLinkInput');
                 var success   = true,
                     range     = document.createRange(),
                     selection;

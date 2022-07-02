@@ -41,6 +41,18 @@
                     <input type="number" class="form-control" id="next-price" value="" name="next-price">
                 </div>
             </div>
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 col-form-label">Сумма блокировки</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control" id="block_amount" value="" name="block_amount">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="title" class="col-sm-2 col-form-label">Триал период ( дней )</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control" id="trial_period" value="" name="trial_period">
+                </div>
+            </div>
          <!--   <div class="form-group row">
                 <label  class="col-sm-2">Включится после</label>
             <select name="period" class="custom-select col-sm-1 " >
