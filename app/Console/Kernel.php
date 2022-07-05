@@ -40,6 +40,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:users_bonuses')->hourly();
         $schedule->command('update:pitech')->everyMinute();
         $schedule->command('pay:pitech')->dailyAt('01:00');
+        $schedule->command('trial:pitech')->dailyAt('01:00');
         $schedule->command('update:statistics week')->everySixHours();
         $schedule->command('update:statistics month')->dailyAt('13:00');
         $schedule->command('queue:restart')
