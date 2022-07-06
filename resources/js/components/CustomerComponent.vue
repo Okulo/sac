@@ -319,7 +319,6 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-
                                 <div v-if="(customer.card && customer.card.type == 'pitech') && (new Date() > new Date(subscription.ended_at))" class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
@@ -375,6 +374,13 @@
                                     <ul class="list-group">
                                         <li class="list-group-item list-payment-Completed" v-for="item in subscriptionLogs"
                                             v-if="item.type.value == 'Изменена стоимость подписки' && item.subscription_id.value == subscription.id">
+                                            <div v-if="item.type.value == 'Ошибка при сохранении карты'">
+                                                <a href="#">ID: {{ item.id.value }}</a>
+                                                <span> | </span>
+                                                {{ item.created_at.value}}, Ошибка при сохранении карты
+                                                <span> | </span>
+                                                <span v-html="item.data.value"></span>
+                                            </div>
                                             <div v-if="item.type.value == 'Изменена стоимость подписки'">
                                                 <a href="#">ID: {{ item.id.value }}</a>
                                                 <span> | </span>

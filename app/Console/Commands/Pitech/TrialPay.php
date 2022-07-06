@@ -61,9 +61,12 @@ class TrialPay extends Command
                 ->latest()
                 ->first();
 
+            $endSubscr = Carbon::parse($subscription->ended_at)->setTimezone('Asia/Almaty')->format('Y-m-d');
+            $endSubscr1day = Carbon::parse($endSubscr)->addDay()->format('Y-m-d');
+            $endSubscr2day = Carbon::parse($endSubscr)->addDays(2)->format('Y-m-d');
+            $today = Carbon::now()->setTimezone('Asia/Almaty')->startOfDay()->format('Y-m-d');
 
-
-            if($card){
+            if(($card) && ($today == $endSubscr || $today == $endSubscr1day || $today == $endSubscr2day)){
 
                 $curl = curl_init();
 
@@ -87,7 +90,7 @@ class TrialPay extends Command
                     "extOrdersId": "'.$subscription->id.'",
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                    "callbackSuccessUrl": "http://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                     "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
@@ -102,9 +105,9 @@ class TrialPay extends Command
                 }
                 ',
                     CURLOPT_HTTPHEADER => array(
-                         'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                        'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
                         //бой
-                       // 'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
+                        // 'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                         'Content-Type: application/json'
                     ),
                 ));
