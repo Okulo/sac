@@ -72,6 +72,15 @@ class pitechController extends Controller
                     ->where('status', 'trial')
                     ->update(['started_at' => $data['eventTime'], 'ended_at' => $trial_date]);
 
+                UserLog::create([
+                    'subscription_id' => $data['extOrdersId'],
+                    'user_id' => Auth::id(),
+                    'type' => UserLog::SAVE_CARD_SUCCESS,
+                    'data' => [
+                        'date' => $data['eventTime'],
+                    ],
+                ]);
+
                 return response()->json([
                     'code' => 0,
                 ], 200);

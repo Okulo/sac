@@ -319,7 +319,7 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-                                <div v-if="(customer.card && customer.card.type == 'pitech') && (new Date() > new Date(subscription.ended_at))" class="form-group col-sm-6">
+                                <div v-if="(customer.card && customer.card.type == 'pitech') " class="form-group col-sm-6">
                                     <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                 </div>
                                 <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
@@ -374,6 +374,16 @@
                                     <ul class="list-group">
                                         <li class="list-group-item list-payment-Completed" v-for="item in subscriptionLogs"
                                             v-if="item.type.value == 'Изменена стоимость подписки' && item.subscription_id.value == subscription.id">
+                                            <div v-if="item.type.value == 'Изменена стоимость подписки'">
+                                                <a href="#">ID: {{ item.id.value }}</a>
+                                                <span> | </span>
+                                                {{ item.created_at.value}}, изменена стоимость подписки
+                                                <span> | </span>
+                                                <span v-html="item.data.value"></span>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item list-payment-Completed" v-for="item in subscriptionLogs"
+                                            v-if="item.type.value == 'Ошибка при сохранении карты' && item.subscription_id.value == subscription.id">
                                             <div v-if="item.type.value == 'Ошибка при сохранении карты'">
                                                 <a href="#">ID: {{ item.id.value }}</a>
                                                 <span> | </span>
@@ -381,10 +391,13 @@
                                                 <span> | </span>
                                                 <span v-html="item.data.value"></span>
                                             </div>
-                                            <div v-if="item.type.value == 'Изменена стоимость подписки'">
+                                        </li>
+                                        <li class="list-group-item list-payment-Completed" v-for="item in subscriptionLogs"
+                                            v-if="item.type.value == 'Карта успешно привязана' && item.subscription_id.value == subscription.id">
+                                            <div v-if="item.type.value == 'Карта успешно привязана'">
                                                 <a href="#">ID: {{ item.id.value }}</a>
                                                 <span> | </span>
-                                                {{ item.created_at.value}}, изменена стоимость подписки
+                                                {{ item.created_at.value}}, Карта успешно привязана
                                                 <span> | </span>
                                                 <span v-html="item.data.value"></span>
                                             </div>
@@ -599,7 +612,6 @@
 
             },
             changeAmount(cpId, subId, product){
-
                 if (confirm("Хотите изменить стоимость подписки?")){
                     axios.post('/cloudpayments/updateamount', {
                         cpId: cpId,
@@ -608,10 +620,14 @@
                         product: product
                     })
                         .then(function (response) {
-                            let message = "Стоимость подписки успешно изменена!";
                             console.log(response);
-                            $('#change-price').hide();
-                            Vue.$toast.success(message);
+                            if(response.data){
+                                $('#change-price').hide();
+                                Vue.$toast.success('"Стоимость подписки успешно изменена!"');
+                            }
+                            else{
+                                Vue.$toast.error('Подписка не может быть изменена!');
+                            }
 
                         })
                         .catch(function (error) {

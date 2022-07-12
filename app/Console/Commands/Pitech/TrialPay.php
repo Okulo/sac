@@ -91,7 +91,7 @@ class TrialPay extends Command
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
                     "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                    "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
                         {

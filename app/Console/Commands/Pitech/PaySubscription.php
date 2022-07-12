@@ -47,7 +47,7 @@ class PaySubscription extends Command
     public function handle()
     {
         $payments = Payment::where('type', 'pitech')->get();
-        $subscriptions = Subscription::where('payment_type', 'pitech')->get();
+        $subscriptions = Subscription::where('payment_type', 'pitech')->where('status','waiting')->get();
 
 
         foreach ($subscriptions as $subscription){
@@ -118,7 +118,7 @@ class PaySubscription extends Command
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
                     "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-                    "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
                     {

@@ -7,6 +7,7 @@ use App\Exceptions\NoticeException;
 use App\Http\Requests\CreateCustomerRequest;
 use App\Http\Requests\CreateCustomerWithDataRequest;
 use App\Models\Customer;
+use App\Models\Card;
 use Illuminate\Http\Request;
 use App\Filters\CustomerFilter;
 use App\Http\Resources\CustomerCollection;
@@ -439,5 +440,11 @@ class CustomerController extends Controller
 
         $customer->delete();
         return redirect()->route("{$this->root}.index")->with('success', 'Клиент успешно удален.');
+    }
+
+    public function getCustomerCard(Request $request){
+        $card = Card::where('customer_id',$request->customerId)->get();
+
+        return $card;
     }
 }

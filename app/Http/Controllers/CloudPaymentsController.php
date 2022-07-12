@@ -276,7 +276,7 @@ class CloudPaymentsController extends Controller
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
                     "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                    "callbackFailUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
                         {
@@ -342,7 +342,7 @@ class CloudPaymentsController extends Controller
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
                     "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-                    "callbackFailUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
                         {
@@ -374,53 +374,55 @@ class CloudPaymentsController extends Controller
     }
     public function updateAmount( Request $request)
     {
+        if($request->subscriptionId){
+            $subscription = Subscription::where('id',$request->subscriptionId)->get();
+            $status = $subscription[0]['status'] ;
+        }
 
-        UserLog::create([
-            'subscription_id' =>  $request->subscription,
-            'user_id' => null,
-            'type' => 13,
-            'data' => [
-                'new' => $request->Amount,
-            ],
-        ]);
-
-        // ниже нужно добавить информациюя по чеку
-
-        //                    Amount: "3990"
-        //                    cpId: "sc_11a38e8375ee3c6b1c7756312e0cd"
-        //                    product: "Антижир (Активные онлайн тренировки)"
-        //                    subscriptionId: 17933
-
-
-        $cloudpaymentService = new CloudPaymentsService();
-        $data =  $cloudpaymentService->updateSubscription([
-            'Id' => $request->cpId,
-            'Amount' => $request->Amount,
-            'customerReceipt' => [
-                'Items' => [ //товарные позиции
-                    [
-                        'label' => $request->product, // наименование товара
-                        'price' => $request->Amount, // цена
-                        'quantity' => 1.00, //количество
-                        'amount' => $request->Amount, // сумма
-                        'vat' => 0, // ставка НДС
-                        'method' => 0, // тег-1214 признак способа расчета - признак способа расчета
-                        'object' => 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
-                        'measurementUnit' => "шт" //единица измерения
-                    ],
+        if($status == 'rejected' || $status == 'refused'){
+            return null;
+        }
+        else {
+            UserLog::create([
+                'subscription_id' =>  $request->subscription,
+                'user_id' => null,
+                'type' => 13,
+                'data' => [
+                    'new' => $request->Amount,
                 ],
-                'calculationPlace' => "www.strela-academy.ru", //место осуществления расчёта, по умолчанию берется значение из кассы
-                'taxationSystem' => 0, //система налогообложения; необязательный, если у вас одна система налогообложения
-                'email' => '', //e-mail покупателя, если нужно отправить письмо с чеком
-                'phone' => '', //телефон покупателя в любом формате, если нужно отправить сообщение со ссылкой на чек
-                'isBso' => false,
-                'amounts' => [
-                    'electronic' =>  $request->Amount // Сумма оплаты электронными деньгами
-                ]
-            ],
-        ]);
+            ]);
 
-        return $request;
+
+            $cloudpaymentService = new CloudPaymentsService();
+            $data =  $cloudpaymentService->updateSubscription([
+                'Id' => $request->cpId,
+                'Amount' => $request->Amount,
+                'customerReceipt' => [
+                    'Items' => [ //товарные позиции
+                        [
+                            'label' => $request->product, // наименование товара
+                            'price' => $request->Amount, // цена
+                            'quantity' => 1.00, //количество
+                            'amount' => $request->Amount, // сумма
+                            'vat' => 0, // ставка НДС
+                            'method' => 0, // тег-1214 признак способа расчета - признак способа расчета
+                            'object' => 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+                            'measurementUnit' => "шт" //единица измерения
+                        ],
+                    ],
+                    'calculationPlace' => "www.strela-academy.ru", //место осуществления расчёта, по умолчанию берется значение из кассы
+                    'taxationSystem' => 0, //система налогообложения; необязательный, если у вас одна система налогообложения
+                    'email' => '', //e-mail покупателя, если нужно отправить письмо с чеком
+                    'phone' => '', //телефон покупателя в любом формате, если нужно отправить сообщение со ссылкой на чек
+                    'isBso' => false,
+                    'amounts' => [
+                        'electronic' =>  $request->Amount // Сумма оплаты электронными деньгами
+                    ]
+                ],
+            ]);
+
+            return $request;
+        }
 
     }
 

@@ -65,7 +65,7 @@ class UpdatePayments extends Command
                     $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
                         //      ->where('id', $result[0]['extOrdersId'])
                         ->limit(1)
-                        ->update(['status' => 'rejected']);
+                        ->update(['status' => 'waiting']);
                     if($addSubscription){
 
                         if(!Payment::where('transaction_id', $result[0]['ordersId'])->first()){

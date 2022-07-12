@@ -117,6 +117,14 @@
                     </span>
                 </div>
             </div>
+<!--            <div v-if="queryParams.status == 'trial'" style="flex: 0 1 auto; margin-left: 14px; line-height: 28px; margin-top: 14px;">-->
+<!--                <label for="one">Карта привязана</label>-->
+<!--                <input type="radio" id="one" value="yes" v-model="picked">-->
+<!--                &nbsp  &nbsp  &nbsp <label for="two">Карта не привязана</label>-->
+<!--                <input type="radio" id="two" value="no" v-model="picked">-->
+<!--                <br>-->
+<!--                <span>Выбрано: {{ picked }}</span>-->
+<!--            </div>-->
         </div>
         <div class="table-responsive bg-white">
             <pulse-loader class="spinner" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
@@ -145,6 +153,11 @@
                             <div>
                                 <div class="custom-text">
                                     {{ itemsIndex + pagination.from }}
+                                    <div v-if="prefix == 'subscriptions' && items.status.value == 'trial'">
+                                  <span v-if="items.card.length" style="color: forestgreen; font-size: 88%">
+                                    Карта привязана
+                                  </span>
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -303,6 +316,7 @@
 
 <script>
 import CustomerComponent from './CustomerComponent.vue';
+import moment from "moment";
 
 export default {
   components: { CustomerComponent },
@@ -316,6 +330,7 @@ export default {
                 reasonProductId: null,
                 reasonDataIndex: null,
                 filterOpen: false,
+                picked: '',
                 options: {
                     customer: [],
                 },
@@ -329,6 +344,7 @@ export default {
                 others: {},
                 pagination: {},
                 queryParams: {},
+                customerCard: [],
                 spinnerData: {
                     loading: false,
                     color: '#6cb2eb',
@@ -343,6 +359,24 @@ export default {
             });
         },
         methods: {
+            showCrad(customerId){
+                //console.log(customerId);
+
+                axios.post('/customers/get-customer-card', {
+                    customerId: customerId
+                })
+                    .then(response => {
+                        if(response.data[0]){
+                            this.customerCard = response.data[0];
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
+
+            },
             existsReasons() {
                 if (this.others && this.others.reasons && this.others.reasons[this.reasonProductId]) {
                     return true;
@@ -517,6 +551,9 @@ export default {
             getData: _.debounce(function () {
                 this.spinnerData.loading = true;
                 axios.get(`/${this.prefixProp}/list`, { params: this.queryParams }).then(response => {
+
+                    console.log(response.data);
+
                     this.data = response.data.data;
                     this.dataTitles = response.data.dataTitles;
                     this.others = response.data.others;
