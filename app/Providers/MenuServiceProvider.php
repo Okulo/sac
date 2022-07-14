@@ -119,7 +119,7 @@ class MenuServiceProvider extends ServiceProvider
                 "url" => "reports/get-reports/8",
             ]);
             $event->menu->addIn('reports', [
-                "key" => "report_3",
+                "key" => "report_4",
                 "text" => 'Отмененные подписки',
                 "url" => "reports/get-reports/4",
             ]);
@@ -133,7 +133,11 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Пробники (жду оплату)',
                 "url" => "reports/get-reports/6",
             ]);
-
+            $event->menu->addIn('reports', [
+                "key" => "report_9",
+                "text" => 'Ошибки оплат',
+                "url" => "reports/get-reports/9",
+            ]);
             // $event->menu->addIn('statistics', [
             //     "key" => "statistic_type_3",
             //     "text" => 'Итоговые',

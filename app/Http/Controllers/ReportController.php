@@ -6,9 +6,11 @@ use App\Models\CpNotification;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Subscription;
+use App\Models\UserLog;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use function Symfony\Component\String\s;
 
 class ReportController extends Controller
@@ -53,9 +55,10 @@ class ReportController extends Controller
             return view('reports.waitingPaymentTries');
         } elseif ($type == 7) {
              return view('reports.archivedProducts');
-        }
-        elseif ($type == 8) {
+        } elseif ($type == 8) {
             return view('reports.simplePayEnds');
+        }elseif ($type == 9) {
+            return view('reports.payErrors');
         }
         else {
             return view('reports.index');
@@ -357,6 +360,39 @@ class ReportController extends Controller
             ->get();
 
         return $setStatus;
+    }
+
+    public function getPayErrorList(){
+      // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
+      //  $logs = UserLog::limit(1000)->get();
+
+        $logs = \DB::select('SELECT
+                          user_logs.`type`,
+                          user_logs.subscription_id,
+                          user_logs.user_id,
+                          user_logs.id,
+                          user_logs.`data`,
+                          user_logs.created_at,
+                          user_logs.updated_at,
+                          user_logs.customer_id,
+                          subscriptions.id,
+                          subscriptions.customer_id,
+                          subscriptions.price,
+                          subscriptions.`status`
+                FROM
+                  user_logs
+                INNER JOIN subscriptions ON (user_logs.subscription_id = subscriptions.id)
+                WHERE user_logs.id IN
+                  (SELECT
+                    MAX(user_logs.id)
+                  FROM
+                    user_logs
+                  GROUP BY user_logs.subscription_id)
+                 AND (user_logs.data LIKE "%rejected%" OR user_logs.data LIKE "%error%")
+                ORDER BY user_logs.id DESC
+                LIMIT 500');
+
+        return $logs;
     }
 
     public function setProcessedStatus( Request $request){

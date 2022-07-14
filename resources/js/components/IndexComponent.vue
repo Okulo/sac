@@ -154,7 +154,7 @@
                                 <div class="custom-text">
                                     {{ itemsIndex + pagination.from }}
                                     <div v-if="prefix == 'subscriptions' && items.status.value == 'trial'">
-                                  <span v-if="items.card.length" style="color: forestgreen; font-size: 88%">
+                                  <span v-if="items.card && items.card.length" style="color: forestgreen; font-size: 88%">
                                     Карта привязана
                                   </span>
                                     </div>
