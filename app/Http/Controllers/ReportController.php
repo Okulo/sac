@@ -362,11 +362,12 @@ class ReportController extends Controller
         return $setStatus;
     }
 
-    public function getPayErrorList(){
+    public function getPayErrorList( Request $request){
       // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
       //  $logs = UserLog::limit(1000)->get();
 
-        $logs = \DB::select('SELECT
+        if ($request->product){
+            $logs = \DB::select('SELECT
                           user_logs.`type`,
                           user_logs.subscription_id,
                           user_logs.user_id,
@@ -378,10 +379,48 @@ class ReportController extends Controller
                           subscriptions.id,
                           subscriptions.customer_id,
                           subscriptions.price,
-                          subscriptions.`status`
+                          subscriptions.`status`,
+                          subscriptions.product_id,
+                          customers.name,
+                          products.title
                 FROM
                   user_logs
-                INNER JOIN subscriptions ON (user_logs.subscription_id = subscriptions.id)
+                LEFT JOIN subscriptions ON (user_logs.subscription_id = subscriptions.id)
+                LEFT JOIN customers ON (subscriptions.customer_id = customers.id)
+                     LEFT JOIN products ON (subscriptions.product_id = products.id)
+                WHERE user_logs.id IN
+                  (SELECT
+                    MAX(user_logs.id)
+                  FROM
+                    user_logs
+                  GROUP BY user_logs.subscription_id)
+                 AND (user_logs.data LIKE "%rejected%" OR user_logs.data LIKE "%error%")
+                 AND subscriptions.product_id = '.$request->product.'
+                ORDER BY user_logs.id DESC
+                LIMIT 500');
+        }
+        else{
+            $logs = \DB::select('SELECT
+                          user_logs.`type`,
+                          user_logs.subscription_id,
+                          user_logs.user_id,
+                          user_logs.id,
+                          user_logs.`data`,
+                          user_logs.created_at,
+                          user_logs.updated_at,
+                          user_logs.customer_id,
+                          subscriptions.id,
+                          subscriptions.customer_id,
+                          subscriptions.price,
+                          subscriptions.`status`,
+                          subscriptions.product_id,
+                          customers.name,
+                          products.title
+                FROM
+                  user_logs
+                LEFT JOIN subscriptions ON (user_logs.subscription_id = subscriptions.id)
+                LEFT JOIN customers ON (subscriptions.customer_id = customers.id)
+                     LEFT JOIN products ON (subscriptions.product_id = products.id)
                 WHERE user_logs.id IN
                   (SELECT
                     MAX(user_logs.id)
@@ -391,6 +430,7 @@ class ReportController extends Controller
                  AND (user_logs.data LIKE "%rejected%" OR user_logs.data LIKE "%error%")
                 ORDER BY user_logs.id DESC
                 LIMIT 500');
+        }
 
         return $logs;
     }

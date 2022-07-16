@@ -49,12 +49,11 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">ID абонемента</th>
+                            <th scope="col">Имя</th>
+                            <th scope="col">Услуга</th>
                             <th scope="col">Статус</th>
                             <th>Дата</th>
                             <th scope="col">В процессе</th>
-                            <td></td>
-                          <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
 
@@ -62,13 +61,14 @@
                         <tr v-for="(item, index) in items" :key="index">
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
                               <td>
-                                <a class="custom-link" role="button" @click="openModal(item.customer_id, item.subscription_id)">{{item.subscription_id}}</a>
+                                <a class="custom-link" role="button" @click="openModal(item.customer_id, item.subscription_id)">{{item.name}}</a>
                             </td>
                            <!--   <td>{{item.subscription_id}}</td>
                               <td>{{item.id}}</td>
                              <td>{{item.type}}</td>
                             <td>{{ item.status}}</td>
                             -->
+                            <td>{{ item.title}}</td>
                             <td>{{ item.status}}</td>
                             <td>{{ item.created_at }}</td>
                             <!--    <td>{{item.payment_type}}</td>
@@ -85,7 +85,6 @@
                                     </span>
                                 </div>
                             </td>
-                            <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.subscription_id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
                         </tbody>
@@ -96,7 +95,6 @@
             </div>
         </div>
         <customer-component type-prop="edit" :subscription-id-prop="subscriptionId" :customer-id-prop="customerId"></customer-component>
-
     </div>
 </template>
 
@@ -217,12 +215,10 @@
                     product: this.product
                 })
                     .then(response => {
-                         // console.log(response);
+                          console.log(response);
 
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
-
-                            console.log(elem);
 
                             var st = JSON.parse(elem.data);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
@@ -230,13 +226,14 @@
                             var diff = moment.duration(given.diff(current)).asDays();
 
                             if(st.new == 'rejected' ){
-                                console.log(st.new);
                                 this.items.push({
 
-                                    created_at: moment(elem.created_at).locale('ru').format('DD MMM YY'),
+                                    created_at: moment(elem.created_at).locale('ru').format('DD MMM YY HH:mm'),
                                     customer_id: elem.customer_id,
                                     status: 'Ошибка оплаты',
+                                    name: elem.name,
                                     id: elem.id,
+                                    title: elem.title,
                                     subscription_id:  elem.subscription_id,
                                     type: elem.type,
                                     updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
@@ -248,9 +245,10 @@
                             if(st.new == 'error'){
                                 this.items.push({
 
-                                    created_at: moment(elem.created_at).locale('ru').format('DD MMM YY'),
+                                    created_at: moment(elem.created_at).locale('ru').format('DD MMM YY HH:mm'),
                                     customer_id: elem.customer_id,
                                     status: 'Ошибка привязки карты',
+                                    name: elem.name,
                                     id: elem.id,
                                     subscription_id:  elem.subscription_id,
                                     type: elem.type,

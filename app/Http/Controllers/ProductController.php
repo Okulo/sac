@@ -176,7 +176,15 @@ class ProductController extends Controller
     public function update(CreateProductRequest $request, Product $product)
     {
         access(['can-head', 'can-host']);
-        $this->updateOrCreate($request->all(), $product, 'update');
+
+
+
+        if( $request->trial_period < 1){
+            return redirect()->to(route("{$this->root}.index"))->with('success', 'Триал период не может быть меньше 1 дня!');
+        }
+        else{
+            $this->updateOrCreate($request->all(), $product, 'update');
+        }
 
         $message = 'Данные продукта успешно изменены.';
         if ($request->ajax()) {
@@ -205,7 +213,7 @@ class ProductController extends Controller
         $productAdditionals = $request['productAdditionals'] ?? [];
 
         if ($type == 'update') {
-            $product->update($request);
+              $product->update($request);
 //            $nextPrice = NextPrice::where('product_id', $product->id)
 //                ->update(['price' => $nextPrice]);
 
