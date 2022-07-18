@@ -379,9 +379,11 @@ class ReportController extends Controller
                           subscriptions.id,
                           subscriptions.customer_id,
                           subscriptions.price,
+                          subscriptions.ended_at,
                           subscriptions.`status`,
                           subscriptions.product_id,
                           customers.name,
+                          customers.phone,
                           products.title
                 FROM
                   user_logs
@@ -412,9 +414,11 @@ class ReportController extends Controller
                           subscriptions.id,
                           subscriptions.customer_id,
                           subscriptions.price,
+                          subscriptions.ended_at,
                           subscriptions.`status`,
                           subscriptions.product_id,
                           customers.name,
+                          customers.phone,
                           products.title
                 FROM
                   user_logs

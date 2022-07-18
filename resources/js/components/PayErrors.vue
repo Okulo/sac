@@ -50,9 +50,11 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Имя</th>
+                            <th scope="col">Телефон</th>
                             <th scope="col">Услуга</th>
                             <th scope="col">Статус</th>
-                            <th>Дата</th>
+                            <th>Дата ошибки</th>
+                            <th>Дата окончания</th>
                             <th scope="col">В процессе</th>
                         </tr>
                         </thead>
@@ -63,6 +65,7 @@
                               <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.subscription_id)">{{item.name}}</a>
                             </td>
+                            <td>{{ item.phone}}</td>
                            <!--   <td>{{item.subscription_id}}</td>
                               <td>{{item.id}}</td>
                              <td>{{item.type}}</td>
@@ -71,6 +74,7 @@
                             <td>{{ item.title}}</td>
                             <td>{{ item.status}}</td>
                             <td>{{ item.created_at }}</td>
+                            <td>{{ item.ended_at }}</td>
                             <!--    <td>{{item.payment_type}}</td>
                                 <td>{{item.status}}</td>-->
                             <td>
@@ -219,7 +223,6 @@
 
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
-
                             var st = JSON.parse(elem.data);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
@@ -232,10 +235,12 @@
                                     customer_id: elem.customer_id,
                                     status: 'Ошибка оплаты',
                                     name: elem.name,
+                                    phone: elem.phone,
                                     id: elem.id,
                                     title: elem.title,
                                     subscription_id:  elem.subscription_id,
                                     type: elem.type,
+                                    ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY HH:mm'),
                                     updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
                                     user_id: null
 
@@ -249,6 +254,7 @@
                                     customer_id: elem.customer_id,
                                     status: 'Ошибка привязки карты',
                                     name: elem.name,
+                                    phone: elem.phone,
                                     id: elem.id,
                                     subscription_id:  elem.subscription_id,
                                     type: elem.type,
