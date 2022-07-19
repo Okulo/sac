@@ -8,6 +8,7 @@ use App\Http\Requests\CreateCustomerRequest;
 use App\Http\Requests\CreateCustomerWithDataRequest;
 use App\Models\Customer;
 use App\Models\Card;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
 use App\Filters\CustomerFilter;
 use App\Http\Resources\CustomerCollection;
@@ -152,19 +153,49 @@ class CustomerController extends Controller
             $endedAt = Carbon::parse($item['ended_at']);
             $triesAt = Carbon::parse($item['tries_at']);
 
-            $subscription = Subscription::updateOrCreate([
-                'product_id' => $item['product_id'],
-                'customer_id' => $customer->id,
-            ], [
-                'customer_id' => $customer->id,
-                'price' => $item['price'],
-                'payment_type' => $item['payment_type'],
-                'started_at' => Carbon::parse($item['started_at']),
-                'ended_at' => $endedAt,
-                'tries_at' => $triesAt,
-                'status' => $item['status'],
-                'reason_id' => $item['reason_id'],
-            ]);
+            // если цена изменилась, пишем лог
+            if($subscription->price != $item['price']){
+                $subscription = Subscription::updateOrCreate([
+                    'product_id' => $item['product_id'],
+                    'customer_id' => $customer->id,
+                ], [
+                    'customer_id' => $customer->id,
+                    'price' => $item['price'],
+                    'payment_type' => $item['payment_type'],
+                    'started_at' => Carbon::parse($item['started_at']),
+                    'ended_at' => $endedAt,
+                    'tries_at' => $triesAt,
+                    'status' => $item['status'],
+                    'reason_id' => $item['reason_id'],
+                ]);
+
+                UserLog::create([
+                    'subscription_id' =>  $subscription->id,
+                    'user_id' => null,
+                    'type' => 13,
+                    'data' => [
+                        'new' => 'ручное изменение '.$item['price'],
+                    ],
+                ]);
+
+            }
+            else{
+                $subscription = Subscription::updateOrCreate([
+                    'product_id' => $item['product_id'],
+                    'customer_id' => $customer->id,
+                ], [
+                    'customer_id' => $customer->id,
+                    'price' => $item['price'],
+                    'payment_type' => $item['payment_type'],
+                    'started_at' => Carbon::parse($item['started_at']),
+                    'ended_at' => $endedAt,
+                    'tries_at' => $triesAt,
+                    'status' => $item['status'],
+                    'reason_id' => $item['reason_id'],
+                ]);
+            }
+
+
 
             // Если абонемент создается
             if ($subscription->wasRecentlyCreated) {

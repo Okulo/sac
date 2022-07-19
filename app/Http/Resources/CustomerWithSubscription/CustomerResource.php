@@ -24,14 +24,10 @@ class CustomerResource extends JsonResource
             'subscriptions' => SubscriptionResource::collection($this->subscriptions),
         ];
 
-        $customerCard = $this->cards->last();
+        $customerCard = $this->cards;
 
         if (isset($customerCard)) {
-            $data['card'] = [
-                'id' => $customerCard->id,
-                'type' => $customerCard->type,
-                'last_four' => $customerCard->last_four,
-            ];
+            $data['cards'] = $customerCard;
         }
 
         $data['userRole'] = Auth::user()->getRole();

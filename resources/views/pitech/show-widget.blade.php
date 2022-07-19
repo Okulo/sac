@@ -71,14 +71,14 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
     var data = JSON.parse('<?php echo $data; ?>');
     var settings = {
         //тестовый
-         "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
-        // "url": "https://cards.pitech.kz/gw/payments/cards/charge",
+        // "url": "https://cards-stage.pitech.kz/gw/payments/cards/charge",
+         "url": "https://cards.pitech.kz/gw/payments/cards/charge",
         "method": "POST",
         "timeout": 0,
         "headers": {
-            "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
+           // "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
             //бой
-           // "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
+           "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
             "Content-Type": "application/json"
         },
         "data": JSON.stringify({
@@ -88,8 +88,8 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
             "extOrdersId": data.accountId,
             "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
             "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-            "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-            "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+            "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+            "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
             "payload": {
                 "phone": data.data.cloudPayments.customerReceipt.phone,
                 "test": "yes",

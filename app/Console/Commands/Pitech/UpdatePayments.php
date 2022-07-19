@@ -54,7 +54,7 @@ class UpdatePayments extends Command
         $now = date("Y-m-d H:i:s");
 
         foreach ($payments as $pay){
-            //  print_r($payment->id);
+
             $result = json_decode($pay->data,true);
 
             if($result[0]['callbackType'] == 'FAIL'){
@@ -63,10 +63,13 @@ class UpdatePayments extends Command
                 if ($subscription){
                     $payDate =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty');
                     $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
-                        //      ->where('id', $result[0]['extOrdersId'])
-                        ->limit(1)
-                        ->update(['status' => 'waiting']);
+                                                    ->limit(1)
+                                                    ->update(['status' => 'waiting']);
                     if($addSubscription){
+
+                        \DB::table('pitech_notifications')
+                            ->where('id', $pay->id)
+                            ->update(['deleted_at' => $now]);
 
                         if(!Payment::where('transaction_id', $result[0]['ordersId'])->first()){
                             $paymentAdd =   \DB::table('payments')->insert([
@@ -95,9 +98,7 @@ class UpdatePayments extends Command
                                 ],
                             ]);
 
-                            \DB::table('pitech_notifications')
-                                ->where('id', $pay->id)
-                                ->update(['deleted_at' => $now]);
+
                         }
                     }
                 }
@@ -115,6 +116,10 @@ class UpdatePayments extends Command
                         //      ->where('id', $result[0]['extOrdersId'])
                         ->limit(1)
                         ->update(['status' => 'paid', 'payment_type' => 'pitech', 'ended_at' => $newEndedAt]);
+
+                    \DB::table('pitech_notifications')
+                        ->where('id', $pay->id)
+                        ->update(['deleted_at' => $now]);
 
                     //   print_r($subscription->data);
                     if($addSubscription){
@@ -176,9 +181,6 @@ class UpdatePayments extends Command
                                 \Log::error('Отсутствует бонус. Payment ID: ' . $payment->id);
                             } else {
                                 $payment->product_bonus_id = $bonus->id;
-                                \DB::table('pitech_notifications')
-                                    ->where('id', $pay->id)
-                                    ->update(['deleted_at' => $now]);
 
                                 UserLog::create([
                                     'subscription_id' => $subscription->id,

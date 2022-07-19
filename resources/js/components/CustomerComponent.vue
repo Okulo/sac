@@ -182,7 +182,7 @@
                                         <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-6" id="change-price" v-if="currentPrice && subscription.status != 'trial'">
+                                <div class="col-sm-6" id="change-price" v-if="currentPrice && subscription.status != 'trial' && subscription.payment_type == 'cloudpayments'">
                                     <hr>
                                     <label class="col-form-label">Изменить цену подписки</label>
 
@@ -301,7 +301,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" v-if="subscription.status == 'trial' && subscription.id && !customer.card" style="margin-bottom: 15px">
+                            <div class="row" v-if="subscription.status == 'trial' && subscription.id && !customer.cards.length" style="margin-bottom: 15px">
                                 <div class="col-sm-6">
                                     <div class="recurrent_block">
                                         <span class="cardLink">
@@ -319,13 +319,17 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" >
-                                <div v-if="(customer.card && customer.card.type == 'pitech') " class="form-group col-sm-6">
-                                    <button type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
-                                </div>
-                                <div class="col-sm-12" v-if="customer.card && (customer.card.type == 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
-                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span></span>
-                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="paymentByPitechCard(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
-                                </div>
+
+                                <div v-if="(customer.cards) " class="form-group col-sm-6">
+                                    <div v-for="card in customer.cards">
+                                         <div class="col-sm-12" v-if="card.type == 'pitech' && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
+                                            <span><span style="font-weight: bold">{{ card.type }}</span></span>
+                                            <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="paymentByPitechCard(subscription.id, card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
+                                        </div>
+                                        <button v-if="card.type == 'pitech' && card.cp_account_id == subscription.id" type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
+                                    </div>
+                                    </div>
+
                             </div>
                             <br><br>
                             <div v-show="type == 'edit'" class="row" style="margin-bottom: 15px;">
@@ -539,19 +543,19 @@
             },
             getLinkPitech(){
                 var settings = {
-                    "url": "https://cards-stage.pitech.kz/gw/cards/save",
+                    "url": "https://cards.pitech.kz/gw/cards/save",
                     "method": "POST",
                     "timeout": 0,
                     "headers": {
-                        "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
+                        "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
                         "Content-Type": "application/json"
                     },
                     "data": JSON.stringify({
                         "extClientRef": this.customerIdTmp,
                         "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                         "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                        "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/save-success",
-                        "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/save-success",
+                        "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/save-success",
+                        "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/save-success",
                         "amount": this.summa,
                         "extOrdersId": this.subIdTmp,
                         "currency": "KZT",
@@ -741,6 +745,7 @@
             },
             getProductBlockAmount(productId) {
                 if (productId) {
+                    this.summa = this.products[productId].block_amount;
                     return this.products[productId].block_amount;
                 } else {
                     return 'Новый абонемент';
