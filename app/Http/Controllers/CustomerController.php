@@ -154,7 +154,7 @@ class CustomerController extends Controller
             $triesAt = Carbon::parse($item['tries_at']);
 
             // если цена изменилась, пишем лог
-            if($subscription->price != $item['price']){
+            if(isset($subscription->price) && ($subscription->price != $item['price'])){
                 $subscription = Subscription::updateOrCreate([
                     'product_id' => $item['product_id'],
                     'customer_id' => $customer->id,

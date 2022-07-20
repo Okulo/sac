@@ -301,7 +301,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" v-if="subscription.status == 'trial' && subscription.id && !customer.cards.length" style="margin-bottom: 15px">
+                            <div class="row" v-if="(subscription.status == 'trial' && subscription.id) && (!customer.cards || customer.cards.length == 0)" style="margin-bottom: 15px">
                                 <div class="col-sm-6">
                                     <div class="recurrent_block">
                                         <span class="cardLink">
@@ -326,7 +326,7 @@
                                             <span><span style="font-weight: bold">{{ card.type }}</span></span>
                                             <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="paymentByPitechCard(subscription.id, card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                         </div>
-                                        <button v-if="card.type == 'pitech' && card.cp_account_id == subscription.id" type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
+                                        <button v-if="(card.type == 'pitech' && card.cp_account_id == subscription.id) && (subscription.payment_type == 'pitech' || subscription.payment_type == 'simple_payment')" type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                     </div>
                                     </div>
 
