@@ -35,14 +35,22 @@
                                 </option>
                             </select>
                         </div>
-
-                        <div class="col-4">
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                  <!--      <b>Платежная</b>
+                        <p></p>
+                        <div class="col-2">
+                            <select v-model="paytype" class="select-multiple custom-select">
+                                <option>Pitech</option>
+                                <option>Cloudpayments</option>
+                            </select>
+                        </div>
+-->
+                        <div class="col-3">
+                            <button id="getlist" v-if="product"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <strong>Всего записей -      {{items.length}}</strong><p><br></p>
+                    <strong>Всего записей -   {{items.length}}</strong><p><br></p>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
                     <table class="table">
@@ -52,8 +60,9 @@
                             <th scope="col">Имя</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуга</th>
-                            <th scope="col">Статус</th>
-                            <th>Дата ошибки</th>
+                            <th scope="col">Тип платежа</th>
+                            <th>Стоимость</th>
+                            <th>Дата платежа</th>
                             <th>Дата окончания</th>
                             <th scope="col">В процессе</th>
                         </tr>
@@ -68,12 +77,13 @@
                             <td>{{ item.phone}}</td>
                            <!--   <td>{{item.subscription_id}}</td>
                               <td>{{item.id}}</td>
-                             <td>{{item.type}}</td>
+                             <td></td>
                             <td>{{ item.status}}</td>
                             -->
                             <td>{{ item.title}}</td>
-                            <td>{{ item.status}}</td>
-                            <td>{{ item.created_at }}</td>
+                            <td>{{ item.type}}</td>
+                            <td>{{ item.amount}}</td>
+                            <td>{{ item.paided_at}}</td>
                             <td>{{ item.ended_at }}</td>
                             <!--    <td>{{item.payment_type}}</td>
                                 <td>{{item.status}}</td>-->
@@ -133,6 +143,7 @@
             period: '',
             products: {},
             product: '',
+            paytype: '',
         }),
         mounted() {
             console.log('Component mounted.');
@@ -216,19 +227,20 @@
                 this.spinnerData.loading = true;
                 //  this.spinnerData.loading = true;
                 axios.post('/reports/get-pay-error-list', {
-                    product: this.product
+                    product: this.product,
+                    paytype: this.paytype
                 })
                     .then(response => {
-                          console.log(response);
+                         console.log(response);
 
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
+
                             var st = JSON.parse(elem.data);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
 
-                            if(st.new == 'rejected' ){
                                 this.items.push({
 
                                     created_at: moment(elem.created_at).locale('ru').format('DD MMM YY HH:mm'),
@@ -242,30 +254,11 @@
                                     type: elem.type,
                                     ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY HH:mm'),
                                     updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
-                                    user_id: null
-
-
+                                    user_id: null,
+                                    amount: elem.amount,
+                                    data: elem.data,
+                                    paided_at: elem.paided_at
                                 });
-                            }
-                            if(st.new == 'error'){
-                                this.items.push({
-
-                                    created_at: moment(elem.created_at).locale('ru').format('DD MMM YY HH:mm'),
-                                    customer_id: elem.customer_id,
-                                    status: 'Ошибка привязки карты',
-                                    name: elem.name,
-                                    phone: elem.phone,
-                                    id: elem.id,
-                                    subscription_id:  elem.subscription_id,
-                                    type: elem.type,
-                                    updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
-                                    user_id: null
-
-
-                                });
-                            }
-
-
 
                         });
 

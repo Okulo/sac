@@ -131,7 +131,6 @@ class ReportController extends Controller
         ]);
         */
     }
-
     public function getPayList()
     {
         //$cp_pay = Customer::whereId(15948)->first();
@@ -368,72 +367,68 @@ class ReportController extends Controller
 
         if ($request->product){
             $logs = \DB::select('SELECT
-                          user_logs.`type`,
-                          user_logs.subscription_id,
-                          user_logs.user_id,
-                          user_logs.id,
-                          user_logs.`data`,
-                          user_logs.created_at,
-                          user_logs.updated_at,
-                          user_logs.customer_id,
-                          subscriptions.id,
-                          subscriptions.customer_id,
-                          subscriptions.price,
-                          subscriptions.ended_at,
-                          subscriptions.`status`,
-                          subscriptions.product_id,
-                          customers.name,
-                          customers.phone,
-                          products.title
-                FROM
-                  user_logs
-                LEFT JOIN subscriptions ON (user_logs.subscription_id = subscriptions.id)
-                LEFT JOIN customers ON (subscriptions.customer_id = customers.id)
-                     LEFT JOIN products ON (subscriptions.product_id = products.id)
-                WHERE user_logs.id IN
-                  (SELECT
-                    MAX(user_logs.id)
-                  FROM
-                    user_logs
-                  GROUP BY user_logs.subscription_id)
-                 AND (user_logs.data LIKE "%rejected%" OR user_logs.data LIKE "%error%")
-                 AND subscriptions.product_id = '.$request->product.'
-                ORDER BY user_logs.id DESC
-                LIMIT 500');
+                            payments.id,
+                            payments.subscription_id,
+                            payments.customer_id,
+                            payments.type,
+                            payments.status,
+                            payments.amount,
+                            payments.data,
+                            payments.paided_at,
+                            payments.created_at,
+                             customers.name,
+                             customers.phone,
+                             products.title,
+                             `subscriptions`.id as sub_id,
+                             `subscriptions`.`status`,
+                             `subscriptions`.`payment_type`
+                        FROM `payments`
+                        LEFT JOIN customers ON (payments.customer_id = customers.id)
+                        LEFT JOIN products ON (payments.product_id = products.id)
+                         LEFT JOIN `subscriptions` ON (payments.`subscription_id` = `subscriptions`.id)
+                        WHERE payments.id IN
+                          (SELECT
+                            MAX(payments.id)
+                          FROM
+                            payments
+                          GROUP BY payments.customer_id)
+                          AND payments.status = \'Declined\'
+                          AND `subscriptions`.`status` != "refused"
+                          AND payments.product_id = '.$request->product.'
+                          ORDER BY payments.id DESC
+                          LIMIT 700');
         }
         else{
             $logs = \DB::select('SELECT
-                          user_logs.`type`,
-                          user_logs.subscription_id,
-                          user_logs.user_id,
-                          user_logs.id,
-                          user_logs.`data`,
-                          user_logs.created_at,
-                          user_logs.updated_at,
-                          user_logs.customer_id,
-                          subscriptions.id,
-                          subscriptions.customer_id,
-                          subscriptions.price,
-                          subscriptions.ended_at,
-                          subscriptions.`status`,
-                          subscriptions.product_id,
-                          customers.name,
-                          customers.phone,
-                          products.title
-                FROM
-                  user_logs
-                LEFT JOIN subscriptions ON (user_logs.subscription_id = subscriptions.id)
-                LEFT JOIN customers ON (subscriptions.customer_id = customers.id)
-                     LEFT JOIN products ON (subscriptions.product_id = products.id)
-                WHERE user_logs.id IN
-                  (SELECT
-                    MAX(user_logs.id)
-                  FROM
-                    user_logs
-                  GROUP BY user_logs.subscription_id)
-                 AND (user_logs.data LIKE "%rejected%" OR user_logs.data LIKE "%error%")
-                ORDER BY user_logs.id DESC
-                LIMIT 500');
+                            payments.id,
+                            payments.subscription_id,
+                            payments.customer_id,
+                            payments.type,
+                            payments.status,
+                            payments.amount,
+                            payments.data,
+                            payments.paided_at,
+                            payments.created_at,
+                             customers.name,
+                             customers.phone,
+                             products.title,
+                             `subscriptions`.id as sub_id,
+                             `subscriptions`.`status`,
+                             `subscriptions`.`payment_type`
+                        FROM `payments`
+                        LEFT JOIN customers ON (payments.customer_id = customers.id)
+                        LEFT JOIN products ON (payments.product_id = products.id)
+                         LEFT JOIN `subscriptions` ON (payments.`subscription_id` = `subscriptions`.id)
+                        WHERE payments.id IN
+                          (SELECT
+                            MAX(payments.id)
+                          FROM
+                            payments
+                          GROUP BY payments.customer_id)
+                          AND payments.status = \'Declined\'
+                          AND `subscriptions`.`status` != "refused"
+                          ORDER BY payments.id DESC
+                          LIMIT 700');
         }
 
         return $logs;
