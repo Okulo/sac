@@ -157,6 +157,8 @@ Route::get("/test6", function () {
 
 Route::get("/", [HomeController::class, "homepage"])->name("homepage");
 Route::get("/thank-you", [HomeController::class, "thankYou"])->name("thankYou");
+Route::get("/card-saved", [HomeController::class, "cardSaved"])->name("cardSaved");
+Route::get("/card-save-fail", [HomeController::class, "cardSaveFail"])->name("cardSaveFail");
 Route::get("/failure", [HomeController::class, "failure"])->name("failure");
 Auth::routes();
 
@@ -211,6 +213,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-pay-list", [ReportController::class, "getPayList"])->name("reports.getPayList");
     Route::post("/reports/simple-pay-ends-list", [ReportController::class, "simplePayEndsList"])->name("reports.simplePayEndsList");
     Route::post("/reports/get-pay-error-list", [ReportController::class, "getPayErrorList"])->name("reports.getPayErrorList");
+    Route::post("/reports/get-cp-pay-errors", [ReportController::class, "getCpPayErrors"])->name("reports.getCpPayErrors");
     Route::post("/reports/get-refused-list", [ReportController::class, "getRefusedList"])->name("reports.getRefusedList");
     Route::post("/reports/get-processed-status", [ReportController::class, "getProcessedStatus"])->name("reports.getProcessedStatus");
     Route::post("/reports/get-waiting-pay-list", [ReportController::class, "getWaitingPay"])->name("reports.getWaitingPay");
@@ -219,6 +222,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");
     Route::post("/reports/add-wa-status", [ReportController::class, "addWaStatus"])->name("reports.addWaStatus");
     Route::post("/reports/set-processed-status", [ReportController::class, "setProcessedStatus"])->name("reports.setProcessedStatus");
+    Route::post("/reports/save-status", [ReportController::class, "saveStatus"])->name("reports.saveStatus");
     Route::post("/reports/get-user-payments", [ReportController::class, "getUserPayments"])->name("reports.getUserPayments");
 
 

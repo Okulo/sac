@@ -257,9 +257,9 @@ class CloudPaymentsController extends Controller
 
             curl_setopt_array($curl, array(
                 //тестовый режим
-                //CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
                 // боевой
-                CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
+              //  CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -290,9 +290,9 @@ class CloudPaymentsController extends Controller
                 }
                 ',
                 CURLOPT_HTTPHEADER => array(
-                    // 'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                     'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
                     //бой
-                    'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
+                   // 'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
                 ),
             ));
@@ -323,9 +323,9 @@ class CloudPaymentsController extends Controller
 
             curl_setopt_array($curl, array(
                 // тестовый включаем
-                //CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+                CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
                 // ниже боевой
-                CURLOPT_URL => 'https://cards.pitech.kzcards.pitech.kz/gw/payments/tokens/charge',
+               // CURLOPT_URL => 'https://cards.pitech.kzcards.pitech.kz/gw/payments/tokens/charge',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -341,8 +341,8 @@ class CloudPaymentsController extends Controller
                         "extOrdersId": "' . $subscription->id . '",
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                    "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-                    "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
                         {
@@ -356,9 +356,9 @@ class CloudPaymentsController extends Controller
                     }
                     ',
                 CURLOPT_HTTPHEADER => array(
-                    // 'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                     'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
                     // бой
-                    'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
+                   // 'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                     'Content-Type: application/json'
                 ),
             ));

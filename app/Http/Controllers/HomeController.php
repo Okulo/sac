@@ -35,6 +35,17 @@ class HomeController extends Controller
     {
         return view('pitech.failure');
     }
+
+    public function cardSaved()
+    {
+        return view('pitech.card-saved');
+    }
+    public function cardSaveFail()
+    {
+        return view('pitech.card-save-fail');
+    }
+
+
     public function dashboard()
     {
         return view('dashboard');

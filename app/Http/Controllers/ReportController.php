@@ -223,11 +223,10 @@ class ReportController extends Controller
     public function getWaitingPay( Request $request)
     {
         $today  = Carbon::now();
-        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-04-10 00:00:01';
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-01-01 00:00:01';
         ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
-        $query = Subscription::whereNull('subscriptions.deleted_at')
-            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+        $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
             ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
@@ -351,6 +350,15 @@ class ReportController extends Controller
             ->update(['wa_status' => $request->waStatus]);
 
         return $updateWa;
+    }
+
+    public function saveStatus(Request $request)
+    {
+        $updateStatus = \DB::table('subscriptions')
+            ->where('id', $request->subId)
+            ->update(['status' => $request->status]);
+
+        return $updateStatus;
     }
 
     public function getProcessedStatus( Request $request){

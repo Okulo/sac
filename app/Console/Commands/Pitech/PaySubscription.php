@@ -46,9 +46,8 @@ class PaySubscription extends Command
      */
     public function handle()
     {
-        $payments = Payment::where('type', 'pitech')->get();
-        $subscriptions = Subscription::where('payment_type', 'pitech')->where('status','waiting')->get();
-
+        //$payments = Payment::where('type', 'pitech')->get();
+        $subscriptions = Subscription::where('payment_type', 'pitech')->where('status','!=','refused')->get();
 
         foreach ($subscriptions as $subscription){
             $product = Product::whereId($subscription['product_id'])->get();
@@ -99,9 +98,9 @@ class PaySubscription extends Command
 
         curl_setopt_array($curl, array(
             //тестовый режим
-            // CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
+             CURLOPT_URL => 'https://cards-stage.pitech.kz/gw/payments/tokens/charge',
             // боевой
-             CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
+           //  CURLOPT_URL => 'https://cards.pitech.kz/gw/payments/tokens/charge',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -117,8 +116,8 @@ class PaySubscription extends Command
                     "extOrdersId": "'.$subscrId.'",
                     "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
                     "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                    "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
-                    "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/pay-success",
+                    "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                    "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                     "fiscalization": true,
                     "positions":[
                     {
@@ -132,9 +131,9 @@ class PaySubscription extends Command
                 }
                 ',
             CURLOPT_HTTPHEADER => array(
-                //'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
+                'Authorization: Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=',
                 //бой
-                'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
+                //'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=',
                 'Content-Type: application/json'
             ),
         ));

@@ -542,21 +542,44 @@
                     });
             },
             getLinkPitech(){
+                // var settings = {
+                //     "url": "https://cards.pitech.kz/gw/cards/save",
+                //     "method": "POST",
+                //     "timeout": 0,
+                //     "headers": {
+                //         "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
+                //         "Content-Type": "application/json"
+                //     },
+                //     "data": JSON.stringify({
+                //         "extClientRef": this.customerIdTmp,
+                //         "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
+                //         "successReturnUrl": "https://www.strela-academy.ru/thank-you",
+                //         "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/save-success",
+                //         "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/save-success",
+                //         "amount": this.summa,
+                //         "extOrdersId": this.subIdTmp,
+                //         "expirationTimeSeconds": 172800,
+                //         "currency": "KZT",
+                //         "createdBy": "user"
+                //     }),
+                // };
+
                 var settings = {
-                    "url": "https://cards.pitech.kz/gw/cards/save",
+                    "url": "https://cards-stage.pitech.kz/gw/cards/save",
                     "method": "POST",
                     "timeout": 0,
                     "headers": {
-                        "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
+                        "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
                         "Content-Type": "application/json"
                     },
                     "data": JSON.stringify({
                         "extClientRef": this.customerIdTmp,
-                        "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
-                        "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                        "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/save-success",
-                        "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/save-success",
+                        "successReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
                         "amount": this.summa,
+                        "expirationTimeSeconds": 172800,
                         "extOrdersId": this.subIdTmp,
                         "currency": "KZT",
                         "createdBy": "user"

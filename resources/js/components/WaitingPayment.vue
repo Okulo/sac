@@ -87,6 +87,7 @@
                             <!--  <th>Кол-во <br> платежей</th> -->
                             <th scope="col">Дата<br> старта</th>
                             <th scope="col">Дата <br> окончания</th>
+                            <th scope="col">Статус </th>
                             <th scope="col">В <br>процессе</th>
                             <td></td>
                           <!--  <th scope="col"></th> -->
@@ -109,23 +110,33 @@
                          <!--    <td>{{item.payment_type}}</td>
                              <td>{{item.status}}</td>-->
                             <td>
+                                <select id="status" name="status" :class="'status-'+item.id">
+                                    <option selected disabled="disabled" value="waiting">Жду оплату</option>
+                                    <option value="tries">Пробует</option>
+                                    <option value="paid">Оплачено</option>
+                                    <option value="rejected">Отклонена (3 раза)</option>
+                                    <option value="refused">Отказался</option>
+                                    <option value="trial">Триал период</option>
+                                </select>
+                            </td>
+                            <td style="text-align: center">
 
                             <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-                                <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                             <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                                 <div v-for="status in processedStatus">
                                     <span v-if="item.id == status.subscription_id">
                                         <input v-if="status.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                                     </span>
                                 </div>
-
-
-
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
-                            <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
+                            <td data-v-754b2df6="" class="text-right">
+                                <button type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"  @click="saveStatus(item.id)">
+                                <i class="fa fa-save"></i></button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -185,6 +196,30 @@
 
         },
         methods: {
+
+            saveStatus(id){
+
+                   if( $(".status-"+id).val()){
+                       var val = $(".status-"+id).val();
+
+                       axios.post('/reports/save-status',{
+                           subId: id,
+                           status: val
+                       })
+                           .then(response => {
+                               // this.waitingPayList();
+                               console.log(response);
+                               Vue.$toast.success('Статус успешно изменен');
+
+                           })
+                           .catch(function (error) {
+                               console.log('err');
+                               console.log(error);
+                               Vue.$toast.error('error - '+ error);
+                           });
+                   }
+
+            },
             goProcess: function(id) {
                     axios.post('/reports/set-processed-status',{
                         subId: id,
@@ -238,7 +273,6 @@
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
-                            //  console.log(elem);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
