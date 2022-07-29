@@ -60,7 +60,7 @@
                             <th scope="col">Имя</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуга</th>
-                            <th scope="col">Тип платежа</th>
+                            <th scope="col">Тип оплаты</th>
                             <th>Стоимость</th>
                             <th>Дата платежа</th>
                             <th>Дата окончания</th>

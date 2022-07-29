@@ -117,6 +117,7 @@
                                     <option value="rejected">Отклонена (3 раза)</option>
                                     <option value="refused">Отказался</option>
                                     <option value="trial">Триал период</option>
+                                    <option value="debtor">Должник</option>
                                 </select>
                             </td>
                             <td style="text-align: center">

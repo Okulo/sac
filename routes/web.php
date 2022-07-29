@@ -217,6 +217,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-refused-list", [ReportController::class, "getRefusedList"])->name("reports.getRefusedList");
     Route::post("/reports/get-processed-status", [ReportController::class, "getProcessedStatus"])->name("reports.getProcessedStatus");
     Route::post("/reports/get-waiting-pay-list", [ReportController::class, "getWaitingPay"])->name("reports.getWaitingPay");
+    Route::post("/reports/get-debtors-list", [ReportController::class, "getDebtorsList"])->name("reports.getDebtorsList");
     Route::post("/reports/get-archived-products", [ReportController::class, "getArchivedProducts"])->name("reports.getArchivedProducts");
     Route::post("/reports/get-refused-subscriptions-list", [ReportController::class, "getRefusedSubscriptionsList"])->name("reports.getRefusedSubscriptionsList");
     Route::post("/reports/getSubscription", [ReportController::class, "getSubscription"])->name("reports.getSubscription");

@@ -194,9 +194,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null">
-                                <div class="form-group col-sm-6">
-                                    <button type="button" class="btn btn-dark" :id="'subscription-' + subscription.id" @click="manualWriteOffPayment(subscription.id, customer.card.id)">Ручное списание</button>
+                            <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null &&  customer.cards">
+                                <div v-for="(card,index) in customer.cards">
+
+                                    <div v-if="index == customer.cards.length - 1">
+                                        <div class="form-group col-sm-12" v-if="card.cp_account_id == subscription.id && subscription.status != 'paid' && card.type != 'pitech'">
+                                            <button type="button" class="btn btn-dark" :id="'subscription-' + subscription.id" @click="manualWriteOffPayment(subscription.id, card.id)">Ручное списание</button>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'transfer'">
@@ -542,49 +548,49 @@
                     });
             },
             getLinkPitech(){
-                // var settings = {
-                //     "url": "https://cards.pitech.kz/gw/cards/save",
-                //     "method": "POST",
-                //     "timeout": 0,
-                //     "headers": {
-                //         "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
-                //         "Content-Type": "application/json"
-                //     },
-                //     "data": JSON.stringify({
-                //         "extClientRef": this.customerIdTmp,
-                //         "errorReturnUrl": "https://www.strela-academy.ru/api/pitech/pay-fail",
-                //         "successReturnUrl": "https://www.strela-academy.ru/thank-you",
-                //         "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/save-success",
-                //         "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/save-success",
-                //         "amount": this.summa,
-                //         "extOrdersId": this.subIdTmp,
-                //         "expirationTimeSeconds": 172800,
-                //         "currency": "KZT",
-                //         "createdBy": "user"
-                //     }),
-                // };
-
                 var settings = {
-                    "url": "https://cards-stage.pitech.kz/gw/cards/save",
+                    "url": "https://cards.pitech.kz/gw/cards/save",
                     "method": "POST",
                     "timeout": 0,
                     "headers": {
-                        "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
+                        "Authorization": "Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY=",
                         "Content-Type": "application/json"
                     },
                     "data": JSON.stringify({
                         "extClientRef": this.customerIdTmp,
-                        "successReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                        "errorReturnUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                        "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
-                        "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                        "errorReturnUrl": "https://www.strela-academy.ru/card-save-fail",
+                        "successReturnUrl": "https://www.strela-academy.ru/card-saved",
+                        "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/save-success",
+                        "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/save-success",
                         "amount": this.summa,
-                        "expirationTimeSeconds": 172800,
                         "extOrdersId": this.subIdTmp,
+                        "expirationTimeSeconds": 172800,
                         "currency": "KZT",
                         "createdBy": "user"
                     }),
                 };
+
+                // var settings = {
+                //     "url": "https://cards-stage.pitech.kz/gw/cards/save",
+                //     "method": "POST",
+                //     "timeout": 0,
+                //     "headers": {
+                //         "Authorization": "Basic c2RJY2hNS3VTcVpza3BFOVdvVC1nSG9jSnhjd0xrbjY6WmxwYVJZTkFDbUJhR1Utc0RpRFEzUVM1RFhVWER0TzI=",
+                //         "Content-Type": "application/json"
+                //     },
+                //     "data": JSON.stringify({
+                //         "extClientRef": this.customerIdTmp,
+                //         "successReturnUrl": "http://test.strela-academy.ru/card-saved",
+                //         "errorReturnUrl": "http://test.strela-academy.ru/card-save-fail",
+                //         "callbackSuccessUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                //         "callbackErrorUrl": "http://test.strela-academy.ru/api/pitech/pay-success",
+                //         "amount": this.summa,
+                //         "expirationTimeSeconds": 172800,
+                //         "extOrdersId": this.subIdTmp,
+                //         "currency": "KZT",
+                //         "createdBy": "user"
+                //     }),
+                // };
 
                 $.ajax(settings).done(function (response) {
 

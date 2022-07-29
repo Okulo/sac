@@ -60,6 +60,9 @@ class ReportController extends Controller
         }elseif ($type == 9) {
             return view('reports.payErrors');
         }
+        elseif ($type == 10) {
+            return view('reports.debtors');
+        }
         else {
             return view('reports.index');
         }
@@ -259,31 +262,21 @@ class ReportController extends Controller
             $subscriptions = $query->get();
             return $subscriptions;
 
-       // $subscriptions->comments->count();
-//        foreach ($subscriptions as $subscription) {
-//           echo $subscription->id;
-//           echo "<br>";
-//
-//        }
+    }
+    public function getDebtorsList( Request $request)
+    {
+        $today  = Carbon::now();
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-01-01 00:00:01';
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
+        $subscription = Subscription::where('status','debtor')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->select('subscriptions.*', 'products.title' ,  'customers.name','customers.phone' )
+            ->groupBy('customer_id')
+            ->get();
 
-
-//        $waitingPayments = \DB::table('subscriptions')
-//            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
-//            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
-//            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
-//            ->leftJoin('processed_subscription', 'subscriptions.id', '=', 'processed_subscription.subscription_id')
-//            ->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23])
-//            ->whereNull('subscriptions.deleted_at')
-//            ->where('subscriptions.status', 'waiting')
-//            ->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','processed_subscription.process_status')
-//            ->orderBy('subscriptions.updated_at', 'desc')
-//            ->get();
-//
-//
-//        return $waitingPayments;
-
-
+        return $subscription;
 
     }
 

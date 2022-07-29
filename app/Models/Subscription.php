@@ -29,7 +29,7 @@ class Subscription extends Model
         'rejected' => 'Отклонена (3 раза)',
         'refused' => 'Отказался',
         'trial' => 'Триал период',
-        // 'frozen' => 'Заморожен',
+        'debtor' => 'Должник',
     ];
 
     const PAYMENT_TYPE = [
