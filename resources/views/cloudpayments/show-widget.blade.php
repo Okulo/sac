@@ -47,6 +47,7 @@
                         <button type="submit" class="card-form__button" style="font-size: 18px">
                             Перейти к оплате
                         </button>
+                            <span id="loading" class="spinner-grow spinner-border-sm" style="color: #28b463; width: 3rem; height: 3rem; display: none" role="status" aria-hidden="true"></span>
                         <p style="margin-top: 20px;text-align: center;">Нажимая "Перейти к оплате", Вы даёте согласие
                             на обработку Ваших персональных данных и принимаете
                             <a href="https://www.strela-academy.ru/offer.pdf"

@@ -19,7 +19,8 @@
         "laravel/telescope": "^4.8",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
-        "spatie/laravel-backup": "^6.16"
+        "spatie/laravel-backup": "^6.16",
+      "ext-curl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

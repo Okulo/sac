@@ -28,14 +28,16 @@ class Subscription extends Model
         'paid' => 'Оплачено',
         'rejected' => 'Отклонена (3 раза)',
         'refused' => 'Отказался',
-        // 'frozen' => 'Заморожен',
+        'trial' => 'Триал период',
+        'debtor' => 'Должник',
     ];
 
     const PAYMENT_TYPE = [
         'tries' => 'Пробует бесплатно',
         'transfer' => 'Прямой перевод',
-        'cloudpayments' => 'Подписка',
+        'cloudpayments' => 'Подписка Cloudpayments',
         'simple_payment' => 'Разовое списание',
+        'pitech' => 'Подписка Pitech',
     ];
 
     protected $fillable = [
@@ -107,8 +109,8 @@ class Subscription extends Model
             $isEqualTwoStartedAt = Carbon::parse($subscription->getOriginal('started_at') ?? null)->format('Y-m-d') == Carbon::parse($subscription->started_at ?? null)->format('Y-m-d');
             if (! $isEqualTwoEndedAt) {
                 if ($subscription->status != 'refused' && $subscription->payment_type == 'cloudpayments' && isset($subscription->cp_subscription_id)) {
-                    // Если дата окончания меньше now, 
-                    // то будет двойное списание, 
+                    // Если дата окончания меньше now,
+                    // то будет двойное списание,
                     // потому что дата окончания заднее число и cloudpayments попытается снять еще.
                     if (Carbon::parse($endedAt)->gt(Carbon::now())) {
                         $cloudPaymentsService = new CloudPaymentsService();
@@ -203,7 +205,7 @@ class Subscription extends Model
                 }
             }
         });
-    
+
         static::deleting(function($subscription) {
             UserLog::create([
                 'subscription_id' => $subscription->id,

@@ -21,8 +21,11 @@ class UserLog extends Model
     const CUSTOMER_PHONE = 9;       // 9) Телефон абонемента
     const START_DATE = 10;          // 10) Дата старта абонемента
     const CHANGE_SUBSCRIPTION_USER  = 11; // 11) Оператор абонемента
-    const MANUAL_WRITE_OFF          = 12; // 12) Кнопка ручное списание
-    const CHANGE_SUBSCRIPTION_PRICE         = 13; // 12) изменена цена подписки
+    const MANUAL_WRITE_OFF    = 12; // 12) Кнопка ручное списание
+    const CHANGE_SUBSCRIPTION_PRICE = 13; // 12) изменена цена подписки
+    const PITECH_AUTO_RENEWAL = 14;  // 14) Автопродление абонемента (подписка Pitech)
+    const SAVE_CARD_ERROR = 15;  // 15) ошибка при сохранении карты
+    const SAVE_CARD_SUCCESS = 16;  // 16) Карта успешно привязана
 
     const TYPES = [
         self::END_DATE              => 'Дата окончания',
@@ -38,6 +41,9 @@ class UserLog extends Model
         self::CHANGE_SUBSCRIPTION_USER  => 'Оператор абонемента',
         self::MANUAL_WRITE_OFF      => 'Ручное списание',
         self::CHANGE_SUBSCRIPTION_PRICE  => 'Изменена стоимость подписки',
+        self::PITECH_AUTO_RENEWAL   => 'Автопродление абонемента (подписка Pitech)',
+        self::SAVE_CARD_ERROR       => 'Ошибка при сохранении карты',
+        self::SAVE_CARD_SUCCESS     => 'Карта успешно привязана',
     ];
 
     protected $fillable = [
@@ -97,6 +103,10 @@ class UserLog extends Model
                 $message = '<b style="color: red">Старая запись: </b>' . ($this->data['old'] ? strftime('%d %b %Y(%H:%M)', (new \DateTime($this->data['old']))->getTimestamp()) : null) . '<br> <b style="color: green">Новая запись: </b>' . ($this->data['new'] ? strftime('%d %b %Y(%H:%M)', (new \DateTime($this->data['new']))->getTimestamp()) : null);
                 return $message;
                 break;
+            case self::PITECH_AUTO_RENEWAL:
+                $message = '<b style="color: red">Старая запись: </b>' . ($this->data['old'] ? strftime('%d %b %Y(%H:%M)', (new \DateTime($this->data['old']))->getTimestamp()) : null) . '<br> <b style="color: green">Новая запись: </b>' . ($this->data['new'] ? strftime('%d %b %Y(%H:%M)', (new \DateTime($this->data['new']))->getTimestamp()) : null);
+                return $message;
+                break;
             case self::PAYMENT_TYPE:
                 $message = '<b style="color: red">Старая запись: </b>' . (Subscription::PAYMENT_TYPE[$this->data['old']] ?? null) . '<br> <b style="color: green">Новая запись: </b>' . (Subscription::PAYMENT_TYPE[$this->data['new']] ?? null);
                 return $message;
@@ -117,6 +127,14 @@ class UserLog extends Model
                 break;
             case self::CHANGE_SUBSCRIPTION_PRICE:
                 $message = '<b style="color: green">Новая запись: </b>' . $this->data['new'];
+                return $message;
+                break;
+            case self::SAVE_CARD_ERROR:
+                $message = '<b style="color: red">Ошибка</b>';
+                return $message;
+                break;
+            case self::SAVE_CARD_SUCCESS:
+                $message = '<b style="color: green">Успех</b>';
                 return $message;
                 break;
             case self::MANUAL_WRITE_OFF:

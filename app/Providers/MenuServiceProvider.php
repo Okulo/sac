@@ -114,11 +114,35 @@ class MenuServiceProvider extends ServiceProvider
                 "url" => "reports/get-reports/3",
             ]);
             $event->menu->addIn('reports', [
-                "key" => "report_3",
+                "key" => "report_8",
+                "text" => 'Заканчиваются (прямой пер.)',
+                "url" => "reports/get-reports/8",
+            ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_4",
                 "text" => 'Отмененные подписки',
                 "url" => "reports/get-reports/4",
             ]);
-
+            $event->menu->addIn('reports', [
+                "key" => "report_5",
+                "text" => 'Жду оплату',
+                "url" => "reports/get-reports/5",
+            ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_6",
+                "text" => 'Пробники (жду оплату)',
+                "url" => "reports/get-reports/6",
+            ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_9",
+                "text" => 'Ошибки оплат',
+                "url" => "reports/get-reports/9",
+            ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_10",
+                "text" => 'Должники',
+                "url" => "reports/get-reports/10",
+            ]);
             // $event->menu->addIn('statistics', [
             //     "key" => "statistic_type_3",
             //     "text" => 'Итоговые',

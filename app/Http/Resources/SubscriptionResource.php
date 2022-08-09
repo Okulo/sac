@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Card;
 use App\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class SubscriptionResource extends JsonResource
                 'subscriptionId' => $this->id ?? null,
                 'value' => route('customers.show', [$this->customer->id]),
             ],
+            'card' =>  Card::where('customer_id', $this->customer->id)->get(),
             'customers.phone' => [
                 'value' => $this->customer->phone,
                 // 'type' => 'input',

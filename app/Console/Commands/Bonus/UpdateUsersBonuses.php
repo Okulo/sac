@@ -64,16 +64,16 @@ class UpdateUsersBonuses extends Command
                     'end' => Carbon::now()->setTimezone('Asia/Almaty')->endOfMonth()->endOfDay(),
                 ],
             ];
-    
+
             try {
                 foreach ($products as $product) {
                     // Все бонусы продукта
                     // Пример. Первый платеж по подписке
                     $productBonuses = $product->productBonuses;
-        
+
                     // Операторы услуги
                     // $productUsers = $product->users;
-    
+
                     // Все успешные платежи услуги
                     $teamSuccessPayments = $product->payments->where('status', 'Completed')->where('team_id', '!=', null)->groupBy('team_id');
 
@@ -97,7 +97,7 @@ class UpdateUsersBonuses extends Command
                                     ])->groupBy('product_bonus_id');
                                     $bonusAmount = isset($groupSuccessPaymentsByBonusesBetweenMonth[$productBonus->id]) ? $groupSuccessPaymentsByBonusesBetweenMonth[$productBonus->id]->count() : 0;
                                 }
-        
+
                                 $bonus = $product->bonuses()->updateOrCreate([
                                     'product_bonus_id' => $productBonus->id,
                                     'date_type' => $dateType,
@@ -111,7 +111,7 @@ class UpdateUsersBonuses extends Command
                                     // Проверка на то, высчитывать бонусы со дня вступления в команду
                                     // Если в середине недели устроился, то считать по ней
                                     $userEmploymentAt = Carbon::parse($user->pivot->employment_at);
-        
+
                                     if ($dateType == 'week') {
                                         $unixDate = $data[$dateType]['key'];
                                         $startedAt = $userEmploymentAt > $data[$dateType]['start'] ? $userEmploymentAt : $data[$dateType]['start'];
@@ -130,7 +130,7 @@ class UpdateUsersBonuses extends Command
                                         $bonusAmount = isset($groupSuccessPaymentsByBonusesBetweenMonth[$productBonus->id]) ? $groupSuccessPaymentsByBonusesBetweenMonth[$productBonus->id]->count() : 0;
                                     }
                                     $user->bonuses()->detach([$bonus->id]);
-        
+
                                     $user->bonuses()->attach([
                                         $bonus->id => [
                                             'stake' => $user->pivot->stake,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ThankYouProductResource;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Subscription;
@@ -26,8 +27,24 @@ class HomeController extends Controller
 
     public function thankYou()
     {
-        return view('thank-you');
+      //  return view('thank-you');
+        return view('pitech.thank-you');
     }
+
+    public function failure()
+    {
+        return view('pitech.failure');
+    }
+
+    public function cardSaved()
+    {
+        return view('pitech.card-saved');
+    }
+    public function cardSaveFail()
+    {
+        return view('pitech.card-save-fail');
+    }
+
 
     public function dashboard()
     {

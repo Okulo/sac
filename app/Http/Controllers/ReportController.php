@@ -6,9 +6,11 @@ use App\Models\CpNotification;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Subscription;
+use App\Models\UserLog;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use function Symfony\Component\String\s;
 
 class ReportController extends Controller
@@ -47,6 +49,19 @@ class ReportController extends Controller
             return view('reports.refused');
         } elseif ($type == 4) {
         return view('reports.refusedSubscriptions');
+        } elseif ($type == 5) {
+            return view('reports.waitingPayment');
+        } elseif ($type == 6) {
+            return view('reports.waitingPaymentTries');
+        } elseif ($type == 7) {
+             return view('reports.archivedProducts');
+        } elseif ($type == 8) {
+            return view('reports.simplePayEnds');
+        }elseif ($type == 9) {
+            return view('reports.payErrors');
+        }
+        elseif ($type == 10) {
+            return view('reports.debtors');
         }
         else {
             return view('reports.index');
@@ -119,7 +134,6 @@ class ReportController extends Controller
         ]);
         */
     }
-
     public function getPayList()
     {
         //$cp_pay = Customer::whereId(15948)->first();
@@ -209,6 +223,63 @@ class ReportController extends Controller
         return $subscription;
     }
 
+    public function getWaitingPay( Request $request)
+    {
+        $today  = Carbon::now();
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-01-01 00:00:01';
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
+
+        $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
+            ->where('subscriptions.status', 'waiting');
+
+              if ($request->product != null) {
+                  $query->where('subscriptions.product_id', $request->product );
+              }
+              if ($request->product == null) {
+                  $query->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23,24,25]);
+              }
+
+              if ($request->tries != 1) {
+                $query->where('subscriptions.tries_at','<', $today);
+                }
+              if ($request->tries == 1) {
+                  $query->where('subscriptions.tries_at','>', $today );
+                }
+
+            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle');
+
+              if ($request->tries != 1) {
+                  $query->orderBy('subscriptions.ended_at', 'asc');
+              }
+              if ($request->tries == 1) {
+                  $query->orderBy('subscriptions.tries_at', 'asc');
+              }
+
+
+            $subscriptions = $query->get();
+            return $subscriptions;
+
+    }
+    public function getDebtorsList( Request $request)
+    {
+        $today  = Carbon::now();
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-01-01 00:00:01';
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
+
+        $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->where('subscriptions.status', 'debtor');
+
+        $query->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle');
+
+        $subscriptions = $query->get();
+        return $subscriptions;
+
+    }
+
     public function getSubscription( Request $request)
     {
               if(isset($request->id)){
@@ -222,6 +293,49 @@ class ReportController extends Controller
 
     }
 
+    public function getUserPayments( Request $request)
+    {
+        $payments = \DB::table('payments')
+            ->where('subscription_id', '=' , $request->subId)
+            ->where('status', '=' , 'Completed')
+            ->select('payments.*')
+            ->count();
+
+        return json_decode($payments);
+    }
+
+    public function getArchivedProducts( Request $request)
+    {
+        $products = \DB::table('products')
+            ->whereNotNull('archived')
+            ->get();
+
+        return json_decode($products);
+    }
+
+    public function simplePayEndsList( Request $request)
+    {
+        $endDate = Carbon::now()->addDays(5);
+        $today = Carbon::now();
+
+        $subscriptions = \DB::table('subscriptions')
+            ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->where('subscriptions.ended_at', '<',$endDate)
+            ->where('subscriptions.status', 'paid')
+            ->whereNull('subscriptions.deleted_at')
+            ->where('subscriptions.payment_type', 'transfer');
+        if ($request->product){
+            $subscriptions->where('subscriptions.product_id', $request->product );
+        }
+
+            $subscriptions->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
+            ->orderBy('subscriptions.ended_at', 'ASC')
+            ->limit(200);
+        $query = $subscriptions->get();
+        return $query;
+        //return json_decode($subscriptions);
+    }
 
     public function addWaStatus(Request $request){
         $updateWa = \DB::table('subscriptions')
@@ -229,6 +343,115 @@ class ReportController extends Controller
             ->update(['wa_status' => $request->waStatus]);
 
         return $updateWa;
+    }
+
+    public function saveStatus(Request $request)
+    {
+        $updateStatus = \DB::table('subscriptions')
+            ->where('id', $request->subId)
+            ->update(['status' => $request->status]);
+
+        return $updateStatus;
+    }
+
+    public function getProcessedStatus( Request $request){
+        $setStatus = \DB::table('processed_subscription')
+            ->where('report_type', $request->type)
+            ->get();
+
+        return $setStatus;
+    }
+
+    public function getPayErrorList( Request $request){
+      // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
+      //  $logs = UserLog::limit(1000)->get();
+        $today = Carbon::now();
+
+        if ($request->product){
+            $logs = \DB::select('SELECT
+                            payments.id,
+                            payments.subscription_id,
+                            payments.customer_id,
+                            payments.type,
+                            payments.status,
+                            payments.amount,
+                            payments.data,
+                            payments.paided_at,
+                            payments.created_at,
+                             customers.name,
+                             customers.phone,
+                             products.title,
+                             `subscriptions`.id as sub_id,
+                             `subscriptions`.`status`,
+                              `subscriptions`.`ended_at`,
+                             `subscriptions`.`payment_type`
+                        FROM `payments`
+                        LEFT JOIN customers ON (payments.customer_id = customers.id)
+                        LEFT JOIN products ON (payments.product_id = products.id)
+                         LEFT JOIN `subscriptions` ON (payments.`subscription_id` = `subscriptions`.id)
+                        WHERE payments.id IN
+                          (SELECT
+                            MAX(payments.id)
+                          FROM
+                            payments
+                          GROUP BY payments.customer_id)
+                          AND payments.status = \'Declined\'
+                          AND `subscriptions`.`deleted_at` is null
+                          AND `subscriptions`.`status` != "refused"
+                          AND `subscriptions`.`status` != "debtor"
+                          AND `subscriptions`.`ended_at` < "'.$today.'"
+                          AND payments.product_id = '.$request->product.'
+                          ORDER BY payments.id DESC
+                          LIMIT 700');
+        }
+        else{
+            $logs = \DB::select('SELECT
+                            payments.id,
+                            payments.subscription_id,
+                            payments.customer_id,
+                            payments.type,
+                            payments.status,
+                            payments.amount,
+                            payments.data,
+                            payments.paided_at,
+                            payments.created_at,
+                             customers.name,
+                             customers.phone,
+                             products.title,
+                             `subscriptions`.id as sub_id,
+                             `subscriptions`.`status`,
+                             `subscriptions`.`ended_at`,
+                             `subscriptions`.`payment_type`
+                        FROM `payments`
+                        LEFT JOIN customers ON (payments.customer_id = customers.id)
+                        LEFT JOIN products ON (payments.product_id = products.id)
+                         LEFT JOIN `subscriptions` ON (payments.`subscription_id` = `subscriptions`.id)
+                        WHERE payments.id IN
+                          (SELECT
+                            MAX(payments.id)
+                          FROM
+                            payments
+                          GROUP BY payments.customer_id)
+                          AND payments.status = \'Declined\'
+                          AND `subscriptions`.`deleted_at` is null
+                          AND `subscriptions`.`ended_at` < "'.$today.'"
+                          AND `subscriptions`.`status` != "refused"
+                          AND `subscriptions`.`status` != "debtor"
+                          ORDER BY payments.id DESC
+                          LIMIT 700');
+        }
+
+        return $logs;
+    }
+
+    public function setProcessedStatus( Request $request){
+        $setStatus = \DB::table('processed_subscription')
+            ->updateOrInsert(
+            ['subscription_id' =>   request('subId'),'report_type' => request('report_type')],
+            ['process_status' => request('status')]
+        );
+
+        return $setStatus;
     }
 
     /**

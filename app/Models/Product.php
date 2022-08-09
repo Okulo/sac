@@ -16,6 +16,8 @@ class Product extends Model
         'code',
         'title',
         'description',
+        'block_amount',
+        'trial_period',
         'data',
     ];
 

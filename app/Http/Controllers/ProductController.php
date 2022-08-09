@@ -41,7 +41,7 @@ class ProductController extends Controller
         access(['can-head', 'can-host']);
 
         $query = Product::query();
-        $products = $query->latest()->filter($filters)->paginate($this->perPage)->appends(request()->all());
+        $products = $query->latest()->whereNull('archived')->filter($filters)->paginate($this->perPage)->appends(request()->all());
 
         return response()->json(new ProductCollection($products), 200);
     }
@@ -176,7 +176,15 @@ class ProductController extends Controller
     public function update(CreateProductRequest $request, Product $product)
     {
         access(['can-head', 'can-host']);
-        $this->updateOrCreate($request->all(), $product, 'update');
+
+
+
+        if( $request->trial_period < 1){
+            return redirect()->to(route("{$this->root}.index"))->with('success', 'Триал период не может быть меньше 1 дня!');
+        }
+        else{
+            $this->updateOrCreate($request->all(), $product, 'update');
+        }
 
         $message = 'Данные продукта успешно изменены.';
         if ($request->ajax()) {
@@ -205,7 +213,7 @@ class ProductController extends Controller
         $productAdditionals = $request['productAdditionals'] ?? [];
 
         if ($type == 'update') {
-            $product->update($request);
+              $product->update($request);
 //            $nextPrice = NextPrice::where('product_id', $product->id)
 //                ->update(['price' => $nextPrice]);
 
@@ -350,7 +358,10 @@ class ProductController extends Controller
         $data = [];
         foreach ($products as $product) {
             $data[$product->id] = [
+                'id' => $product->id,
                 'title' => $product->title,
+                'block_amount' => $product->block_amount,
+                'trial_period' => $product->trial_period,
                 'prices' => [],
             ];
             if (count($product->prices) > 0) {
@@ -363,5 +374,33 @@ class ProductController extends Controller
         }
 
         return response()->json($data, 200);
+    }
+
+    public function archiveProduct(Request $request)
+    {
+        $today  = Carbon::now();
+        $update = Product::where('id',$request->id)
+               ->update(['archived' => 1]);
+        if ($update) {
+            return response()->json('success', 200);
+        }
+        else {
+            return response()->json('error', 500);
+        }
+    }
+
+    public function restoreProduct(Request $request)
+    {
+
+        $update = $affected = \DB::table('products')
+            ->where('id', $request->id)
+            ->update(['archived' => null]);
+
+        if ($update) {
+            return response()->json('success', 200);
+        }
+        else {
+            return response()->json('error', 500);
+        }
     }
 }

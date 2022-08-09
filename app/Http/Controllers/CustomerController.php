@@ -7,6 +7,8 @@ use App\Exceptions\NoticeException;
 use App\Http\Requests\CreateCustomerRequest;
 use App\Http\Requests\CreateCustomerWithDataRequest;
 use App\Models\Customer;
+use App\Models\Card;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
 use App\Filters\CustomerFilter;
 use App\Http\Resources\CustomerCollection;
@@ -54,7 +56,7 @@ class CustomerController extends Controller
                         'title' => Subscription::PAYMENT_TYPE[$paymentType],
                         'statuses' => [],
                     ];
-        
+
                     switch ($paymentType) {
                         case 'tries':
                             $statuses = Subscription::STATUSES;
@@ -65,6 +67,7 @@ class CustomerController extends Controller
                         case 'cloudpayments':
                             $statuses = Subscription::STATUSES;
                             unset($statuses['tries']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                         case 'transfer':
@@ -72,12 +75,21 @@ class CustomerController extends Controller
                             unset($statuses['tries']);
                             unset($statuses['frozen']);
                             unset($statuses['rejected']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                         case 'simple_payment':
                             $statuses = Subscription::STATUSES;
                             unset($statuses['tries']);
                             unset($statuses['frozen']);
+                            unset($statuses['trial']);
+                            $data[$product->id][$paymentType]['statuses'] = $statuses;
+                            break;
+                        case 'pitech':
+                            $statuses = Subscription::STATUSES;
+                            unset($statuses['tries']);
+                            unset($statuses['frozen']);
+                            unset($statuses['trial']);
                             $data[$product->id][$paymentType]['statuses'] = $statuses;
                             break;
                     }
@@ -141,19 +153,49 @@ class CustomerController extends Controller
             $endedAt = Carbon::parse($item['ended_at']);
             $triesAt = Carbon::parse($item['tries_at']);
 
-            $subscription = Subscription::updateOrCreate([
-                'product_id' => $item['product_id'],
-                'customer_id' => $customer->id,
-            ], [
-                'customer_id' => $customer->id,
-                'price' => $item['price'],
-                'payment_type' => $item['payment_type'],
-                'started_at' => Carbon::parse($item['started_at']),
-                'ended_at' => $endedAt,
-                'tries_at' => $triesAt,
-                'status' => $item['status'],
-                'reason_id' => $item['reason_id'],
-            ]);
+            // если цена изменилась, пишем лог
+            if(isset($subscription->price) && ($subscription->price != $item['price'])){
+                $subscription = Subscription::updateOrCreate([
+                    'product_id' => $item['product_id'],
+                    'customer_id' => $customer->id,
+                ], [
+                    'customer_id' => $customer->id,
+                    'price' => $item['price'],
+                    'payment_type' => $item['payment_type'],
+                    'started_at' => Carbon::parse($item['started_at']),
+                    'ended_at' => $endedAt,
+                    'tries_at' => $triesAt,
+                    'status' => $item['status'],
+                    'reason_id' => $item['reason_id'],
+                ]);
+
+                UserLog::create([
+                    'subscription_id' =>  $subscription->id,
+                    'user_id' => null,
+                    'type' => 13,
+                    'data' => [
+                        'new' => 'ручное изменение '.$item['price'],
+                    ],
+                ]);
+
+            }
+            else{
+                $subscription = Subscription::updateOrCreate([
+                    'product_id' => $item['product_id'],
+                    'customer_id' => $customer->id,
+                ], [
+                    'customer_id' => $customer->id,
+                    'price' => $item['price'],
+                    'payment_type' => $item['payment_type'],
+                    'started_at' => Carbon::parse($item['started_at']),
+                    'ended_at' => $endedAt,
+                    'tries_at' => $triesAt,
+                    'status' => $item['status'],
+                    'reason_id' => $item['reason_id'],
+                ]);
+            }
+
+
 
             // Если абонемент создается
             if ($subscription->wasRecentlyCreated) {
@@ -229,7 +271,7 @@ class CustomerController extends Controller
     {
         $customerExists = Customer::where('id', ($data['customer']['id'] ?? null))->where('phone', $data['customer']['phone'])->exists();
         $updateCustomer = isset($data['customer']['id']);
-        
+
         if ($updateCustomer) { // Обновить клиента
             if ($customerExists) { // Обновить существующего клиента
                 $customer = Customer::updateOrCreate([
@@ -429,5 +471,11 @@ class CustomerController extends Controller
 
         $customer->delete();
         return redirect()->route("{$this->root}.index")->with('success', 'Клиент успешно удален.');
+    }
+
+    public function getCustomerCard(Request $request){
+        $card = Card::where('customer_id',$request->customerId)->get();
+
+        return $card;
     }
 }

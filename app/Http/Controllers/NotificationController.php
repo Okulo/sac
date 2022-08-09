@@ -31,7 +31,7 @@ class NotificationController extends Controller
     {
         access(['can-operator', 'can-head', 'can-host']);
         $request = request()->all();
-        
+
         $query = Notification::query();
         $notifications = $query->filter($filters)->paginate($this->perPage)->appends($request);
 
@@ -174,7 +174,7 @@ class NotificationController extends Controller
 
         if (isset($notification->subscription)) {
             $subscription = $notification->subscription;
-            
+
             $notification->subscription->update([
                 'status' => $request->get('status'),
                 'reason_id' => $request->get('reason_id'),
