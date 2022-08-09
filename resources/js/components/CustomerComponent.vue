@@ -328,13 +328,13 @@
 
                                 <div v-if="(customer.cards) " class="form-group col-sm-6">
                                     <div v-for="card in customer.cards">
-                                         <div class="col-sm-12" v-if="card.type == 'pitech' && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
+                                        <div class="col-sm-12" v-if="card.type == 'pitech' && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
                                             <span><span style="font-weight: bold">{{ card.type }}</span></span>
                                             <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="paymentByPitechCard(subscription.id, card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                         </div>
                                         <button v-if="(card.type == 'pitech' && card.cp_account_id == subscription.id) && (subscription.payment_type == 'pitech' || subscription.payment_type == 'simple_payment')" type="button" class="btn btn-outline-info" :id="'subscription-' + subscription.id" @click="manualPitech(customerId, subscription.id, subscription.product.title, subscription.price)">Ручное списание с карты Pitech</button>
                                     </div>
-                                    </div>
+                                </div>
 
                             </div>
                             <br><br>
@@ -549,7 +549,9 @@
             },
             getLinkPitech(){
                 var settings = {
-                    "url": "https://cards.pitech.kz/gw/cards/save",
+                    "url":  "https://cards-stage.pitech.kz/gw/cards/save",
+                    //бой ниже
+                   // "url": "https://cards.pitech.kz/gw/cards/save",
                     "method": "POST",
                     "timeout": 0,
                     "headers": {
@@ -560,8 +562,8 @@
                         "extClientRef": this.customerIdTmp,
                         "errorReturnUrl": "https://www.strela-academy.ru/card-save-fail",
                         "successReturnUrl": "https://www.strela-academy.ru/card-saved",
-                        "callbackSuccessUrl": "https://www.strela-academy.ru/api/pitech/save-success",
-                        "callbackErrorUrl": "https://www.strela-academy.ru/api/pitech/save-success",
+                        "callbackSuccessUrl": "http://www.strela-academy.ru/api/pitech/save-success",
+                        "callbackErrorUrl": "http://www.strela-academy.ru/api/pitech/save-success",
                         "amount": this.summa,
                         "extOrdersId": this.subIdTmp,
                         "expirationTimeSeconds": 172800,

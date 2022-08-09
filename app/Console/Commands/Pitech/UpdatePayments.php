@@ -62,10 +62,12 @@ class UpdatePayments extends Command
                 $subscription = Subscription::whereId($result[0]['extOrdersId'])->first();
                 if ($subscription){
                     $payDate =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty');
-                    $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
-                                                    ->limit(1)
-                                                    ->update(['status' => 'waiting']);
-                    if($addSubscription){
+
+                    if($subscription->status != 'debtor'){
+                        $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
+                            ->limit(1)
+                            ->update(['status' => 'waiting']);
+                    }
 
                         \DB::table('pitech_notifications')
                             ->where('id', $pay->id)
@@ -100,7 +102,6 @@ class UpdatePayments extends Command
 
 
                         }
-                    }
                 }
 
             }
@@ -111,11 +112,18 @@ class UpdatePayments extends Command
 
                     $payDate =  Carbon::parse($result[0]['ordersTime'])->setTimezone('Asia/Almaty');
                     $newEndedAt =  Carbon::parse($subscription->ended_at)->setTimezone('Asia/Almaty')->addMonths(1);
-
-                    $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
-                        //      ->where('id', $result[0]['extOrdersId'])
-                        ->limit(1)
-                        ->update(['status' => 'paid', 'payment_type' => 'pitech', 'ended_at' => $newEndedAt]);
+                    if($subscription->payment_type != 'simple_payment'){
+                        $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
+                            //      ->where('id', $result[0]['extOrdersId'])
+                            ->limit(1)
+                            ->update(['status' => 'paid', 'payment_type' => 'pitech', 'ended_at' => $newEndedAt]);
+                    }
+                    else {
+                        $addSubscription = Subscription::where('id', $result[0]['extOrdersId'])
+                            //      ->where('id', $result[0]['extOrdersId'])
+                            ->limit(1)
+                            ->update(['status' => 'paid', 'ended_at' => $newEndedAt]);
+                    }
 
                     \DB::table('pitech_notifications')
                         ->where('id', $pay->id)

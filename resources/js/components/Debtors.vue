@@ -83,6 +83,7 @@
                             <!--  <th>Кол-во <br> платежей</th> -->
                             <th scope="col">Дата<br> старта</th>
                             <th scope="col">Дата <br> окончания</th>
+                            <th scope="col">Тип оплаты</th>
                             <th scope="col">Статус </th>
                             <th scope="col">В <br>процессе</th>
                             <td></td>
@@ -93,7 +94,8 @@
                         <tbody>
                         <tr v-for="(item, index) in items" :key="index">
 
-                            <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
+                            <td>{{ index+1 }}  </td> <!--- {{item.customer_id}}
+                            <td>{{item.id}}</td> -->
                             <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
                             </td>
@@ -103,8 +105,7 @@
                             <!--   <td>{{item.paymentsCount}}</td> -->
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.ended_at}}</td>
-                            <!--    <td>{{item.payment_type}}</td>
-                                <td>{{item.status}}</td>-->
+                            <td>{{item.payment_type}}</td>
                             <td>
                                 <select id="status" name="status" :class="'status-'+item.id">
                                     <option selected disabled="disabled" value="waiting">Должник</option>

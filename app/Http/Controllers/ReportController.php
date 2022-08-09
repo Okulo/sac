@@ -269,14 +269,14 @@ class ReportController extends Controller
         ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2022-01-01 00:00:01';
         ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
-        $subscription = Subscription::where('status','debtor')
+        $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
-            ->leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
-            ->select('subscriptions.*', 'products.title' ,  'customers.name','customers.phone' )
-            ->groupBy('customer_id')
-            ->get();
+            ->where('subscriptions.status', 'debtor');
 
-        return $subscription;
+        $query->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle');
+
+        $subscriptions = $query->get();
+        return $subscriptions;
 
     }
 
@@ -365,6 +365,7 @@ class ReportController extends Controller
     public function getPayErrorList( Request $request){
       // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
       //  $logs = UserLog::limit(1000)->get();
+        $today = Carbon::now();
 
         if ($request->product){
             $logs = \DB::select('SELECT
@@ -382,6 +383,7 @@ class ReportController extends Controller
                              products.title,
                              `subscriptions`.id as sub_id,
                              `subscriptions`.`status`,
+                              `subscriptions`.`ended_at`,
                              `subscriptions`.`payment_type`
                         FROM `payments`
                         LEFT JOIN customers ON (payments.customer_id = customers.id)
@@ -394,7 +396,10 @@ class ReportController extends Controller
                             payments
                           GROUP BY payments.customer_id)
                           AND payments.status = \'Declined\'
+                          AND `subscriptions`.`deleted_at` is null
                           AND `subscriptions`.`status` != "refused"
+                          AND `subscriptions`.`status` != "debtor"
+                          AND `subscriptions`.`ended_at` < "'.$today.'"
                           AND payments.product_id = '.$request->product.'
                           ORDER BY payments.id DESC
                           LIMIT 700');
@@ -415,6 +420,7 @@ class ReportController extends Controller
                              products.title,
                              `subscriptions`.id as sub_id,
                              `subscriptions`.`status`,
+                             `subscriptions`.`ended_at`,
                              `subscriptions`.`payment_type`
                         FROM `payments`
                         LEFT JOIN customers ON (payments.customer_id = customers.id)
@@ -427,7 +433,10 @@ class ReportController extends Controller
                             payments
                           GROUP BY payments.customer_id)
                           AND payments.status = \'Declined\'
+                          AND `subscriptions`.`deleted_at` is null
+                          AND `subscriptions`.`ended_at` < "'.$today.'"
                           AND `subscriptions`.`status` != "refused"
+                          AND `subscriptions`.`status` != "debtor"
                           ORDER BY payments.id DESC
                           LIMIT 700');
         }
