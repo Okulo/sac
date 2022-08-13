@@ -59,6 +59,12 @@
                     <input type="text" class="form-control" id="pass" value="{{ old('pass') }}" name="pass">
                 </div>
             </div>
+            <div class="form-group row">
+                <label for="prices" class="col-sm-2 col-form-label">Команда продукта</label>
+                <div class="col-sm-10">
+                    <product-teams-component :product-teams-prop="{{ json_encode(old('productTeams') ?? []) }}" :teams-prop="{{ json_encode($users) }}"></product-teams-component>
+                </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Добавить" class="btn btn-success" />
             </div>

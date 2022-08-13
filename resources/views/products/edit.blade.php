@@ -24,6 +24,7 @@
                     <input type="text" class="form-control" id="title" value="{{ $product->title }}" name="title">
                 </div>
             </div>
+
             <div class="form-group row">
                 <label for="description" class="col-sm-2 col-form-label">Описание</label>
                 <div class="col-sm-10">
@@ -75,15 +76,13 @@
                     <product-payment-type-component :product-payment-types-prop="{{ json_encode($productPaymentTypes) }}" :payment-types-prop="{{ json_encode($paymentTypes) }}"></product-payment-type-component>
                 </div>
             </div>
-
-            {{--<hr>
+            <hr>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Операторы услуги</label>
                 <div class="col-sm-10">
                     <product-users-component :product-users-prop="{{ json_encode($productUsers) }}" :users-prop="{{ json_encode($users) }}"></product-users-component>
                 </div>
-            </div>--}}
-
+            </div>
             <hr>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Команда продукта</label>

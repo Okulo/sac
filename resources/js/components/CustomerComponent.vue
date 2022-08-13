@@ -63,10 +63,14 @@
                                 ><span aria-hidden="true">&times;</span></button>
                             </div>
                             <div class="row">
+                                <div class="form-group col-12">
+                                    Айди текущего юзера - {{ userIdProp }}
+                                    {{ userRights }}
+                                </div>
                                 <div class="form-group col-sm-6">
-                                    <label for="product_id" class="col-form-label">Услуга</label>
-                                    <select v-if="! subscription.id" v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product_id" class="col-sm-10 form-control">
-                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex">{{ option.title }}</option>
+                                    <label for="product-id" class="col-form-label">Услуга</label>
+                                    <select v-if="! subscription.id" v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product-id" class="col-sm-10 form-control">
+                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" >{{ option.title }}</option>
                                     </select>
                                     <input v-else :value="getSubscriptionTitle(subscription.product_id)" id="product_id" class="col-sm-10 form-control" type="text" disabled>
                                 </div>
@@ -469,6 +473,7 @@
             'nameProp',
             'customerIdProp',
             'subscriptionIdProp',
+            'userIdProp',
         ],
         data() {
             return {
@@ -531,6 +536,11 @@
             }
 
             this.getOptions();
+        },
+        computed: {
+            userRights() {
+                return 'user rights';
+            }
         },
         methods: {
             genlink(subId){
@@ -599,11 +609,11 @@
                     $(".cardLink").html("<a href='"+response.paymentUrl+"' target='_blank'>"+response.paymentUrl+"</a> <input type='hidden' id='cardLinkInput' value='"+response.paymentUrl+"'>");
                     $('#genBtn').hide();
                     $('#pitechlogo').show();
-                    console.log(response);
+                  //  console.log(response);
                 });
             },
             getLogs(){
-                console.log(this.subscriptionIdProp);
+                //console.log(this.subscriptionIdProp);
                 axios.get('/userlogs/list', {
                     params: {
                         subscription_id: this.subscriptionIdProp
@@ -655,7 +665,7 @@
                         product: product
                     })
                         .then(function (response) {
-                            console.log(response);
+                           //  console.log(response.data);(response);
                             if(response.data){
                                 $('#change-price').hide();
                                 Vue.$toast.success('"Стоимость подписки успешно изменена!"');
@@ -748,15 +758,12 @@
                     }).then(response => {
                         this.spinnerData.loading = false;
                         if(response.data.paymentResponseCode == "OK"){
-                            console.log(response);
                             Vue.$toast.success('Оплата прошла успешно.  Обновите страницу!');
                         }
                         else if(response.data.code){
-                            console.log(response);
                             Vue.$toast.error('Ошибка '+response.data.code);
                         }
                         else {
-                            console.log(response);
                             Vue.$toast.error('Карта не найдена! ');
                         }
 
@@ -1044,7 +1051,7 @@
                     subscriptions: this.subscriptions,
                 };
 
-                console.log(this.subscriptions);
+                //console.log(this.subscriptions);
                 if (this.type != 'create') {
                     data.customer.id = this.customer.id;
                 }

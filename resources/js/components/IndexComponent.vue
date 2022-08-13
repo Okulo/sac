@@ -107,7 +107,7 @@
                 </div>
                 <button v-if="mainFilters.length > 0 || secondFilters.length > 0" type="button" class="btn btn-success btn-sm" @click="applyFilter()">Найти</button>
                 <button v-if="mainFilters.length > 0 || secondFilters.length > 0" type="button" style="margin: 0 7px" class="btn btn-dark btn-sm" @click="resetFilter()">Сброс фильтра</button>
-                <button-customer-component v-if="prefix == 'customers' || prefix == 'subscriptions'"></button-customer-component>
+                <button-customer-component :user-id-prop="userIdProp" v-if="prefix == 'customers' || prefix == 'subscriptions'"></button-customer-component>
                 <a v-else-if="prefix != 'payments'" :href="createLink" class="btn btn-info text-white" title="Добавить">
                     <i class="fa fa-plus"></i>
                 </a>
@@ -293,7 +293,7 @@
                 </li>
             </ul>
         </nav>
-        <customer-component type-prop="edit" :subscription-id-prop="subscriptionId" :customer-id-prop="customerId"></customer-component>
+        <customer-component type-prop="edit" :subscription-id-prop="subscriptionId" :customer-id-prop="customerId" :user-id-prop="userIdProp"></customer-component>
         <b-modal size="md" hide-footer title="Укажите причину отказа" id="reason-modal" class="modal">
             <div v-if="existsReasons()">
                 <div class="modal-body">
@@ -323,6 +323,7 @@ export default {
         props: [
             'prefixProp',
             'createLinkProp',
+            'userIdProp'
         ],
         data() {
             return {
@@ -353,6 +354,7 @@ export default {
             }
         },
         mounted() {
+            // console.log(this.data);
             this.$nextTick(function(){
                 this.spinnerData.loading = true;
                 this.getFilters();
@@ -552,7 +554,7 @@ export default {
                 this.spinnerData.loading = true;
                 axios.get(`/${this.prefixProp}/list`, { params: this.queryParams }).then(response => {
 
-                    console.log(response.data);
+                   // console.log(response.data);
 
                     this.data = response.data.data;
                     this.dataTitles = response.data.dataTitles;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProductRequest;
 use App\Models\Product;
+use App\Models\ProductUser;
 use Illuminate\Http\Request;
 use App\Filters\ProductFilter;
 use App\Http\Resources\PaymentTypeResource;
@@ -24,6 +25,7 @@ use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Models\NextPrice;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -146,6 +148,7 @@ class ProductController extends Controller
         $productPaymentTypes = $product->paymentTypes;
         $paymentTypes = PaymentType::whereIsActive(true)->get()->pluck('title', 'name')->toArray();
         $additionals = Product::where('id', '!=', $product->id)->get()->pluck('title', 'id')->toArray();
+        $productUsers = ProductUser::where('product_id', $product->id)->get();
 
         return view("{$this->root}.edit", [
             'product' => $product,
@@ -160,6 +163,7 @@ class ProductController extends Controller
             'productAdditionals' => ProductAdditionalsResource::collection($productAdditionals),
             'productTeams' => ProductTeamsResource::collection($productTeams),
             'productCharts' => ProductChartsResource::collection($productCharts),
+            'productUsers' => $productUsers,
             'teams' => $teams,
             'users' => $users,
             'charts' => $charts,
@@ -205,7 +209,7 @@ class ProductController extends Controller
         $nextPrice = $request['next-price'];
         $period= $nextPrice->period ?? null;
         $prices = $request['prices'] ?? [];
-        // $productUsers = $request['productUsers'] ?? [];
+        $productUsers = $request['productUsers'] ?? [];
         $productTeams = $request['productTeams'] ?? [];
         $paymentTypes = $request['paymentTypes'] ?? [];
         $productReasons = $request['reasons'] ?? [];
@@ -292,16 +296,15 @@ class ProductController extends Controller
         $product->reasons()->whereNotIn('id', $reasonIds)->update([
             'is_active' => false,
         ]);
-        // $product->users()->detach();
+         $product->users()->detach();
 
-        // foreach ($productUsers as $productUser) {
-        //     $product->users()->attach([
-        //         $productUser['id'] => [
-        //             'stake' => $productUser['stake'],
-        //             'employment_at' => Carbon::parse($productUser['employment_at']),
-        //         ],
-        //     ]);
-        // }
+         foreach ($productUsers as $productUser) {
+             $product->users()->attach([
+                 $productUser['id'] => [
+                     'stake' => $productUser['stake']
+                 ],
+             ]);
+         }
 
         $product->teams()->detach();
 
@@ -354,23 +357,38 @@ class ProductController extends Controller
     {
         access(['can-head', 'can-host', 'can-operator']);
 
+        $userId = Auth::id();
+
         $products = Product::get();
         $data = [];
         foreach ($products as $product) {
-            $data[$product->id] = [
-                'id' => $product->id,
-                'title' => $product->title,
-                'block_amount' => $product->block_amount,
-                'trial_period' => $product->trial_period,
-                'prices' => [],
-            ];
-            if (count($product->prices) > 0) {
-                $prices = [];
-                foreach ($product->prices as $price) {
-                    $prices[$price->id] = $price->price;
+
+            if (count($product->users) > 0) {
+                $users = [];
+                foreach ($product->users as $items) {
+                    if($items->id == $userId){
+                        $data[$product->id] = [
+                            'id' => $product->id,
+                            'title' => $product->title,
+                            'block_amount' => $product->block_amount,
+                            'trial_period' => $product->trial_period,
+                            'prices' => [],
+                            'product_users' => $items,
+                        ];
+
+                        if (count($product->prices) > 0) {
+                            $prices = [];
+                            foreach ($product->prices as $price) {
+                                $prices[$price->id] = $price->price;
+                            }
+                            $data[$product->id]['prices'] = $prices;
+                        }
+                    }
                 }
-                $data[$product->id]['prices'] = $prices;
+
             }
+
+
         }
 
         return response()->json($data, 200);

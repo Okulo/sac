@@ -8,9 +8,11 @@
 
 @section('content')
 <div class="table-responsive bg-white">
-    <index-component 
+
+    <index-component
         prefix-prop="subscriptions"
         create-link-prop="{{ route('subscriptions.create') }}"
+        user-id-prop="{{ Auth::id() }}"
     ></index-component>
 </div>
 @stop

@@ -58,8 +58,10 @@ class UserController extends Controller
     public function create()
     {
         access(['can-head', 'can-host']);
-
-        return view("{$this->root}.create");
+        $users = User::all()->pluck('account', 'id')->toArray();
+        return view("{$this->root}.create", [
+            'users' => $users
+        ]);
     }
 
     /**
