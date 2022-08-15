@@ -65,7 +65,7 @@
                             <div class="row">
                                 <div class="form-group col-12">
                                     Айди текущего юзера - {{ userIdProp }}
-                                    {{ userRights }}
+
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="product-id" class="col-form-label">Услуга</label>
@@ -288,6 +288,7 @@
                                         <input type="hidden" :id="'recurrent-link-' + subIndex" :value="subscription.recurrent.link">
                                     </div>
                                 </div>
+                                {{ gatUserName(subscription.user_id) }}
                                 <div class="col-sm-6">
                                     <div class="recurrent_button-block">
                                         <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
@@ -539,10 +540,42 @@
         },
         computed: {
             userRights() {
-                return 'user rights';
+                let id = 6;
+                axios.get('/users/list')
+                    .then(response => {
+                        var allUsers = response.data.data;
+                        allUsers.forEach((sub) => {
+                            if(id == sub.id.value){
+                             //   console.log(sub.account.value);
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error(error);
+                    });
             }
         },
         methods: {
+            gatUserName(id){
+                axios.get('/users/list')
+                    .then(response => {
+                        var allUsers = response.data.data;
+                        allUsers.forEach( sub => {
+                            if(id == sub.id.value){
+                                console.log(sub.account.value);
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error(error);
+                    });
+            },
             genlink(subId){
 
                 this.subIdTmp = subId;

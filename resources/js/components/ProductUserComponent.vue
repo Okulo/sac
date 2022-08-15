@@ -5,10 +5,10 @@
                 <label class="col-sm-12 col-form-label nopadding" style="margin-bottom: 5px!important">Оператор</label>
 
             </div>
-            <div class="col-sm-4 nopadding">
-                <label class="col-sm-12 col-form-label nopadding" style="margin-bottom: 5px!important">Бонусная ставка</label>
+<!--            <div class="col-sm-4 nopadding">-->
+<!--                <label class="col-sm-12 col-form-label nopadding" style="margin-bottom: 5px!important">Бонусная ставка</label>-->
 
-            </div>
+<!--            </div>-->
 <!--            <div class="col-sm-4 nopadding input-group">-->
 <!--                <label class="col-sm-12 col-form-label nopadding" style="margin-bottom: 5px!important">Дата вступления на работу</label>-->
 <!--            </div>-->
@@ -19,14 +19,14 @@
                     <option v-for="(account, userIndex) in users" :key="userIndex" :value="userIndex">{{ account }}</option>
                 </select>
             </div>
-            <div class="col-sm-4 nopadding">
-                <div style="display: flex">
-                    <input type="text" :name="'productUsers['+ productUserId +'][stake]'" id="" v-model="productUserAccount.stake" class="form-control" placeholder="Процентная ставка">
-                    <div class="input-group-append">
-                        <span class="input-group-text">%</span>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="col-sm-4 nopadding">-->
+<!--                <div style="display: flex">-->
+<!--                    <input type="text" :name="'productUsers['+ productUserId +'][stake]'" id="" v-model="productUserAccount.stake" class="form-control" placeholder="Процентная ставка">-->
+<!--                    <div class="input-group-append">-->
+<!--                        <span class="input-group-text">%</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 <!--            <div class="col-sm-4 nopadding input-group">-->
 <!--                <datetime-->
 <!--                    type="date"-->

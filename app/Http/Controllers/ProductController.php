@@ -301,7 +301,7 @@ class ProductController extends Controller
          foreach ($productUsers as $productUser) {
              $product->users()->attach([
                  $productUser['id'] => [
-                     'stake' => $productUser['stake']
+                     'stake' => 0
                  ],
              ]);
          }
