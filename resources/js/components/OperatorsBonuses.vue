@@ -157,7 +157,11 @@
                 })
                     .then(response => {
                         // this.getDebtorsList();
-                        console.log(response);
+                     //  console.log(response.data);
+
+                        response.data.forEach(elem => {
+                            console.log(elem.account+ " +" +elem.bonus_amount );
+                        })
                     })
                     .catch(function (error) {
                         console.log('err');
