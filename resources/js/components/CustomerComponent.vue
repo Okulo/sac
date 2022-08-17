@@ -64,8 +64,9 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-12">
-                                    Айди текущего юзера - {{ userIdProp }}
-
+                                    <div v-for="user_name, index in users" v-if="index == subscription.user_id">
+                                        Оператор:<b> {{ user_name}}</b>
+                                    </div>
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="product-id" class="col-form-label">Услуга</label>
@@ -538,44 +539,7 @@
 
             this.getOptions();
         },
-        computed: {
-            userRights() {
-                let id = 6;
-                axios.get('/users/list')
-                    .then(response => {
-                        var allUsers = response.data.data;
-                        allUsers.forEach((sub) => {
-                            if(id == sub.id.value){
-                             //   console.log(sub.account.value);
-                            }
-
-                        });
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error(error);
-                    });
-            }
-        },
         methods: {
-            gatUserName(id){
-                axios.get('/users/list')
-                    .then(response => {
-                        var allUsers = response.data.data;
-                        allUsers.forEach( sub => {
-                            if(id == sub.id.value){
-                                console.log(sub.account.value);
-                            }
-
-                        });
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error(error);
-                    });
-            },
             genlink(subId){
 
                 this.subIdTmp = subId;
