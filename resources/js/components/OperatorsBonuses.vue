@@ -22,79 +22,39 @@
                         </a>
                     </small>
                     <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
-                        <div class="col-4">
-                            С даты окончания
-                            <datetime
-                                type="date"
-                                v-model="startDate"
-                                input-class="form-control"
-                                valueZone="Asia/Almaty"
-                                value-zone="Asia/Almaty"
-                                zone="Asia/Almaty"
-                                :auto="true"
-                            ></datetime>
-                        </div>
-                        <div class="col-4">
-                            По дату окончания
-                            <datetime
-                                type="date"
-                                v-model="endDate"
-                                input-class="form-control"
-                                valueZone="Asia/Almaty"
-                                value-zone="Asia/Almaty"
-                                zone="Asia/Almaty"
-                                :auto="true"
-                            ></datetime>
-                        </div>
-                        <div class="col-4"></div>
-
-                        <div class="col-4">
-                            <br>
-                            <b>Услуги</b>
-                            <p></p>
-                            <select v-model="product" class="select-multiple custom-select">
-                                <option v-for="product in products" v-bind:value="product.id">
-                                    {{ product.title }}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="col-12">
-                            &nbsp<br>
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="getDebtorsList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                        <div class="btn-group d-flex w-100" role="group" aria-label="...">
+                            <button type="button" class="btn btn-default w-100"><<< Назад</button>
+                            <button type="button" class="btn btn-default w-100">Текущая неделя</button>
+                            <button type="button" class="btn btn-default w-100">Вперед >>></button>
                         </div>
                     </div>
 
-
                 </div>
                 <div class="card-body">
-                    <strong>Всего записей -      {{items.length}}</strong><p><br></p>
+                    <div class="btn-group d-flex w-100" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default w-100">< Назад</button>
+                        <button type="button" class="btn btn-default w-100">Текущая неделя</button>
+                        <button type="button" class="btn btn-default w-100">Вперед ></button>
+                    </div>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
-
+<p><br></p>
                     <table class="table">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">ID</th>
                             <th scope="col">Имя</th>
-                            <th scope="col">Роль</th>
+                            <th scope="col">Сумма</th>
                             <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr v-for="(item, index) in users" :key="index">
+                        <tr v-for="(item, index) in operatorBonuses" :key="index">
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
-                            <td>{{item.id}}</td>
                             <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
                             </td>
-                            <td>{{item.role_id}}</td>
-                            <td>{{getUserBonus(item.id)}}</td>
-                            <td v-for="bonus in operatorBonuses" v-if="bonus.user_id == item.id">
-                                <!-- цикл -->
-                                {{bonus.summa}}
-                            </td>
+                            <td>{{item.summa}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -139,14 +99,12 @@
            // this.getList();
             this.getProcessedStatus();
             //  this.getSubscriptionlist();
-           // this.getUserBonus();
+            this.getUserBonus();
         },
 
         created() {
             this.getProductsWithPrices();
-            this.getUserList();
-
-            console.log(this.operatorBonuses);
+           // this.getUserList();
         },
         computed: {
             //функция сортировки массива
@@ -160,12 +118,11 @@
                 })
                     .then(response => {
                         // this.getDebtorsList();
-                     //console.log(response.data);
+                      //console.log(response.data);
 
                         response.data.forEach(elem =>{
                             this.operatorBonuses.push({
-                                product_id: elem.product_id,
-                                status: elem.status,
+                                name: elem.name,
                                 summa: elem.summa,
                                 user_id: elem.user_id
                             });

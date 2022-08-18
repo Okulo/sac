@@ -460,18 +460,19 @@ class ReportController extends Controller
     public function getUserBonus( Request $request){
         $uId = $request->userId;
 
-        $bonuses = \DB::select('SELECT
-  payments.status,
-  payments.user_id,
-  product_bonuses.product_id,
-  payments.product_id,
-  SUM(product_bonuses.amount) AS summa
-FROM payments
-  INNER JOIN product_bonuses
-    ON payments.product_id = product_bonuses.product_id
-WHERE payments.user_id = '.$uId.'
-AND payments.status = \'Completed\'
-AND payments.paided_at BETWEEN \'2022-08-09 00:00:01\' AND \'2022-08-10 23:59:00\'');
+        $bonuses = \DB::select('SELECT  payments.user_id,
+                                        users.name,
+                                        SUM(product_bonuses.amount) as summa
+                                FROM payments
+                                INNER JOIN users
+                                    ON (payments.user_id = users.id)
+                                INNER JOIN product_bonuses
+                                    ON (payments.product_id = product_bonuses.product_id)
+                                WHERE payments.`status` = \'Completed\'
+                                AND payments.paided_at
+                                BETWEEN \'2022-08-01 00:00:01\'
+                                AND \'2022-08-15 23:59:00\'
+                                GROUP BY payments.user_id');
 
         return $bonuses;
     }
