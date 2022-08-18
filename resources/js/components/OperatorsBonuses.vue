@@ -78,8 +78,6 @@
                             <th scope="col">ID</th>
                             <th scope="col">Имя</th>
                             <th scope="col">Роль</th>
-                            <th scope="col">За неделю</th>
-                            <th scope="col">За месяц</th>
                             <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
@@ -92,10 +90,11 @@
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
                             </td>
                             <td>{{item.role_id}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{getUserBonus(item.id)}}</td>
+                            <td v-for="bonus in operatorBonuses" v-if="bonus.user_id == item.id">
+                                <!-- цикл -->
+                                {{bonus.summa}}
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -120,6 +119,7 @@
             processed: '',
             items: [],
             processedStatus: [],
+            operatorBonuses: [],
             cpData: '',
             cp: '',
             cpStatus: [],
@@ -139,29 +139,95 @@
            // this.getList();
             this.getProcessedStatus();
             //  this.getSubscriptionlist();
-            this.getUserBonus();
+           // this.getUserBonus();
         },
 
         created() {
             this.getProductsWithPrices();
+            this.getUserList();
+
+            console.log(this.operatorBonuses);
         },
         computed: {
             //функция сортировки массива
 
         },
         methods: {
-            getUserBonus(){
+
+            getUserBonus(id){
                 axios.post('/reports/get-user-bonus',{
-                    subId: 1,
-                    status: 2
+                    userId: id
                 })
                     .then(response => {
                         // this.getDebtorsList();
-                     //  console.log(response.data);
+                     //console.log(response.data);
 
-                        response.data.forEach(elem => {
-                            console.log(elem.account+ " +" +elem.bonus_amount );
+                        response.data.forEach(elem =>{
+                            this.operatorBonuses.push({
+                                product_id: elem.product_id,
+                                status: elem.status,
+                                summa: elem.summa,
+                                user_id: elem.user_id
+                            });
                         })
+
+
+                        // const roundNumber = (num, scale) => {
+                        //     if(!("" + num).includes("e")) {
+                        //         return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+                        //     } else {
+                        //         var arr = ("" + num).split("e");
+                        //         var sig = ""
+                        //         if(+arr[1] + scale > 0) {
+                        //             sig = "+";
+                        //         }
+                        //         return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+                        //     }
+                        // };
+                        //
+                        //
+                        // //var dataGroup = [];
+                        //
+                        //     response.data.forEach(element => {
+                        //         //  console.log(elem.account+ " +" +elem.bonus_amount );
+                        //
+                        //         let indexElement  = this.operatorBonuses.findIndex(elm => {
+                        //             return (elm.account === element.account );
+                        //         });
+                        //
+                        //         if(indexElement !== -1) {
+                        //             this.operatorBonuses[indexElement].bonus_amount +=  parseFloat(element.bonus_amount);
+                        //             this.operatorBonuses[indexElement].count +=  parseInt(element.count);
+                        //             roundNumber(this.operatorBonuses[indexElement].count,0);
+                        //             roundNumber(this.operatorBonuses[indexElement].bonus_amount,2);
+                        //         }
+                        //         else{
+                        //             this.operatorBonuses.push({
+                        //                 id: element.id,
+                        //                 account: element.account,
+                        //                 bonus_amount: parseInt(element.bonus_amount),
+                        //                 count: parseFloat(element.count),
+                        //             });
+                        //         }
+                        //
+                        //         // this.operatorBonuses.push({
+                        //         //     account:  elem.account,
+                        //         //     amount: elem.amount,
+                        //         //     bonus_amount: elem.bonus_amount,
+                        //         //     bonus_type: elem.bonus_type,
+                        //         //     name: elem.name,
+                        //         //     paided_at: elem.paided_at,
+                        //         //     payment_type: elem.payment_type,
+                        //         //     subscription_id: elem.subscription_id,
+                        //         //     title: elem.title
+                        //         // });
+                        //     })
+                        //
+                        //
+                        // console.log('grouped', this.operatorBonuses);
+
+
+
                     })
                     .catch(function (error) {
                         console.log('err');
@@ -228,24 +294,14 @@
                     });
 
             },
-            getList(){
-                this.getProcessedStatus();
-                this.items = [];
-                // $("#exampleModalCenter").modal("show");
-                this.spinnerData.loading = true;
-                //  this.spinnerData.loading = true;
+            getUserList(){
                 axios.get('/users/list', {
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product,
                     reportType: 11
                 })
                     .then(response => {
-                        this.spinnerData.loading = false;
                         response.data.data.forEach(elem =>{
                             if(elem.is_active.value == 'Активный'){
                               //  console.log(elem);
-
                                 this.users.push({
                                     id: elem.id.value,
                                     account: elem.account.value,

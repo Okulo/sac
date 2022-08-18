@@ -457,31 +457,53 @@ class ReportController extends Controller
         return $setStatus;
     }
 
-    public function getUserBonus(){
+    public function getUserBonus( Request $request){
+        $uId = $request->userId;
+
         $bonuses = \DB::select('SELECT
-  product_bonuses.amount as bonus_amount,
-  product_bonuses.payment_type_id,
-  product_bonuses.`type` AS bonus_type,
-  payments.subscription_id,
-  payments.amount,
-  payments.`status`,
-  payments.`type` AS payment_type,
-  payments.paided_at,
-  users.account,
-  users.name,
-  products.title,
-  products.code,
-  payments.product_id
-FROM
-  payments
-  LEFT JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
-  INNER JOIN users ON (payments.user_id = users.id)
-  LEFT JOIN products ON (payments.product_id = products.id)
-WHERE
-      payments.paided_at BETWEEN \'2022-07-17 00:00:00\' AND \'2022-08-17 00:00:00\'
-  AND payments.`status` = \'Completed\'
-ORDER BY `payments`.`paided_at`  ASC');
+  payments.status,
+  payments.user_id,
+  product_bonuses.product_id,
+  payments.product_id,
+  SUM(product_bonuses.amount) AS summa
+FROM payments
+  INNER JOIN product_bonuses
+    ON payments.product_id = product_bonuses.product_id
+WHERE payments.user_id = '.$uId.'
+AND payments.status = \'Completed\'
+AND payments.paided_at BETWEEN \'2022-08-09 00:00:01\' AND \'2022-08-10 23:59:00\'');
 
         return $bonuses;
     }
+
+//    public function getUserBonus(){
+//        $bonuses = \DB::select('SELECT
+//  product_bonuses.amount as bonus_amount,
+//  product_bonuses.payment_type_id,
+//  product_bonuses.`type` AS bonus_type,
+//  payments.subscription_id,
+//  payments.amount,
+//  payments.`status`,
+//  payments.`type` AS payment_type,
+//  payments.paided_at,
+//  users.account,
+//  users.name,
+//  products.title,
+//  products.code,
+//  payments.product_id
+//FROM
+//  payments
+//  LEFT JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
+//  INNER JOIN users ON (payments.user_id = users.id)
+//  LEFT JOIN products ON (payments.product_id = products.id)
+//WHERE
+//      payments.paided_at BETWEEN \'2022-07-17 00:00:00\' AND \'2022-08-17 00:00:00\'
+//  AND payments.`status` = \'Completed\'
+//ORDER BY `payments`.`paided_at`  ASC');
+//
+//        return $bonuses;
+//    }
+
+
+
 }
