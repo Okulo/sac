@@ -14,27 +14,15 @@
 
             </div>
             <div class="card mt-3">
-                <div class="card-header">
-                    Фильтр
-                    <small class="float-right">
-                        <a id="filter-toggle"  @click="filterOpen = !filterOpen" class="btn btn-default btn-sm" title="Скрыть/показать">
-                            <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
-                        </a>
-                    </small>
-                    <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
-                        <div class="btn-group d-flex w-100" role="group" aria-label="...">
-                            <button type="button" class="btn btn-default w-100"><<< Назад</button>
-                            <button type="button" class="btn btn-default w-100">Текущая неделя</button>
-                            <button type="button" class="btn btn-default w-100">Вперед >>></button>
-                        </div>
-                    </div>
-
-                </div>
                 <div class="card-body">
                     <div class="btn-group d-flex w-100" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default w-100">< Назад</button>
-                        <button type="button" class="btn btn-default w-100">Текущая неделя</button>
-                        <button type="button" class="btn btn-default w-100">Вперед ></button>
+                        <button type="button" class="btn btn-default w-100" @click="substractOneWeek()">< Назад</button>
+                        <button type="button" class="btn btn-default w-100" @click="currentWeek()">Текущая неделя</button>
+                        <div class="w-100" style="border:1px solid #ddd; background-color: #f8f9fa; text-align: center; padding-top: 7px">
+
+                            c {{modifedDate(weekStart)}}, по {{modifedDate(weekEnd)}}
+
+                        </div>
                     </div>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 <p><br></p>
@@ -44,17 +32,15 @@
                             <th scope="col">#</th>
                             <th scope="col">Имя</th>
                             <th scope="col">Сумма</th>
-                            <!--  <th scope="col"></th> -->
+                             <th scope="col"></th>
                         </tr>
                         </thead>
-
                         <tbody>
                         <tr v-for="(item, index) in operatorBonuses" :key="index">
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
-                            <td>
-                                <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
-                            </td>
+                            <td>{{item.name}}</td>
                             <td>{{item.summa}}</td>
+                            <td style="width: 10%"><a class="custom-link" role="button" :href="'/reports/operator-bonus-details/'+ item.user_id">Подробнее</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -92,29 +78,48 @@
             period: '',
             products: {},
             product: '',
-            users: []
+            users: [],
+            weekStart: '',
+            weekEnd: ''
         }),
         mounted() {
             console.log('Component mounted.');
+            this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+            this.weekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
            // this.getList();
             this.getProcessedStatus();
             //  this.getSubscriptionlist();
-            this.getUserBonus();
         },
 
         created() {
             this.getProductsWithPrices();
            // this.getUserList();
-        },
-        computed: {
-            //функция сортировки массива
 
         },
+         watch: {
+             weekStart: function (val) {
+                 //если меняется дата выполняем
+                 this.operatorBonuses = [];
+                 this.getUserBonus(this.weekStart, this.weekEnd);
+             }
+         },
         methods: {
-
-            getUserBonus(id){
+            modifedDate(date){
+                return moment(date).locale('ru').format('DD MMM ');
+            },
+            substractOneWeek(){
+                    this.weekStart =  moment(this.weekStart).subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+                    this.weekEnd = moment(this.weekEnd ).subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+            },
+            currentWeek(){
+                this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+                this.weekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+            },
+            getUserBonus(start, end){
+                this.spinnerData.loading = true;
                 axios.post('/reports/get-user-bonus',{
-                    userId: id
+                    startDate: start,
+                    endDate: end
                 })
                     .then(response => {
                         // this.getDebtorsList();
@@ -128,62 +133,7 @@
                             });
                         })
 
-
-                        // const roundNumber = (num, scale) => {
-                        //     if(!("" + num).includes("e")) {
-                        //         return +(Math.round(num + "e+" + scale)  + "e-" + scale);
-                        //     } else {
-                        //         var arr = ("" + num).split("e");
-                        //         var sig = ""
-                        //         if(+arr[1] + scale > 0) {
-                        //             sig = "+";
-                        //         }
-                        //         return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
-                        //     }
-                        // };
-                        //
-                        //
-                        // //var dataGroup = [];
-                        //
-                        //     response.data.forEach(element => {
-                        //         //  console.log(elem.account+ " +" +elem.bonus_amount );
-                        //
-                        //         let indexElement  = this.operatorBonuses.findIndex(elm => {
-                        //             return (elm.account === element.account );
-                        //         });
-                        //
-                        //         if(indexElement !== -1) {
-                        //             this.operatorBonuses[indexElement].bonus_amount +=  parseFloat(element.bonus_amount);
-                        //             this.operatorBonuses[indexElement].count +=  parseInt(element.count);
-                        //             roundNumber(this.operatorBonuses[indexElement].count,0);
-                        //             roundNumber(this.operatorBonuses[indexElement].bonus_amount,2);
-                        //         }
-                        //         else{
-                        //             this.operatorBonuses.push({
-                        //                 id: element.id,
-                        //                 account: element.account,
-                        //                 bonus_amount: parseInt(element.bonus_amount),
-                        //                 count: parseFloat(element.count),
-                        //             });
-                        //         }
-                        //
-                        //         // this.operatorBonuses.push({
-                        //         //     account:  elem.account,
-                        //         //     amount: elem.amount,
-                        //         //     bonus_amount: elem.bonus_amount,
-                        //         //     bonus_type: elem.bonus_type,
-                        //         //     name: elem.name,
-                        //         //     paided_at: elem.paided_at,
-                        //         //     payment_type: elem.payment_type,
-                        //         //     subscription_id: elem.subscription_id,
-                        //         //     title: elem.title
-                        //         // });
-                        //     })
-                        //
-                        //
-                        // console.log('grouped', this.operatorBonuses);
-
-
+                        this.spinnerData.loading = false;
 
                     })
                     .catch(function (error) {

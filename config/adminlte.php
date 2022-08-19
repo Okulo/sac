@@ -371,6 +371,19 @@ return [
                 'can-host',
             ],
         ],
+        // бонусы операторов
+        [
+            'key'  => 'report_11',
+            'text' => 'Бонусы операторов',
+            'url'  => 'reports/get-reports/11',
+            'icon' => 'fa fa-user-check',
+            "can"  => [
+              //  'can-operator',
+                'can-head',
+                'can-host',
+            ],
+        ],
+
         // Отчеты
         [
             'key'  => 'reports',

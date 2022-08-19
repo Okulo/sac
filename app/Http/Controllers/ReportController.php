@@ -458,9 +458,11 @@ class ReportController extends Controller
     }
 
     public function getUserBonus( Request $request){
-        $uId = $request->userId;
 
-        $bonuses = \DB::select('SELECT  payments.user_id,
+        $startDate = $request->startDate;
+        $endDate =  $request->endDate;
+
+        $bonuses = \DB::select("SELECT  payments.user_id,
                                         users.name,
                                         SUM(product_bonuses.amount) as summa
                                 FROM payments
@@ -468,13 +470,19 @@ class ReportController extends Controller
                                     ON (payments.user_id = users.id)
                                 INNER JOIN product_bonuses
                                     ON (payments.product_id = product_bonuses.product_id)
-                                WHERE payments.`status` = \'Completed\'
+                                WHERE payments.`status` = 'Completed'
                                 AND payments.paided_at
-                                BETWEEN \'2022-08-01 00:00:01\'
-                                AND \'2022-08-15 23:59:00\'
-                                GROUP BY payments.user_id');
+                                BETWEEN '".$startDate."'
+                                AND '".$endDate."'
+                                GROUP BY payments.user_id");
 
         return $bonuses;
+    }
+
+    public function operatorBonusDetail($id){
+        return view('reports.operator-detail', [
+            'id' => $id
+        ]);
     }
 
 //    public function getUserBonus(){
