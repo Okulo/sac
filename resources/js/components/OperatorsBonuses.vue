@@ -20,7 +20,7 @@
                         <button type="button" class="btn btn-default w-100" @click="currentWeek()">Текущая неделя</button>
                         <div class="w-100" style="border:1px solid #ddd; background-color: #f8f9fa; text-align: center; padding-top: 7px">
 
-                            c {{modifedDate(weekStart)}}, по {{modifedDate(weekEnd)}}
+                          <b> c {{modifedDate(weekStart)}}, по {{modifedDate(weekEnd)}}</b>
 
                         </div>
                     </div>

@@ -143,17 +143,17 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Должники',
                 "url" => "reports/get-reports/10",
             ]);
-            $event->menu->addIn('users-bonuses', [
-                "key" => "report_10",
-                "text" => 'Бонусы операторов',
-                "url" => "reports/get-reports/11",
-                    'icon' => 'fa fa-user-check',
-                    "can"  => [
-                        // 'can-operator',
-                        'can-head',
-                        'can-host',
-                    ],
-            ]);
+//            $event->menu->addIn('reports', [
+//                "key" => "report_10",
+//                "text" => 'Бонусы операторов',
+//                "url" => "reports/get-reports/11",
+//                    'icon' => 'fa fa-user-check',
+//                    "can"  => [
+//                        // 'can-operator',
+//                        'can-head',
+//                        'can-host',
+//                    ],
+//            ]);
             // $event->menu->addIn('statistics', [
             //     "key" => "statistic_type_3",
             //     "text" => 'Итоговые',

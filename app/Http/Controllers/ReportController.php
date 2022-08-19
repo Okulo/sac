@@ -462,7 +462,8 @@ class ReportController extends Controller
         $startDate = $request->startDate;
         $endDate =  $request->endDate;
 
-        $bonuses = \DB::select("SELECT  payments.user_id,
+        if(!isset($request->userId)){
+            $bonuses = \DB::select("SELECT  payments.user_id,
                                         users.name,
                                         SUM(product_bonuses.amount) as summa
                                 FROM payments
@@ -475,6 +476,10 @@ class ReportController extends Controller
                                 BETWEEN '".$startDate."'
                                 AND '".$endDate."'
                                 GROUP BY payments.user_id");
+        }
+        else{
+            $bonuses = 1;
+        }
 
         return $bonuses;
     }

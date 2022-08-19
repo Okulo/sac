@@ -1,5 +1,5 @@
 @extends('adminlte::page')
 
 @section('content')
-            <operators-bonuses></operators-bonuses>
+            <operator-detail user-id-prop="{{ $id }}"></operator-detail>
 @stop
