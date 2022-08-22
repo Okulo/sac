@@ -9,7 +9,7 @@
 
 
         <div class="col-md-12">
-            <h2>Детализация оператора - </h2>
+            <h2>Детализация оператора {{userNameProp}}</h2>
             <div class="intro">
 
             </div>
@@ -24,32 +24,39 @@
 
                         </div>
                     </div>
-                    <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
+
 <p><br></p>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Имя</th>
-                            <th scope="col">Сумма</th>
-                             <th scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(item, index) in operatorBonuses" :key="index">
-                            <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
-                            <td>{{item.name}}</td>
-                            <td>{{item.summa}}</td>
-                            <td style="width: 10%"><a class="custom-link" role="button" :href="'/reports/operator-bonus-details/'+ item.user_id">Подробнее</a></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="card" style="height: 8rem">
+                                <div class="card-body">
+                                    <h5 class="card-title">Сумма бонусов <p></p></h5>
+                                    <p class="card-text"><h2><b class="text-info">{{summa}}</b></h2></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="card" style="height: 8rem">
+                                <div class="card-body">
+                                    <h5 class="card-title">Активные абонементы по подписке</h5>
+                                    <p class="card-text"><h2><b class="text-indigo">{{count}}</b></h2></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="card" style="height: 8rem">
+                                <div class="card-body">
+                                    <h5 class="card-title ">Активные абонементы по прямому переводу</h5>
+                                    <p class="card-text "><h2><b class="text-primary">{{transferCount}}</b></h2></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
+            <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
         </div>
-        <customer-component type-prop="edit" :subscription-id-prop="subscriptionId" :customer-id-prop="customerId"></customer-component>
-
     </div>
 </template>
 
@@ -57,7 +64,8 @@
     import moment from 'moment';
      export default {
          props: [
-             'userIdProp'
+             'userIdProp',
+             'userNameProp'
          ],
         data: () => ({
             startDate: '',
@@ -83,14 +91,16 @@
             product: '',
             users: [],
             weekStart: '',
-            weekEnd: ''
+            weekEnd: '',
+            summa: '',
+            count: '',
+            transferCount: ''
         }),
         mounted() {
             console.log('Component mounted.');
             this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
             this.weekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
            // this.getList();
-            this.getProcessedStatus();
             //  this.getSubscriptionlist();
         },
          watch: {
@@ -98,6 +108,8 @@
                  //если меняется дата выполняем
                  this.operatorBonuses = [];
                  this.getUserBonus(this.weekStart, this.weekEnd);
+                 this.getSubscriptions(this.weekStart, this.weekEnd);
+                 this.getTransferCount(this.weekStart, this.weekEnd);
              }
          },
         methods: {
@@ -112,9 +124,59 @@
                 this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
                 this.weekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
             },
+            getTransferCount(start, end){
+                this.spinnerData.loading = true;
+                axios.post('/reports/get-subscriptions',{
+                    startDate: start,
+                    endDate: end,
+                    userId: this.userIdProp,
+                    count: 'transfer'
+                })
+                    .then(response => {
+                        // this.getDebtorsList();
+                        //console.log(response.data);
+                        if(response.data[0].count){
+                            this.transferCount = response.data[0].count;
+                        }else{
+                            this.transferCount = 0;
+                        }
+
+                        this.spinnerData.loading = false;
+
+                    })
+                    .catch(function (error) {
+                        console.log('err');
+                        console.log(error);
+                    });
+            },
+            getSubscriptions(start, end){
+                this.spinnerData.loading = true;
+                axios.post('/reports/get-subscriptions',{
+                    startDate: start,
+                    endDate: end,
+                    userId: this.userIdProp,
+                    count: 'subs'
+                })
+                    .then(response => {
+                        // this.getDebtorsList();
+                        //console.log(response.data);
+                        if(response.data[0].count){
+                            this.count = response.data[0].count;
+                        }else{
+                            this.count = 0;
+                        }
+
+                        this.spinnerData.loading = false;
+
+                    })
+                    .catch(function (error) {
+                        console.log('err');
+                        console.log(error);
+                    });
+            },
             getUserBonus(start, end){
                 this.spinnerData.loading = true;
-                axios.post('/reports/get-user-bonus',{
+                axios.post('/reports/get-operator-summ',{
                     startDate: start,
                     endDate: end,
                     userId: this.userIdProp
@@ -122,14 +184,11 @@
                     .then(response => {
                         // this.getDebtorsList();
                       //console.log(response.data);
-
-                        response.data.forEach(elem =>{
-                            this.operatorBonuses.push({
-                                name: elem.name,
-                                summa: elem.summa,
-                                user_id: elem.user_id
-                            });
-                        })
+                        if(response.data[0].summa){
+                            this.summa = response.data[0].summa;
+                        }else{
+                            this.summa = 0;
+                        }
 
                         this.spinnerData.loading = false;
 

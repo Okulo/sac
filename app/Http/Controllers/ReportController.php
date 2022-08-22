@@ -6,6 +6,7 @@ use App\Models\CpNotification;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Subscription;
+use App\Models\User;
 use App\Models\UserLog;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
@@ -462,32 +463,114 @@ class ReportController extends Controller
         $startDate = $request->startDate;
         $endDate =  $request->endDate;
 
-        if(!isset($request->userId)){
+      //  if(!isset($request->userId)){
             $bonuses = \DB::select("SELECT  payments.user_id,
                                         users.name,
                                         SUM(product_bonuses.amount) as summa
                                 FROM payments
-                                INNER JOIN users
-                                    ON (payments.user_id = users.id)
-                                INNER JOIN product_bonuses
-                                    ON (payments.product_id = product_bonuses.product_id)
+                              payments
+                                    INNER JOIN users ON (payments.user_id = users.id)
+                                    INNER JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
                                 WHERE payments.`status` = 'Completed'
                                 AND payments.paided_at
                                 BETWEEN '".$startDate."'
                                 AND '".$endDate."'
                                 GROUP BY payments.user_id");
-        }
-        else{
-            $bonuses = 1;
-        }
+//        }
+//        else{
+//            $bonuses = \DB::select("SELECT
+//                  payments.`status`,
+//                  payments.product_id,
+//                  payments.user_id,
+//                  users.name,
+//                  users.id,
+//                  product_bonuses.amount,
+//                  payments.paided_at,
+//                  product_bonuses.product_id,
+//                  users.account,
+//                  payments.quantity,
+//                  payments.`type`,
+//                  payments.customer_id,
+//                  payments.subscription_id,
+//                  payments.amount,
+//                  payments.product_bonus_id,
+//                  products.title
+//                FROM
+//                  payments
+//                  INNER JOIN users ON (payments.user_id = users.id)
+//                  INNER JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
+//                  INNER JOIN products ON (payments.product_id = products.id)
+//                WHERE
+//                  payments.`status` = 'Completed' AND
+//                  payments.user_id = '".$request->userId."'
+//                ORDER BY
+//                  payments.quantity");
+//            }
 
         return $bonuses;
     }
 
     public function operatorBonusDetail($id){
+
+        $user = User::where('id', $id)->get()->first();
+
         return view('reports.operator-detail', [
-            'id' => $id
+            'id' => $id,
+            'name' => $user->name
         ]);
+    }
+
+    public function getOperatorSumm (Request $request){
+
+        $startDate = $request->startDate;
+        $endDate =  $request->endDate;
+        $userId = $request->userId;
+
+        $bonuses = \DB::select("SELECT
+                      sum(product_bonuses.amount) as summa
+                    FROM
+                      payments
+                      left JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
+                    WHERE
+                      payments.`status` = 'Completed' AND
+                      payments.user_id = ".$userId." and
+                      payments.paided_at BETWEEN '".$startDate."' AND '".$endDate."'");
+        return $bonuses;
+    }
+
+    public function getSubscriptions (Request $request){
+
+        $startDate = $request->startDate;
+        $endDate =  $request->endDate;
+        $userId = $request->userId;
+
+        if($request->count == 'subs'){
+            $bonuses = \DB::select("SELECT
+                    count(*) as count
+                    FROM
+                      payments
+                    WHERE
+                      payments.`status` = 'Completed' AND
+                      payments.user_id = ".$userId." AND
+                      payments.paided_at BETWEEN '".$startDate."' AND '".$endDate."'
+                      AND
+                      (payments.`type` = 'cloudpayment' OR   payments.`type` = 'pitech')");
+        } else {
+            $bonuses = \DB::select("SELECT
+                    count(*) as count
+                    FROM
+                      payments
+                    WHERE
+                      payments.`status` = 'Completed' AND
+                      payments.user_id = ".$userId." AND
+                      payments.paided_at BETWEEN '".$startDate."' AND '".$endDate."'
+                      AND
+                      (payments.`type` = 'transfer')");
+        }
+
+
+
+        return $bonuses;
     }
 
 //    public function getUserBonus(){
