@@ -143,6 +143,11 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Должники',
                 "url" => "reports/get-reports/10",
             ]);
+            $event->menu->addIn('reports', [
+                "key" => "report_11",
+                "text" => 'Мои бонусы',
+                "url" => "/reports/operator-bonus-details/".Auth::id(),
+            ]);
 //            $event->menu->addIn('reports', [
 //                "key" => "report_10",
 //                "text" => 'Бонусы операторов',
