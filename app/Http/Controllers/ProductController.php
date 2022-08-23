@@ -142,13 +142,14 @@ class ProductController extends Controller
         $productCharts = $product->charts;
         $productAdditionals = $product->additionals;
         $reasons = $product->reasons()->where('is_active', true)->pluck('title');
-        $users = User::all()->pluck('account', 'id')->toArray();
+        $users = User::where('is_active','>','0')->get()->pluck('name', 'id')->toArray();
         $teams = Team::all()->pluck('name', 'id')->toArray();
         $charts = Chart::all()->pluck('title', 'id')->toArray();
         $productPaymentTypes = $product->paymentTypes;
         $paymentTypes = PaymentType::whereIsActive(true)->get()->pluck('title', 'name')->toArray();
         $additionals = Product::where('id', '!=', $product->id)->get()->pluck('title', 'id')->toArray();
-        $productUsers = ProductUser::where('product_id', $product->id)->get();
+       // $productUsers = ProductUser::where('product_id', $product->id)->get();
+        $productUsers = $product->users;
 
         return view("{$this->root}.edit", [
             'product' => $product,
@@ -163,7 +164,7 @@ class ProductController extends Controller
             'productAdditionals' => ProductAdditionalsResource::collection($productAdditionals),
             'productTeams' => ProductTeamsResource::collection($productTeams),
             'productCharts' => ProductChartsResource::collection($productCharts),
-            'productUsers' => $productUsers,
+            'productUsers' => ProductUsersResource::collection($productUsers),
             'teams' => $teams,
             'users' => $users,
             'charts' => $charts,

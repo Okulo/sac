@@ -24,7 +24,7 @@
 
                         </div>
                     </div>
-                    <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
+
 <p><br></p>
                     <table class="table">
                         <thead>
@@ -47,6 +47,7 @@
 
                 </div>
             </div>
+            <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
         </div>
         <customer-component type-prop="edit" :subscription-id-prop="subscriptionId" :customer-id-prop="customerId"></customer-component>
 

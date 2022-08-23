@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSubscriptionRequest;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Filters\SubscriptionFilter;
 use App\Http\Resources\SubscriptionCollection;
@@ -42,7 +43,9 @@ class SubscriptionController extends Controller
         access(['can-operator', 'can-head', 'can-host']);
        //   $products = Product::get()->pluck('title', 'id');
         $products = \DB::table('products')->whereNull('archived')->get()->pluck('title', 'id');
+        $users = User::where('is_active','>','0')->get()->pluck('name', 'id')->toArray();
         $teams = Team::get()->pluck('name', 'id')->toArray();
+
         $teams[9999] = 'Без команды';
 
         $data['main'] = [
@@ -96,6 +99,12 @@ class SubscriptionController extends Controller
                 'name' => 'id',
                 'title' => 'ID абонемента',
                 'type' => 'input',
+            ],
+            [
+                'name' => 'user_id',
+                'title' => 'Оператор',
+                'type' => 'select-multiple',
+                'options' => $users,
             ],
         ];
 
