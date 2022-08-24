@@ -66,10 +66,11 @@
                                 <div class="form-group col-12">
                                     <div v-for="user_name, index in users" v-if="index == subscription.user_id">
                                         Оператор:<b> {{ user_name}}</b>
+                                        &nbsp &nbsp &nbsp <a href="/users/change/12084/6" type="button" title="Изменить" class="btn btn-sm "><i data-v-754b2df6="" class="fa fa-edit"></i></a>
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-6">
-                                    <label for="product-id" class="col-form-label">Услуга</label>
+                                    <label for="product_id" class="col-form-label">Услуга</label>
                                     <select v-if="! subscription.id" v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product-id" class="col-sm-10 form-control">
                                         <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" >{{ option.title }}</option>
                                     </select>
@@ -289,7 +290,6 @@
                                         <input type="hidden" :id="'recurrent-link-' + subIndex" :value="subscription.recurrent.link">
                                     </div>
                                 </div>
-                                {{ gatUserName(subscription.user_id) }}
                                 <div class="col-sm-6">
                                     <div class="recurrent_button-block">
                                         <button class="btn btn-info" @click="copyRecurrentLink(subIndex)">Копировать</button>
@@ -773,6 +773,7 @@
             },
             getSubscriptionTitle(productId) {
                 if (productId) {
+                  //  console.log(productId);
                     return this.products[productId].title;
                 } else {
                     return 'Новый абонемент';

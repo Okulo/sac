@@ -354,6 +354,29 @@ class ProductController extends Controller
         // return redirect()->route("{$this->root}.index")->with('success', 'Продукт успешно удален.');
     }
 
+//    public function withPrices()
+//    {
+//        access(['can-head', 'can-host', 'can-operator']);
+//
+//        $products = Product::get();
+//        $data = [];
+//        foreach ($products as $product) {
+//            $data[$product->id] = [
+//                'title' => $product->title,
+//                'prices' => [],
+//            ];
+//            if (count($product->prices) > 0) {
+//                $prices = [];
+//                foreach ($product->prices as $price) {
+//                    $prices[$price->id] = $price->price;
+//                }
+//                $data[$product->id]['prices'] = $prices;
+//            }
+//        }
+//
+//        return response()->json($data, 200);
+//    }
+
     public function withPrices()
     {
         access(['can-head', 'can-host', 'can-operator']);
@@ -364,17 +387,18 @@ class ProductController extends Controller
         $data = [];
         foreach ($products as $product) {
 
-            if (count($product->users) > 0) {
-                $users = [];
-                foreach ($product->users as $items) {
-                    if($items->id == $userId){
+//            if (count($product->users) > 0) {
+//                $users = [];
+//                foreach ($product->users as $items) {
+//                    if($items->id == $userId){
+
                         $data[$product->id] = [
                             'id' => $product->id,
                             'title' => $product->title,
                             'block_amount' => $product->block_amount,
                             'trial_period' => $product->trial_period,
                             'prices' => [],
-                            'product_users' => $items,
+                            // 'product_users' => $items,
                         ];
 
                         if (count($product->prices) > 0) {
@@ -384,10 +408,10 @@ class ProductController extends Controller
                             }
                             $data[$product->id]['prices'] = $prices;
                         }
-                    }
-                }
-
-            }
+//                    }
+//                }
+//
+//            }
 
 
         }
