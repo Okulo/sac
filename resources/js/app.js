@@ -70,7 +70,7 @@ Vue.component('product-users-component', require('./components/ProductUserCompon
 Vue.component('users-bonuses-component', require('./components/UsersBonusesComponent.vue').default);
 Vue.component('manager-bonuses-component', require('./components/ManagerBonusesComponent.vue').default);
 Vue.component('thank-you-carousel-component', require('./components/ThankYouCarousel.vue').default);
-
+Vue.component('change-operator', require('./components/ChangeOperator.vue').default);
 Vue.component('phone-component', require('./components/PhoneComponent.vue').default);
 Vue.component('date-component', require('./components/DateComponent.vue').default);
 Vue.component('statistics-component', require('./components/StatisticsComponent.vue').default);

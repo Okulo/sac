@@ -148,4 +148,12 @@ class UserController extends Controller
         // $user->delete();
         // return redirect()->route("{$this->root}.index")->with('success', 'Пользователь успешно удален.');
     }
+
+    public function changeOperator($subId){
+        if($subId){
+            return view("users.change", [
+                'subId' => $subId,
+            ]);
+        }
+    }
 }

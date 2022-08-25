@@ -188,6 +188,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
 
     Route::get('users/list', 'UserController@getList');
     Route::get('users/filter', 'UserController@getFilters');
+    Route::get('users/change/{subId}', 'UserController@changeOperator');
 
     Route::get('notifications/list', 'NotificationController@getList');
     Route::get('notifications/filter', 'NotificationController@getFilters');
@@ -196,6 +197,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('subscriptions/filter', 'SubscriptionController@getFilters');
     Route::post('subscriptions/manualWriteOffPayment', 'SubscriptionController@manualWriteOffPayment');
     Route::post('subscriptions/writeOffPaymentByToken', 'SubscriptionController@writeOffPaymentByToken');
+    Route::post('subscriptions/getDetail', 'SubscriptionController@getDetail');
 
     Route::get('userlogs/list', 'UserLogController@getList');
     Route::get('userlogs/filter', 'UserLogController@getFilters');

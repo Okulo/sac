@@ -369,4 +369,32 @@ class SubscriptionController extends Controller
             'message' => 'Запрос на списание отправлен. Обновите страницу через минуту.'
         ], 200);
     }
+
+    public function getDetail(Request $request){
+        $details = \DB::select("
+                    SELECT
+                      customers.phone,
+                      customers.name as customer_name,
+                      subscriptions.started_at,
+                      subscriptions.status,
+                      subscriptions.price,
+                      products.title,
+                      products.description,
+                      users.id,
+                      users.account,
+                      users.name,
+                      subscriptions.payment_type,
+                      subscriptions.ended_at
+                    FROM subscriptions
+                      INNER JOIN customers
+                        ON subscriptions.customer_id = customers.id
+                      INNER JOIN products
+                        ON subscriptions.product_id = products.id
+                      INNER JOIN users
+                        ON subscriptions.user_id = users.id
+                    WHERE subscriptions.id = '".$request->id."'
+        ");
+
+        return $details;
+    }
 }
