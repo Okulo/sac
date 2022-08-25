@@ -4,9 +4,7 @@
             <h2>Замена оператора</h2>
 
             <div class="intro">
-                После замены оператора, вы будете переведены на страницу абонементов.
                 <p></p>
-                Запомните пожалуйтм абонимент в котором сменили оператора!
             </div>
             <div class="card mt-3">
                 <div class="card-body">
@@ -39,18 +37,16 @@
                             </div>
 
                         <div class="col-6">
+
                             <label for="exampleFormControlSelect1">Выбрать нового оператора</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
+                                <select v-model="selectedUser" class="form-control" id="exampleFormControlSelect1">
+                                    <option v-for="user in users" v-bind:value="user.id">{{user.name}}</option>
+                                </select>
                         </div>
                         </div>
                         <p><br></p>
-                        <button type="button" class="btn btn-primary btn-sm float-right">Сохранить изменения</button>
+
+                        <button v-if="selectedUser" type="button" @click="saveOperator()" class="btn btn-primary btn-sm float-right">Сохранить изменения</button>
                     </form>
                 </div>
             </div>
@@ -69,12 +65,33 @@ export default {
         ],
     data: () => ({
         subscription: '',
-        users: []
+        users: [],
+        selectedUser: null
     }),
   mounted() {
+
         this.getSubscriptionDetail();
+        this.getUserList();
   },
     methods: {
+        saveOperator(){
+            axios.post('/users/saveOperator', {
+                subscriptionId: this.idProp,
+                userId: this.selectedUser
+
+            })
+                .then(response => {
+                    if(response.status  == 200){
+                        Vue.$toast.success('Оператор успешно изменен');
+                    }
+
+                   // this.subscription = response.data[0];
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    Vue.$toast.error('error - '+ error);
+                });
+        },
         getSubscriptionDetail(){
             axios.post('/subscriptions/getDetail', {
                 id: this.idProp,
@@ -95,10 +112,8 @@ export default {
             })
                 .then(response => {
 
-                    console.log(response);
+                  //  console.log(response);
                     response.data.data.forEach(elem =>{
-
-
                         if(elem.is_active.value == 'Активный'){
                             //  console.log(elem);
                             this.users.push({

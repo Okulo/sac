@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Filters\UserFilter;
@@ -155,5 +156,16 @@ class UserController extends Controller
                 'subId' => $subId,
             ]);
         }
+    }
+
+    public function saveOperator(Request $request){
+
+
+        $cahged = Subscription::updateOrCreate(
+            ['id' => $request->subscriptionId],
+            ['user_id' => $request->userId]
+        );
+
+        return $request;
     }
 }
