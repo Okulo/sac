@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+
 return [
 
     /*
@@ -384,17 +386,17 @@ return [
             ],
         ],
         // бонусы операторов
-//        [
-//            'key'  => 'report_12',
-//            'text' => 'Мои бонусы',
-//            'url'  => '/reports/operator-bonus-details/',
-//            'icon' => 'fa fa-user-check',
-//            "can"  => [
-//                'can-operator',
-//                'can-head',
-//                'can-host',
-//            ],
-//        ],
+        [
+            'key'  => 'report_12',
+            'text' => 'Мои бонусы',
+            'url'  => '/reports/my-bonuses/',
+            'icon' => 'fa fa-check-circle',
+            "can"  => [
+                'can-operator',
+                'can-head',
+                'can-host',
+            ],
+        ],
 
 
         // Отчеты

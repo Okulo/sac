@@ -11,6 +11,7 @@ use App\Models\UserLog;
 use App\Services\CloudPaymentsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use function Symfony\Component\String\s;
 
@@ -528,6 +529,14 @@ class ReportController extends Controller
 
          $subscriptions = Subscription::where('user_id', $request->userId)->where('status','paid')->get()->count();
          return $subscriptions;
+    }
+
+    public function myBonuses(){
+        $user = Auth::id();
+        return view('reports.operator-detail', [
+            'id' => $user,
+            'name' => ''
+        ]);
     }
 
     public function getOperatorSumm (Request $request){

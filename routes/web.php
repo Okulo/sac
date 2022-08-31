@@ -232,7 +232,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-operator-summ", [ReportController::class, "getOperatorSumm"])->name("reports.getOperatorSumm");
     Route::post("/reports/get-subscriptions", [ReportController::class, "getSubscriptions"])->name("reports.getSubscriptions");
     Route::post("/reports/get-all-subscriptions", [ReportController::class, "getAllSubscriptions"])->name("reports.getAllSubscriptions");
-
+    Route::get("/reports/my-bonuses", [ReportController::class, "myBonuses"])->name("reports.myBonuses");
 
     Route::resources([
         'customers' => 'CustomerController',
