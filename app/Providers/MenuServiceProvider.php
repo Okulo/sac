@@ -108,7 +108,7 @@ class MenuServiceProvider extends ServiceProvider
                 "url" => "statistics/financial",
             ]);
 
-            $event->menu->addIn('reports', [
+            $event->menu->addIn('stat-reports', [
                 "key" => "report_3",
                 "text" => 'Отказы (прямой перевод)',
                 "url" => "reports/get-reports/3",
@@ -118,7 +118,7 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Заканчиваются (прямой пер.)',
                 "url" => "reports/get-reports/8",
             ]);
-            $event->menu->addIn('reports', [
+            $event->menu->addIn('stat-reports', [
                 "key" => "report_4",
                 "text" => 'Отмененные подписки',
                 "url" => "reports/get-reports/4",
@@ -138,7 +138,7 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Ошибки оплат',
                 "url" => "reports/get-reports/9",
             ]);
-            $event->menu->addIn('reports', [
+            $event->menu->addIn('stat-reports', [
                 "key" => "report_10",
                 "text" => 'Должники',
                 "url" => "reports/get-reports/10",

@@ -66,7 +66,7 @@
                                 <div class="form-group col-12">
                                     <div v-for="user_name, index in users" v-if="index == subscription.user_id">
                                         Оператор:<b> {{ user_name}}</b>
-                                        &nbsp &nbsp &nbsp <a :href="'/users/change/'+subscription.id"type="button" title="Изменить" class="btn btn-sm "><i data-v-754b2df6="" class="fa fa-edit"></i></a>
+                                        &nbsp &nbsp  <a v-if="userRole != 'operator'" :href="'/users/change/'+subscription.id" type="button" title="Изменить" class="btn btn-sm "><i data-v-754b2df6="" class="fa fa-edit"></i></a>
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-6">

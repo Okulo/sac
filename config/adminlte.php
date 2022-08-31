@@ -383,13 +383,37 @@ return [
                 'can-host',
             ],
         ],
+        // бонусы операторов
+//        [
+//            'key'  => 'report_12',
+//            'text' => 'Мои бонусы',
+//            'url'  => '/reports/operator-bonus-details/',
+//            'icon' => 'fa fa-user-check',
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ],
+//        ],
+
 
         // Отчеты
         [
-            'key'  => 'reports',
-            'text' => 'Отчеты',
+            'key'  => 'stat-reports',
+            'text' => 'Стат отчеты',
             'url'  => '/reports',
             'icon' => 'fas fa-list-alt',
+            "can"  => [
+                'can-operator',
+                'can-head',
+                'can-host',
+            ]
+        ],
+        [
+            'key'  => 'reports',
+            'text' => 'Отчеты продаж',
+            'url'  => '/reports',
+            'icon' => 'fas fa-file-invoice-dollar',
             "can"  => [
                 'can-operator',
                 'can-head',

@@ -9,11 +9,17 @@
 
 
         <div class="col-md-12">
-            <h2>Детализация оператора {{userNameProp}}</h2>
+            <h2>Бонусы за неделю {{userNameProp}}</h2>
             <div class="intro">
 
             </div>
             <div class="card mt-3">
+                <div class="card" style="height: 8rem">
+                    <div class="card-body">
+                        <h5 class="card-title">Всего активных абонементов<p></p></h5>
+                        <p class="card-text"><h2><b class="text-teal">{{allActve}}</b></h2></p>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="btn-group d-flex w-100" role="group" aria-label="...">
                         <button type="button" class="btn btn-default w-100" @click="substractOneWeek()">< Назад</button>
@@ -30,7 +36,7 @@
                         <div class="col-sm-4">
                             <div class="card" style="height: 8rem">
                                 <div class="card-body">
-                                    <h5 class="card-title">Сумма бонусов <p></p></h5>
+                                    <h5 class="card-title">Сумма бонусов за неделю<p></p></h5>
                                     <p class="card-text"><h2><b class="text-info">{{summa}}</b></h2></p>
                                 </div>
                             </div>
@@ -38,7 +44,7 @@
                         <div class="col-sm-4">
                             <div class="card" style="height: 8rem">
                                 <div class="card-body">
-                                    <h5 class="card-title">Активные абонементы по подписке</h5>
+                                    <h5 class="card-title">Абонементы за неделю (подписки)</h5>
                                     <p class="card-text"><h2><b class="text-indigo">{{count}}</b></h2></p>
                                 </div>
                             </div>
@@ -46,7 +52,7 @@
                         <div class="col-sm-4">
                             <div class="card" style="height: 8rem">
                                 <div class="card-body">
-                                    <h5 class="card-title ">Активные абонементы по прямому переводу</h5>
+                                    <h5 class="card-title ">Абонементы за неделю (прям перевод)</h5>
                                     <p class="card-text "><h2><b class="text-primary">{{transferCount}}</b></h2></p>
                                 </div>
                             </div>
@@ -94,12 +100,14 @@
             weekEnd: '',
             summa: '',
             count: '',
-            transferCount: ''
+            transferCount: '',
+            allActve: ''
         }),
         mounted() {
             console.log('Component mounted.');
             this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
             this.weekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+            this. getAllSubscriptions();
            // this.getList();
             //  this.getSubscriptionlist();
         },
@@ -198,265 +206,30 @@
                         console.log(error);
                     });
             },
-            saveStatus(id){
-
-                if( $(".status-"+id).val()){
-                    var val = $(".status-"+id).val();
-
-                    axios.post('/reports/save-status',{
-                        subId: id,
-                        status: val
-                    })
-                        .then(response => {
-                            // this.getDebtorsList();
-                            console.log(response);
-                            Vue.$toast.success('Статус успешно изменен');
-
-                        })
-                        .catch(function (error) {
-                            console.log('err');
-                            console.log(error);
-                            Vue.$toast.error('error - '+ error);
-                        });
-                }
-
-            },
-            goProcess: function(id) {
-                axios.post('/reports/set-processed-status',{
-                    subId: id,
-                    report_type: 11,
-                    status: 1
-                })
-                    .then(response => {
-                        // this.getDebtorsList();
-                        Vue.$toast.success('Статус успешно изменен');
-
-                    })
-                    .catch(function (error) {
-                        console.log('err');
-                        console.log(error);
-                        Vue.$toast.error('error - '+ error);
-                    });
-
-            },
-            unprocess: function(id) {
-                axios.post('/reports/set-processed-status',{
-                    subId: id,
-                    report_type: 11,
-                    status: 0
-                })
-                    .then(response => {
-                        // this.getDebtorsList();
-                        Vue.$toast.success('Статус успешно изменен');
-                        console.log('unprocess');
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        console.log('err');
-                        console.log(error);
-                        Vue.$toast.error('error - '+ error);
-                    });
-
-            },
-            getUserList(){
-                axios.get('/users/list', {
-                    reportType: 11
-                })
-                    .then(response => {
-                        response.data.data.forEach(elem =>{
-                            if(elem.is_active.value == 'Активный'){
-                              //  console.log(elem);
-                                this.users.push({
-                                    id: elem.id.value,
-                                    account: elem.account.value,
-                                    email: elem.email.value,
-                                    name: elem.name.value,
-                                    role_id: elem.role_id.value
-                                });
-                            }
-
-                        });
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error('error - '+ error);
-                    });
-            },
-            getUserPayments(subId){
-                axios.post('/reports/get-user-payments', {
-                    subId: subId//elem.customer_id
-                })
-                    .then(response => {
-                        // console.log(response.data);
-                        return response.data;
-                        //     this.items.map(item => {
-                        //     item.paymentsCount = response.data;
-                        // });
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error(' ' + error);
-                    });
-
-            },
-            getProductsWithPrices() {
-                axios.get(`/products/with-prices`).then(response => {
-                    this.products = response.data;
-                });
-            },
-            openModal(customerId, subscriptionId) {
-                this.customerId = null;
-                this.subscriptionId = null;
-                this.customerId = customerId;
-                this.subscriptionId = subscriptionId;
-                this.$bvModal.show('modal-customer-edit');
-            },
-            getProcessedStatus(){
-                axios.post('/reports/get-processed-status', {
-                    period: this.period,
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product,
-                    type: 11
-                })
-                    .then(response => {
-                        response.data.forEach(elem =>{
-                            //console.log(elem.subscription_id);
-                            this.processedStatus.push({
-                                process_status:elem.process_status,
-                                report_type: elem.report_type,
-                                subscription_id: elem.subscription_id
-                            });
-
-                        });
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error('error - '+ error);
-                    });
-            },
-            getSubscriptionlist(){
-                this.items = [];
-                // $("#exampleModalCenter").modal("show");
+            getAllSubscriptions(){
                 this.spinnerData.loading = true;
-                //  this.spinnerData.loading = true;
-                axios.post('/reports/get-refused-subscriptions-list', {
-                    period: this.period,
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product
+                axios.post('/reports/get-all-subscriptions',{
+                    userId: this.userIdProp
                 })
                     .then(response => {
+                        // this.getDebtorsList();
+                        this.allActve = response.data;
+                        // if(response.data[0].summa){
+                        //     this.summa = response.data[0].summa;
+                        // }else{
+                        //     this.summa = 0;
+                        // }
+
                         this.spinnerData.loading = false;
-                        response.data.forEach(elem =>{
-                            //   console.log(elem.data);
-
-                            this.items.push({
-                                started_at: elem.started_at,
-                                id: elem.id,
-                                ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
-                                updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
-                                status: elem.status,
-                                payment_type: elem.payment_type,
-                                name: elem.name,
-                                phone: elem.phone,
-                                customer_id: elem.customer_id,
-                                reason: elem.title
-                            });
-                        });
-
-
-                        // response.data.forEach(elem => {
-                        // array =  JSON.parse(elem.request);
-                        //
-                        //     this.items.push({
-                        //         account_id: array.AccountId,
-                        //         status: array.Status,
-                        //         amount: array.Amount,
-                        //         subs_id: array.SubscriptionId,
-                        //         date: array.DateTime,
-                        //         transaction: array.TransactionId,
-                        //
-                        //     });
-                        //
-                        // })
 
                     })
                     .catch(function (error) {
+                        console.log('err');
                         console.log(error);
-                        Vue.$toast.error('error - '+ error);
                     });
 
-
-            },
-            cheked(id){
-                if (confirm("ID - "+id+"  обработан?")){
-                    //console.log('id - '+id);
-                    axios.post('/reports/add-wa-status', {
-                        id: id,
-                        waStatus: 1
-                    })
-                        .then(response => {
-                            // console.log(response);
-                            this.getSubscriptionlist();
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                            Vue.$toast.error(' ' + error);
-                        });
-                }
-            },
-            getlistWithDate(){
-                console.log(moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01')+' - ' +moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'))
-            },
-            sendInfo(item) {
-                this.selectedUser = item;
             },
 
-
-            getCpStatus(){
-                let cpStatus = [];
-                //this.items.forEach(elem => console.log(this.getCpData(elem.subscription_id)));
-
-                this.items.forEach(elem => {
-                    if(elem.subscription_id) {
-
-                        axios.post('/reports/getSubscription', {
-                            id: elem.subscription_id
-                        })
-                            .then(response => {
-                                // .push({ cp_status: response.data.Model.Status })
-                                this.items.map(item => {
-                                    item.subscription_id !== response.data.Model.Id ? item : item.cp_status = response.data.Model.Status;
-                                    this.statusStyle = response.data.Model.Status;
-                                });
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                                Vue.$toast.error(' ' + error);
-                            });
-                    }
-                });
-
-            },
-            getCpData(id){
-
-                axios.post('/reports/getSubscription', {
-                    id: id
-                })
-                    .then(response => {
-                        console.log('getCpData');
-                        // console.log(response.data.Success);
-                        //console.log(response.data.Model);
-                        this.cpData = response.data.Model;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error(' '+error);
-                    });
-            },
         }
     }
 </script>

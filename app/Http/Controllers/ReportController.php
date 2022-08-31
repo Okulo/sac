@@ -332,6 +332,9 @@ class ReportController extends Controller
         if ($request->product){
             $subscriptions->where('subscriptions.product_id', $request->product );
         }
+        else{
+            $subscriptions->whereIn('subscriptions.product_id',[1,3,27,26,25,22,23,24]);
+        }
 
             $subscriptions->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
             ->orderBy('subscriptions.ended_at', 'ASC')
@@ -518,6 +521,13 @@ class ReportController extends Controller
             'id' => $id,
             'name' => $user->name
         ]);
+    }
+
+    public function getAllSubscriptions(Request $request){
+
+
+         $subscriptions = Subscription::where('user_id', $request->userId)->where('status','paid')->get()->count();
+         return $subscriptions;
     }
 
     public function getOperatorSumm (Request $request){
