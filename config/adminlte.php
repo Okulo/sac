@@ -323,30 +323,30 @@ return [
         ],
 
         // notifications
-        [
-            'key'  => 'notifications',
-            'text' => 'Уведомления',
-            'url'  => '/notifications',
-            'icon' => 'fa fa-id-badge',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ],
-        ],
+//        [
+//            'key'  => 'notifications',
+//            'text' => 'Уведомления',
+//            'url'  => '/notifications',
+//            'icon' => 'fa fa-id-badge',
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ],
+//        ],
 
         // userLogs
-        [
-            'key'  => 'userlogs',
-            'text' => 'Логи действий',
-            'url'  => '/userlogs',
-            'icon' => 'fa fa-flag',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ],
-        ],
+//        [
+//            'key'  => 'userlogs',
+//            'text' => 'Логи действий',
+//            'url'  => '/userlogs',
+//            'icon' => 'fa fa-flag',
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ],
+//        ],
 
         // users-bonuses
         [

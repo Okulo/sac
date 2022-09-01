@@ -30,6 +30,7 @@ class Subscription extends Model
         'refused' => 'Отказался',
         'trial' => 'Триал период',
         'debtor' => 'Должник',
+        'one_time' => 'Разовая услуга',
     ];
 
     const PAYMENT_TYPE = [

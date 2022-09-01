@@ -182,14 +182,12 @@ class ProductController extends Controller
     {
         access(['can-head', 'can-host']);
 
-
-
-        if( $request->trial_period < 1){
-            return redirect()->to(route("{$this->root}.index"))->with('success', 'Триал период не может быть меньше 1 дня!');
-        }
-        else{
+//        if( $request->trial_period < 1){
+//            return redirect()->to(route("{$this->root}.index"))->with('success', 'Триал период не может быть меньше 1 дня!');
+//        }
+//        else{
             $this->updateOrCreate($request->all(), $product, 'update');
-        }
+  //      }
 
         $message = 'Данные продукта успешно изменены.';
         if ($request->ajax()) {
