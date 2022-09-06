@@ -149,15 +149,22 @@
                 </thead>
                 <tbody>
                     <tr v-for="(items, itemsIndex) in data" :key="itemsIndex" :data-id="itemsIndex">
+<!--                        <td>-->
+<!--                            <div>-->
+<!--                                <div class="custom-text">-->
+<!--                                    {{ itemsIndex + pagination.from }}-->
+<!--                                    <div v-if="prefix == 'subscriptions' && items.status.value == 'trial'">-->
+<!--                                  <span v-if="items.card && items.card.length" style="color: forestgreen; font-size: 88%">-->
+<!--                                    Карта привязана-->
+<!--                                  </span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </td>-->
                         <td>
                             <div>
                                 <div class="custom-text">
                                     {{ itemsIndex + pagination.from }}
-                                    <div v-if="prefix == 'subscriptions' && items.status.value == 'trial'">
-                                  <span v-if="items.card && items.card.length" style="color: forestgreen; font-size: 88%">
-                                    Карта привязана
-                                  </span>
-                                    </div>
                                 </div>
                             </div>
                         </td>
