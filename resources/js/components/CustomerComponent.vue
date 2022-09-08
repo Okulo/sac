@@ -276,10 +276,12 @@
                                 </div> -->
                                 </b-modal>
                             </div>
-                            <div class="row" v-if="customer.card && (customer.card.type != 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
-                                <div class="col-sm-12">
-                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
+                            <div class="row" v-if="customer.cards && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
+                                <div v-for="card in customer.cards">
+                                    <div class="col-sm-12" v-if="card.type != 'pitech' && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
+                                    <span><span style="font-weight: bold"></span>  (конец карты - {{ card.last_four }})  </span>
                                     <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
+                                </div>
                                 </div>
                             </div>
                             <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">

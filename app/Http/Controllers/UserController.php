@@ -159,8 +159,6 @@ class UserController extends Controller
     }
 
     public function saveOperator(Request $request){
-
-
         $cahged = Subscription::updateOrCreate(
             ['id' => $request->subscriptionId],
             ['user_id' => $request->userId]
