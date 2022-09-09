@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProductRequest;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductUser;
 use Illuminate\Http\Request;
 use App\Filters\ProductFilter;
@@ -151,6 +152,7 @@ class ProductController extends Controller
        // $productUsers = ProductUser::where('product_id', $product->id)->get();
         $productUsers = $product->users;
 
+
         return view("{$this->root}.edit", [
             'product' => $product,
             'additionals' => $additionals,
@@ -159,6 +161,7 @@ class ProductController extends Controller
             'period' => $nextPrice->period ?? null,
             'month'=> array(1, 2, 3),
             'reasons' => $reasons,
+            'category' => ProductCategory::where('id', $product->category)->first(),
             'paymentTypes' => $paymentTypes,
             'productPaymentTypes' => PaymentTypeResource::collection($productPaymentTypes),
             'productAdditionals' => ProductAdditionalsResource::collection($productAdditionals),

@@ -280,7 +280,7 @@
                                 <div v-for="card in customer.cards">
                                     <div class="col-sm-12" v-if="card.type != 'pitech' && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
                                     <span><span style="font-weight: bold"></span>  (конец карты - {{ card.last_four }})  </span>
-                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
+                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                 </div>
                                 </div>
                             </div>

@@ -31,6 +31,19 @@
                     <textarea class="form-control" id="description" value="" name="description">{{ $product->description }}</textarea>
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label for="exampleFormControlSelect1" class="col-sm-2 col-form-label">Категория услуги</label>
+                <div class="col-sm-2">
+                <select class="form-control" id="exampleFormControlSelect1" name="category">
+                    @if (isset($category->id))
+                        <option value="{{$category->id}}">{{$category->title}}</option>
+                    @endif
+                    <option value="1">Подписки</option>
+                    <option value="2">Разовые услуги</option>
+                </select>
+                </div>
+            </div>
             <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Цена по акции</label>
                 <div class="col-sm-10">
