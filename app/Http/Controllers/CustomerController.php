@@ -218,21 +218,21 @@ class CustomerController extends Controller
                 // Если оператор изменил дату следующего платежа, то делаем запрос в cp, на изменения даты
             } elseif ($subscription->payment_type == 'transfer') {
                 if (isset($item['newPayment']['check'])) {
-                    $fromTransferPayments = Carbon::now()->subDays(10)->setTimezone('Asia/Almaty');
-                    $toTransferPayments = Carbon::now()->setTimezone('Asia/Almaty');
-                    $subTransferPayments = $subscription->payments()->whereType('transfer')->whereStatus('Completed')->whereBetween('paided_at', [$fromTransferPayments, $toTransferPayments])->first();
-                    if (isset($subTransferPayments)) {
-                        \Log::error('Чек на этот месяц уже загружен.');
-                        return response()->json([
-                            'message' => 'Чек на этот месяц уже загружен.',
-                            'errors' => [
-                                'subscriptions.' . $key . '.newPayment' => [
-                                    'Чек на этот месяц уже загружен.'
-                                ],
-                            ]
-                        ], 422);
-                        throw new NoticeException('', ErrorCodes::DEFAULT_ERROR);
-                    }
+                //    $fromTransferPayments = Carbon::now()->subDays(10)->setTimezone('Asia/Almaty');
+                  //  $toTransferPayments = Carbon::now()->setTimezone('Asia/Almaty');
+               //     $subTransferPayments = $subscription->payments()->whereType('transfer')->whereStatus('Completed')->whereBetween('paided_at', [$fromTransferPayments, $toTransferPayments])->first();
+//                    if (isset($subTransferPayments)) {
+//                        \Log::error('Чек на этот месяц уже загружен.');
+//                        return response()->json([
+//                            'message' => 'Чек на этот месяц уже загружен.',
+//                            'errors' => [
+//                                'subscriptions.' . $key . '.newPayment' => [
+//                                    'Чек на этот месяц уже загружен.'
+//                                ],
+//                            ]
+//                        ], 422);
+//                        throw new NoticeException('', ErrorCodes::DEFAULT_ERROR);
+//                    }
 
                     $payment = $subscription->payments()->create([
                         'customer_id' => $customer->id,

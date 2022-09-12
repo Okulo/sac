@@ -95,7 +95,16 @@ class MenuServiceProvider extends ServiceProvider
 //                })->whereType(Notification::TYPE_ENDED_TRIAL_PERIOD)->whereProcessed(false)->count(),
 //                'label_color' => 'success',
 //            ]);
-
+            $event->menu->addIn('products', [
+                "key" => "products_1",
+                "text" => 'Подписки',
+                "url" => "/products/1",
+            ]);
+            $event->menu->addIn('products', [
+                "key" => "products_2",
+                "text" => 'Разовые услуги',
+                "url" => "/products/2",
+            ]);
             $event->menu->addIn('statistics', [
                 "key" => "statistic_type_1",
                 "text" => 'Количественные',

@@ -31,7 +31,7 @@ class SubscriptionResource extends JsonResource
                 'subscriptionId' => $this->id ?? null,
                 'value' => route('customers.show', [$this->customer->id]),
             ],
-            'card' =>  Card::where('customer_id', $this->customer->id)->get(),
+
             'customers.phone' => [
                 'value' => $this->customer->phone,
                 // 'type' => 'input',
@@ -80,6 +80,7 @@ class SubscriptionResource extends JsonResource
                 'value' => $this->product_id,
                 'type' => 'hidden',
             ],
+            'card' =>  Card::where('customer_id', $this->customer->id)->get(),
         ];
     }
 }

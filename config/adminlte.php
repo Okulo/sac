@@ -268,6 +268,7 @@ return [
         [
             'text' => 'Услуги',
             'url'  => '/products',
+            'key'  => 'products',
             'icon' => 'fa fa-boxes',
             "can"  => [
                 'can-head',
@@ -275,7 +276,7 @@ return [
             ]
         ],
 
-        // products
+        // commads
         [
             'text' => 'Команды',
             'url'  => '/teams',
