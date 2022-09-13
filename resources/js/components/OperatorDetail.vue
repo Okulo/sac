@@ -10,17 +10,19 @@
 
         <div class="col-md-12">
             <h2>Бонусы за неделю {{userNameProp}}</h2>
-            <div class="intro">
-
-            </div>
             <div class="card mt-3">
-                <div class="card" style="height: 8rem">
-                    <div class="card-body">
-                        <h5 class="card-title">Всего активных абонементов<p></p></h5>
+                <div class="card-body">
+                <div class="row">
+                <div class="col-sm-12">
+
+                        <h5 class="card-title">Всего абонементов</h5>
                         <p class="card-text">
-                        <h2>По подписке: <b class="text-teal">{{subsCount.length}}</b>  <span class="float-right">По прямому переводу: <b class="text-info">{{ simpleCount.length }}</b></span> </h2>
+                        <div class="card-title" style="padding-right: 40px"> По подписке:  <b class="text-teal" style="font-size: 1.6rem;">{{subsCount.length}}</b></div>
+                        <div class="card-title">По прямому переводу:  <b class="text-info" style="font-size: 1.6rem;">{{ simpleCount.length }}</b></div>
                         </p>
-                    </div>
+
+                </div>
+                </div>
                 </div>
                 <div class="card-body">
                     <div class="btn-group d-flex w-100" role="group" aria-label="...">
