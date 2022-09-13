@@ -39,12 +39,12 @@ class ProductController extends Controller
         $this->perPage = 45;
     }
 
-    public function getList(ProductFilter $filters)
+    public function getList($type, ProductFilter $filters)
     {
         access(['can-head', 'can-host']);
 
         $query = Product::query();
-        $products = $query->latest()->whereNull('archived')->filter($filters)->paginate($this->perPage)->appends(request()->all());
+        $products = $query->latest()->where('category', $type)->filter($filters)->paginate($this->perPage)->appends(request()->all());
 
         return response()->json(new ProductCollection($products), 200);
     }

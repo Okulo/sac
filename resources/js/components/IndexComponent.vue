@@ -1,6 +1,12 @@
 <template>
     <div>
         <div class="row">
+<!--            <span v-if="prefix == 'products'" style="float: right; line-height: 28px; padding-right: 20px;"> <a href="/reports/get-reports/7">Услуги в архиве</a> </span>-->
+
+<!--            <div v-if="prefix == 'products'" class="btn-group d-flex w-100" role="group" aria-label="...">-->
+<!--                <button type="button" class="btn btn-default w-100" @click="substractOneWeek()">< Назад</button>-->
+<!--                <button type="button" class="btn btn-default w-100" @click="currentWeek()">Текущая неделя</button>-->
+<!--            </div>-->
             <div class="col-12" v-if="mainFilters.length > 0">
                 <div class="card mb-2" id="filter">
                     <div
@@ -15,6 +21,7 @@
                             </a>
                         </small>
                     </div>
+
                     <div class="card-body" v-show="filterOpen" :class="{slide: filterOpen}">
                         <div class="row">
                             <div class="col-4" v-for="(filter, filterIndex) in mainFilters" :key="filterIndex">
@@ -89,7 +96,6 @@
             </div>
         </div>
         <div class="mb-2">
-            <span v-if="prefix == 'products'" style="float: right; line-height: 28px; padding-right: 20px;"> <a href="/reports/get-reports/7">Услуги в архиве</a> </span>
             <div class="input-group" >
                 <div style="flex: 1 1 auto; margin-left: 7px; margin-right: 10px" v-for="(filter, filterIndex) in secondFilters" :key="filterIndex">
                     <input
@@ -125,6 +131,12 @@
 <!--                <br>-->
 <!--                <span>Выбрано: {{ picked }}</span>-->
 <!--            </div>-->
+        </div>
+        <div v-if="prefix == 'products'" style="padding: 15px 0">
+        <select class="select col-4 custom-select" v-model="selected">
+                <option value="1">Подписки</option>
+                <option value="2">Разовые услуги</option>
+        </select>
         </div>
         <div class="table-responsive bg-white">
             <pulse-loader class="spinner" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
@@ -342,6 +354,7 @@ export default {
                 options: {
                     customer: [],
                 },
+                selected: 1,
                 customerId: null,
                 subscriptionId: null,
                 prefix: this.prefixProp,
@@ -367,6 +380,11 @@ export default {
                 this.getFilters();
             });
         },
+        watch:{
+            selected: function(value) {
+                this.getData();
+            }
+       },
         methods: {
             showCrad(customerId){
                 //console.log(customerId);
@@ -559,16 +577,31 @@ export default {
             },
             getData: _.debounce(function () {
                 this.spinnerData.loading = true;
-                axios.get(`/${this.prefixProp}/list`, { params: this.queryParams }).then(response => {
+                if(this.prefix == 'products'){
+                    axios.get('/products/list/'+this.selected, { params: this.queryParams }).then(response => {
 
-                   // console.log(response.data);
+                        console.log( this.queryParams);
 
-                    this.data = response.data.data;
-                    this.dataTitles = response.data.dataTitles;
-                    this.others = response.data.others;
-                    this.pagination = response.data.pagination;
-                    this.spinnerData.loading = false;
-                });
+                        this.data = response.data.data;
+                        this.dataTitles = response.data.dataTitles;
+                        this.others = response.data.others;
+                        this.pagination = response.data.pagination;
+                        this.spinnerData.loading = false;
+                    });
+                }
+                else{
+                    axios.get(`/${this.prefixProp}/list`, { params: this.queryParams }).then(response => {
+
+                        console.log( this.queryParams);
+
+                        this.data = response.data.data;
+                        this.dataTitles = response.data.dataTitles;
+                        this.others = response.data.others;
+                        this.pagination = response.data.pagination;
+                        this.spinnerData.loading = false;
+                    });
+                }
+
             }, 500),
             getFilters() {
                 this.spinnerData.loading = true;

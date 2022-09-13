@@ -268,7 +268,7 @@ return [
         [
             'text' => 'Услуги',
             'url'  => '/products',
-            'key'  => 'products',
+            //'key'  => 'products',
             'icon' => 'fa fa-boxes',
             "can"  => [
                 'can-head',

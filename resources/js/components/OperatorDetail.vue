@@ -17,7 +17,9 @@
                 <div class="card" style="height: 8rem">
                     <div class="card-body">
                         <h5 class="card-title">Всего активных абонементов<p></p></h5>
-                        <p class="card-text"><h2><b class="text-teal">{{allActve}}</b></h2></p>
+                        <p class="card-text">
+                        <h2>По подписке: <b class="text-teal">{{subsCount.length}}</b>  <span class="float-right">По прямому переводу: <b class="text-info">{{ simpleCount.length }}</b></span> </h2>
+                        </p>
                     </div>
                 </div>
                 <div class="card-body">
@@ -101,7 +103,9 @@
             summa: '',
             count: '',
             transferCount: '',
-            allActve: ''
+            allActve: '',
+            subsCount: [],
+            simpleCount: []
         }),
         mounted() {
             console.log('Component mounted.');
@@ -110,6 +114,7 @@
             this. getAllSubscriptions();
            // this.getList();
             //  this.getSubscriptionlist();
+            console.log(this.subsCount);
         },
          watch: {
              weekStart: function (val) {
@@ -118,6 +123,11 @@
                  this.getUserBonus(this.weekStart, this.weekEnd);
                  this.getSubscriptions(this.weekStart, this.weekEnd);
                  this.getTransferCount(this.weekStart, this.weekEnd);
+             }
+         },
+         computed: {
+             resultCount () {
+                 this.subsCounter = Object.keys(this.subsCount).length;
              }
          },
         methods: {
@@ -214,6 +224,22 @@
                     .then(response => {
                         // this.getDebtorsList();
                         this.allActve = response.data;
+                        response.data.forEach(elem =>{
+                            //console.log(elem.payment_type);
+                            if(elem.payment_type != 'transfer'){
+                                this.subsCount.push({
+                                    subs: elem.payment_type,
+                                });
+                            }
+                            else {
+                                this.simpleCount.push({
+                                    simple: elem.payment_type,
+                                });
+                            }
+
+                        });
+
+
                         // if(response.data[0].summa){
                         //     this.summa = response.data[0].summa;
                         // }else{

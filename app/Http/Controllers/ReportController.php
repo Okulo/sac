@@ -525,7 +525,7 @@ class ReportController extends Controller
     }
 
     public function getAllSubscriptions(Request $request){
-         $subscriptions = Subscription::where('user_id', $request->userId)->where('status','paid')->get()->count();
+         $subscriptions = Subscription::where('user_id', $request->userId)->where('status','paid')->get();
          return $subscriptions;
     }
 

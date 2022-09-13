@@ -180,7 +180,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('customers/filter', 'CustomerController@getFilters');
     Route::post('/customers/get-customer-card', 'CustomerController@getCustomerCard');
 
-    Route::get('products/list', 'ProductController@getList');
+    Route::get('products/list/{id}', 'ProductController@getList');
     Route::get('products/filter', 'ProductController@getFilters');
 
     Route::get('teams/list', 'TeamController@getList');
