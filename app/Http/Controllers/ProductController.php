@@ -396,6 +396,7 @@ class ProductController extends Controller
                         $data[$product->id] = [
                             'id' => $product->id,
                             'title' => $product->title,
+                            'category' => $product->category,
                             'block_amount' => $product->block_amount,
                             'trial_period' => $product->trial_period,
                             'prices' => [],

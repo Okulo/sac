@@ -244,7 +244,7 @@ class ReportController extends Controller
                   $query->where('subscriptions.product_id', $request->product );
               }
               if ($request->product == null) {
-                  $query->whereIn('subscriptions.product_id', [1,3,9,13,16,20,22,23,24,25]);
+                  $query->where('category', 1);
               }
 
               if ($request->tries != 1) {
@@ -264,7 +264,7 @@ class ReportController extends Controller
               }
 
 
-            $subscriptions = $query->get();
+            $subscriptions = $query->limit(250)->get();
             return $subscriptions;
 
     }

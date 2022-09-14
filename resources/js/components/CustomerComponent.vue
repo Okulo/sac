@@ -71,8 +71,14 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="product_id" class="col-form-label">Услуга</label>
+                                    <select v-if="! subscription.id"  v-model="category" class="col-sm-10 form-control">
+                                        <option disabled value="">Выберите категорию услуги</option>
+                                        <option value="1">Подписки</option>
+                                        <option value="2">Разовые улсуги</option>
+                                    </select>
+                                  <br>
                                     <select v-if="! subscription.id" v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product-id" class="col-sm-10 form-control">
-                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" >{{ option.title }}</option>
+                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" v-if="option.category == category">{{ option.title }}</option>
                                     </select>
                                     <input v-else :value="getSubscriptionTitle(subscription.product_id)" id="product_id" class="col-sm-10 form-control" type="text" disabled>
                                 </div>
@@ -499,6 +505,7 @@
                     email: '',
                     comments: '',
                 },
+                category: '',
                 currentPrice: '',
                 products: {},
                 subscriptions: [],

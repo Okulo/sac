@@ -73,7 +73,7 @@
 
                 </div>
                 <div class="card-body">
-                    <strong>Всего записей -      {{items.length}}</strong><p><br></p>
+                    <strong>Всего записей -{{items.length}}</strong><p><br></p>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
                     <table class="table">
@@ -96,7 +96,7 @@
                         <tbody>
                         <tr v-for="(item, index) in items" :key="index">
 
-                            <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
+                            <td>{{ item.counter }}  </td> <!--- {{item.customer_id}} -->
                             <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
                             </td>
@@ -148,6 +148,8 @@
             'createLinkProp',
         ],
         data: () => ({
+            counterStart: '0',
+            counterEnd: '50',
             startDate: '',
             endDate: '',
             customerId: null,
@@ -255,19 +257,22 @@
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
-                    tries: 1
+                    tries: 1,
+                    counterStart: this.counterStart,
+                    counterEnd: this.counterEnd
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
+                        var i = 0;
                         response.data.forEach(elem =>{
-
+                            i++;
                             //   console.log(elem.data);
                             var given = moment(elem.tries_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
 
-
                             this.items.push({
+                                counter: i,
                                 id: elem.id,
                                 calcDate:  diff,
                                 started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
@@ -287,6 +292,7 @@
 
 
                         });
+                        console.log(this.items.length);
 
                     })
                     .catch(function (error) {

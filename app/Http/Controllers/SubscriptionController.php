@@ -74,11 +74,17 @@ class SubscriptionController extends Controller
                 'type' => 'select-multiple',
                 'options' => Subscription::PAYMENT_TYPE,
             ],
+//            [
+//                'name' => 'team_id',
+//                'title' => 'Команды',
+//                'type' => 'select-multiple',
+//                'options' => $teams,
+//            ],
             [
-                'name' => 'team_id',
-                'title' => 'Команды',
+                'name' => 'user_id',
+                'title' => 'Оператор',
                 'type' => 'select-multiple',
-                'options' => $teams,
+                'options' => $users,
             ],
             [
                 'name' => 'from_start_date',
@@ -100,12 +106,7 @@ class SubscriptionController extends Controller
                 'title' => 'ID абонемента',
                 'type' => 'input',
             ],
-            [
-                'name' => 'user_id',
-                'title' => 'Оператор',
-                'type' => 'select-multiple',
-                'options' => $users,
-            ],
+
         ];
 
         $data['second'] = [
