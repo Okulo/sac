@@ -32719,3 +32719,8 @@ a.text-muted:hover {
   font-size: 0.8rem;
 }
 
+.product-label {
+  font-weight: 400 !important;
+  margin-top: 5px;
+}
+

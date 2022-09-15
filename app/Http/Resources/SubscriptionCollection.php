@@ -63,8 +63,8 @@ class SubscriptionCollection extends ResourceCollection
                     'key' => 'product_id',
                 ],
                 [
-                    'title' => 'Cloudpayment ID',
-                    'key' => 'cp_subscription_id',
+                    'title' => 'Цена',
+                    'key' => 'price',
                 ],
                 [
                     'title' => 'Создал',

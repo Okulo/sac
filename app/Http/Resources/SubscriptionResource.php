@@ -63,7 +63,7 @@ class SubscriptionResource extends JsonResource
                 // 'value' => $this->product_id ? route('products.show', [$this->product_id]) : null,
             ],
             'cp_subscription_id' => [
-                'value' => $this->cp_subscription_id ?? null,
+                'value' => $this->price,
                 // 'type' => 'link',
                 // 'value' => $this->product_id ? route('products.show', [$this->product_id]) : null,
             ],
