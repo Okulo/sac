@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSubscriptionRequest;
+use App\Models\Price;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -45,6 +46,7 @@ class SubscriptionController extends Controller
         $products = \DB::table('products')->whereNull('archived')->get()->pluck('title', 'id');
         $users = User::where('is_active','>','0')->get()->pluck('name', 'id')->toArray();
         $teams = Team::get()->pluck('name', 'id')->toArray();
+        $prices = Price::groupBy('price')->orderBy('price', 'desc')->get()->pluck( 'price','price')->toArray();
 
         $teams[9999] = 'Без команды';
 
@@ -85,6 +87,12 @@ class SubscriptionController extends Controller
                 'title' => 'Оператор',
                 'type' => 'select-multiple',
                 'options' => $users,
+            ],
+            [
+                'name' => 'price',
+                'title' => 'Цена',
+                'type' => 'select-multiple',
+                'options' => $prices,
             ],
             [
                 'name' => 'from_start_date',
