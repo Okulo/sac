@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePaymentRequest;
 use App\Models\Payment;
+use App\Models\Price;
 use Illuminate\Http\Request;
 use App\Filters\PaymentFilter;
 use App\Http\Resources\PaymentCollection;
@@ -46,6 +47,7 @@ class PaymentController extends Controller
         unset($paymentTypes['frozen']);
         $products = Product::get()->pluck('title', 'id');
         $teams = Team::get()->pluck('name', 'id')->toArray();
+        $prices = Price::groupBy('price')->orderBy('price', 'desc')->get()->pluck( 'price','price')->toArray();
         $teams[9999] = 'Без команды';
 
         $data['main'] = [
@@ -97,6 +99,12 @@ class PaymentController extends Controller
                 'name' => 'transaction_id',
                 'title' => 'Transaction ID',
                 'type' => 'input',
+            ],
+            [
+                'name' => 'amount',
+                'title' => 'Цена',
+                'type' => 'select-multiple',
+                'options' => $prices,
             ],
             [
                 'name' => 'newPayment',
