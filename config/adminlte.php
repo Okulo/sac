@@ -277,15 +277,15 @@ return [
         ],
 
         // commads
-        [
-            'text' => 'Команды',
-            'url'  => '/teams',
-            'icon' => 'fa fa-users',
-            "can"  => [
-                'can-head',
-                'can-host',
-            ]
-        ],
+//        [
+//            'text' => 'Команды',
+//            'url'  => '/teams',
+//            'icon' => 'fa fa-users',
+//            "can"  => [
+//                'can-head',
+//                'can-host',
+//            ]
+//        ],
 
         // customers
         [
@@ -350,30 +350,30 @@ return [
 //        ],
 
         // users-bonuses
-        [
-            'key'  => 'users-bonuses',
-            'text' => 'Бонусы',
-            'url'  => '/users-bonuses',
-            'icon' => 'fa fa-bold',
-            "can"  => [
-              //  'can-operator',
-                'can-head',
-                'can-host',
-            ],
-        ],
+//        [
+//            'key'  => 'users-bonuses',
+//            'text' => 'Бонусы',
+//            'url'  => '/users-bonuses',
+//            'icon' => 'fa fa-bold',
+//            "can"  => [
+//              //  'can-operator',
+//                'can-head',
+//                'can-host',
+//            ],
+//        ],
 
         // manager-bonuses
-        [
-            'key'  => 'manager-bonuses',
-            'text' => 'Бонусы менеджера',
-            'url'  => '/manager-bonuses',
-            'icon' => 'fa fa-bold',
-            "can"  => [
-                // 'can-operator',
-                'can-head',
-                'can-host',
-            ],
-        ],
+//        [
+//            'key'  => 'manager-bonuses',
+//            'text' => 'Бонусы менеджера',
+//            'url'  => '/manager-bonuses',
+//            'icon' => 'fa fa-bold',
+//            "can"  => [
+//                // 'can-operator',
+//                'can-head',
+//                'can-host',
+//            ],
+//        ],
         // бонусы операторов
         [
             'key'  => 'report_11',

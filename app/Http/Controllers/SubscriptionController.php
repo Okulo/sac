@@ -46,7 +46,7 @@ class SubscriptionController extends Controller
         $products = \DB::table('products')->whereNull('archived')->get()->pluck('title', 'id');
         $users = User::where('is_active','>','0')->get()->pluck('name', 'id')->toArray();
         $teams = Team::get()->pluck('name', 'id')->toArray();
-        $prices = Price::groupBy('price')->orderBy('price', 'desc')->get()->pluck( 'price','price')->toArray();
+        $prices = Price::groupBy('price')->orderBy('price', 'desc')->get('price')->pluck( 'price','price')->toArray();
 
         $teams[9999] = 'Без команды';
 

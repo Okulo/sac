@@ -71,25 +71,9 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="product_id" class="col-form-label">Услуга</label>
-<!--                                    <select v-if="! subscription.id"  v-model="category" class="col-sm-10 form-control">-->
-<!--                                        <option disabled value="">Выберите категорию услуги</option>-->
-<!--                                        <option value="1">Подписки</option>-->
-<!--                                        <option value="2">Разовые улсуги</option>-->
-<!--                                    </select>-->
-<!--                                  <br>-->
-                                    <div v-if="! subscription.id" class="form-group row">
-                                        <label for="product-id1" class="col-sm-3 product-label">Подписки</label>
-                                    <select v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product-id1" class="col-sm-7 form-control">
-                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" v-if="option.category == 1">{{ option.title }}</option>
+                                    <select v-if="! subscription.id" v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product-id" class="col-sm-10 form-control">
+                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" >{{ option.title }}</option>
                                     </select>
-                                    </div>
-
-                                    <div v-if="! subscription.id" class="form-group row">
-                                    <label for="product-id2" class="col-sm-3 product-label">Разовые услуги</label>
-                                    <select  v-model="subscription.product_id" :name="'subscriptions.' + subIndex + '.product_id'" id="product-id2" class="col-sm-7 form-control">
-                                        <option v-for="(option, optionIndex) in products" :key="optionIndex" :value="optionIndex" v-if="option.category == 2">{{ option.title }}</option>
-                                    </select>
-                                    </div>
                                     <input v-else :value="getSubscriptionTitle(subscription.product_id)" id="product_id" class="col-sm-10 form-control" type="text" disabled>
                                 </div>
                                 <div class="form-group col-sm-6">
@@ -198,12 +182,12 @@
                                         <option v-for="(reason, reasonIndex) in subscription.reasons" :key="reasonIndex" :value="reason.id">{{ reason.title }}</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-sm-6" v-if="userRole != 'operator' || userTeamIds.length > 1">
-                                    <label for="team_id" class="col-form-label">Команда</label>
-                                    <select v-model="subscription.team_id" :name="'subscriptions.' + subIndex + '.team_id'" id="team_id" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">
-                                        <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
-                                    </select>
-                                </div>
+<!--                                <div class="form-group col-sm-6" v-if="userRole != 'operator' || userTeamIds.length > 1">-->
+<!--                                    <label for="team_id" class="col-form-label">Команда</label>-->
+<!--                                    <select v-model="subscription.team_id" :name="'subscriptions.' + subIndex + '.team_id'" id="team_id" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">-->
+<!--                                        <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
                                 <div class="col-sm-6" id="change-price" v-if="currentPrice && subscription.status != 'trial' && subscription.payment_type == 'cloudpayments'">
                                     <hr>
                                     <label class="col-form-label">Изменить цену подписки</label>
@@ -292,12 +276,10 @@
                                 </div> -->
                                 </b-modal>
                             </div>
-                            <div class="row" v-if="customer.cards && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
-                                <div v-for="card in customer.cards">
-                                    <div class="col-sm-12" v-if="card.type != 'pitech' && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'">
-                                    <span><span style="font-weight: bold"></span>  (конец карты - {{ card.last_four }})  </span>
-                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
-                                </div>
+                            <div class="row" v-if="customer.card && (customer.card.type != 'pitech') && (subscription.payment_type == 'simple_payment') && subscription.status != 'paid'" style="margin-bottom: 15px">
+                                <div class="col-sm-12">
+                                    <span><span style="font-weight: bold">{{ customer.card.type }}</span> (конец карты - {{ customer.card.last_four }}) </span>
+                                    <button type="button" class="btn btn-dark" :id="'writeOffPaymentByToken-' + subscription.id" @click="writeOffPaymentByToken(subscription.id, customer.card.id)" :disabled="isDisabled(subscription)">Списать оплату с привязанной карты</button>
                                 </div>
                             </div>
                             <div class="row" v-if="subscription.recurrent && (subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'simple_payment')" style="margin-bottom: 15px">
@@ -515,7 +497,6 @@
                     email: '',
                     comments: '',
                 },
-                category: '',
                 currentPrice: '',
                 products: {},
                 subscriptions: [],
