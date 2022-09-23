@@ -55,7 +55,7 @@
 
                         <div class="col-4">
                             <br>
-                            <b>Услуги</b>
+                            <b>Услуга</b>
                             <p></p>
                             <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
@@ -63,10 +63,18 @@
                                 </option>
                             </select>
                          </div>
+                        <div class="col-4">
+                            <br>
+                            <b>Оператор</b>
+                            <p></p>
+                            <select v-model="selectedUser" class="form-control" id="exampleFormControlSelect1">
+                                <option v-for="user in users" v-bind:value="user.id">{{user.name}}</option>
+                            </select>
+                        </div>
 
                         <div class="col-12">
                             &nbsp<br>
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            <button id="getlist" v-if="(startDate && endDate) || (product) || (selectedUser)"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
 
@@ -180,12 +188,15 @@
             statusStyle : '',
             period: '',
             products: {},
+            users: [],
+            selectedUser: null,
             product: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
             this.getProcessedStatus();
+            this.getUserList();
           //  this.getSubscriptionlist();
         },
 
@@ -268,7 +279,8 @@
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
-                    reportType: 5
+                    reportType: 5,
+                    user: this.selectedUser
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
@@ -531,6 +543,31 @@
                     .catch(function (error) {
                         console.log(error);
                         Vue.$toast.error(' '+error);
+                    });
+            },
+            getUserList(){
+                axios.get('/users/list')
+                    .then(response => {
+
+                        //  console.log(response);
+                        response.data.data.forEach(elem =>{
+                            if(elem.is_active.value == 'Активный'){
+                                //  console.log(elem);
+                                this.users.push({
+                                    id: elem.id.value,
+                                    account: elem.account.value,
+                                    email: elem.email.value,
+                                    name: elem.name.value,
+                                    role_id: elem.role_id.value
+                                });
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
                     });
             },
         }

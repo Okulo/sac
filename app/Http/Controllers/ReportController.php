@@ -246,6 +246,9 @@ class ReportController extends Controller
               if ($request->product == null) {
                   $query->where('category', 1);
               }
+              if ($request->user != null) {
+                  $query->where('subscriptions.user_id', $request->user );
+              }
 
               if ($request->tries != 1) {
                 $query->where('subscriptions.tries_at','<', $today);
