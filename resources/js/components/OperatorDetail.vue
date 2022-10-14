@@ -12,17 +12,17 @@
             <h2>Бонусы за неделю {{userNameProp}}</h2>
             <div class="card mt-3">
                 <div class="card-body">
-                <div class="row">
-                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12">
 
-                        <h5 class="card-title">Всего абонементов</h5>
-                        <p class="card-text">
-                        <div class="card-title" style="padding-right: 40px"> По подписке:  <b class="text-teal" style="font-size: 1.6rem;">{{subsCount.length}}</b></div>
-                        <div class="card-title">По прямому переводу:  <b class="text-info" style="font-size: 1.6rem;">{{ simpleCount.length }}</b></div>
-                        </p>
+                            <h5 class="card-title">Всего абонементов</h5>
+                            <p class="card-text">
+                            <div class="card-title" style="padding-right: 40px"> По подписке:  <b class="text-teal" style="font-size: 1.6rem;">{{subsCount.length}}</b></div>
+                            <div class="card-title">По прямому переводу:  <b class="text-info" style="font-size: 1.6rem;">{{ simpleCount.length }}</b></div>
+                            </p>
 
-                </div>
-                </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="btn-group d-flex w-100" role="group" aria-label="...">
@@ -30,12 +30,12 @@
                         <button type="button" class="btn btn-default w-100" @click="currentWeek()">Текущая неделя</button>
                         <div class="w-100" style="border:1px solid #ddd; background-color: #f8f9fa; text-align: center; padding-top: 7px">
 
-                          <b> c {{modifedDate(weekStart)}}, по {{modifedDate(weekEnd)}}</b>
+                            <b> c {{modifedDate(weekStart)}}, по {{modifedDate(weekEnd)}}</b>
 
                         </div>
                     </div>
 
-<p><br></p>
+                    <p><br></p>
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="card" style="height: 8rem">
@@ -72,11 +72,11 @@
 
 <script>
     import moment from 'moment';
-     export default {
-         props: [
-             'userIdProp',
-             'userNameProp'
-         ],
+    export default {
+        props: [
+            'userIdProp',
+            'userNameProp'
+        ],
         data: () => ({
             startDate: '',
             endDate: '',
@@ -114,31 +114,31 @@
             this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
             this.weekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
             this. getAllSubscriptions();
-           // this.getList();
+            // this.getList();
             //  this.getSubscriptionlist();
             console.log(this.subsCount);
         },
-         watch: {
-             weekStart: function (val) {
-                 //если меняется дата выполняем
-                 this.operatorBonuses = [];
-                 this.getUserBonus(this.weekStart, this.weekEnd);
-                 this.getSubscriptions(this.weekStart, this.weekEnd);
-                 this.getTransferCount(this.weekStart, this.weekEnd);
-             }
-         },
-         computed: {
-             resultCount () {
-                 this.subsCounter = Object.keys(this.subsCount).length;
-             }
-         },
+        watch: {
+            weekStart: function (val) {
+                //если меняется дата выполняем
+                this.operatorBonuses = [];
+                this.getUserBonus(this.weekStart, this.weekEnd);
+                this.getSubscriptions(this.weekStart, this.weekEnd);
+                this.getTransferCount(this.weekStart, this.weekEnd);
+            }
+        },
+        computed: {
+            resultCount () {
+                this.subsCounter = Object.keys(this.subsCount).length;
+            }
+        },
         methods: {
             modifedDate(date){
                 return moment(date).locale('ru').format('DD MMM ');
             },
             substractOneWeek(){
-                    this.weekStart =  moment(this.weekStart).subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
-                    this.weekEnd = moment(this.weekEnd ).subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+                this.weekStart =  moment(this.weekStart).subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
+                this.weekEnd = moment(this.weekEnd ).subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
             },
             currentWeek(){
                 this.weekStart =  moment().startOf('isoWeek').format('YYYY-MM-DD HH:mm:ss');
@@ -203,7 +203,7 @@
                 })
                     .then(response => {
                         // this.getDebtorsList();
-                      //console.log(response.data);
+                        //console.log(response.data);
                         if(response.data[0].summa){
                             this.summa = response.data[0].summa;
                         }else{

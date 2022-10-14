@@ -190,6 +190,8 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get('users/filter', 'UserController@getFilters');
     Route::get('users/change/{subId}', 'UserController@changeOperator');
     Route::post('users/saveOperator', 'UserController@saveOperator');
+    Route::get('users/changeSubscriptions', 'UserController@changeSubscriptions');
+    Route::post('users/saveChangeOperator', 'UserController@saveChangeOperator');
 
     Route::get('notifications/list', 'NotificationController@getList');
     Route::get('notifications/filter', 'NotificationController@getFilters');

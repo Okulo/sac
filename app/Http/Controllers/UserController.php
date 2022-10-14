@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Product;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -166,4 +167,43 @@ class UserController extends Controller
 
         return $request;
     }
+
+    public function changeSubscriptions(){
+        access(['can-head', 'can-host']);
+        $users = User::where('is_active','>','0')->get()->pluck('name', 'id')->toArray();
+        $product = Product::get()->pluck('title', 'id')->toArray();
+        return view("users.changeSubscriptions", [
+            'users' => $users,
+            'product' => $product,
+        ]);
+    }
+
+    public function saveChangeOperator(Request $request){
+
+        if($request->product){
+            if($request->old_user && $request->new_user) {
+                $cahged = Subscription::where('user_id', $request->old_user)->where('product_id', $request->product)->update(['user_id' => $request->new_user]);
+                if ($cahged) {
+                    return redirect()->route("{$this->root}.index")->with('success', $cahged . ' абонементов успешно перенсены!');
+                } else {
+                    return redirect()->route("{$this->root}.index")->with('error', 'Ошибка переноса! данных -' . $cahged);
+                }
+            } else{
+                return redirect()->route("{$this->root}.index")->with('error', 'Ошибка переноса! Не верные данные' );
+            }
+            }
+            else {
+                if ($request->old_user && $request->new_user) {
+                    $cahged = Subscription::where('user_id', $request->old_user)->update(['user_id' => $request->new_user]);
+                    if ($cahged) {
+                        return redirect()->route("{$this->root}.index")->with('success', $cahged . ' абонементов успешно перенсены!');
+                    } else {
+                        return redirect()->route("{$this->root}.index")->with('error', 'Ошибка переноса! данных -' . $cahged);
+                    }
+                } else{
+                    return redirect()->route("{$this->root}.index")->with('error', 'Ошибка переноса! Не верные данне');
+                }
+            }
+        }
+
 }

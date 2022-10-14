@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="row">
-<!--            <span v-if="prefix == 'products'" style="float: right; line-height: 28px; padding-right: 20px;"> <a href="/reports/get-reports/7">Услуги в архиве</a> </span>-->
+            <!--            <span v-if="prefix == 'products'" style="float: right; line-height: 28px; padding-right: 20px;"> <a href="/reports/get-reports/7">Услуги в архиве</a> </span>-->
 
-<!--            <div v-if="prefix == 'products'" class="btn-group d-flex w-100" role="group" aria-label="...">-->
-<!--                <button type="button" class="btn btn-default w-100" @click="substractOneWeek()">< Назад</button>-->
-<!--                <button type="button" class="btn btn-default w-100" @click="currentWeek()">Текущая неделя</button>-->
-<!--            </div>-->
+            <!--            <div v-if="prefix == 'products'" class="btn-group d-flex w-100" role="group" aria-label="...">-->
+            <!--                <button type="button" class="btn btn-default w-100" @click="substractOneWeek()">< Назад</button>-->
+            <!--                <button type="button" class="btn btn-default w-100" @click="currentWeek()">Текущая неделя</button>-->
+            <!--            </div>-->
             <div class="col-12" v-if="mainFilters.length > 0">
                 <div class="card mb-2" id="filter">
                     <div
@@ -38,7 +38,6 @@
                                         </select> -->
                                         <b-form-select class="select-multiple" v-model="queryParams[filter.name]" :options="filter.options" multiple :select-size="4"></b-form-select>
                                         <!-- <v-select v-model="queryParams[filter.name]" :options="filter.options" multiple :reduce="field => field.value" :filterable="false">
-
                                         </v-select> -->
                                     </div>
                                     <div v-if="filter.type == 'checkbox'">
@@ -47,12 +46,12 @@
                                     <div v-if="filter.type == 'select-search'">
                                         <v-select v-model="queryParams[filter.name]" :reduce="field => field.value" :filterable="false" :options="options[filter.key]" @search="onSearch(...arguments, filter.key)">
                                             <template slot="no-options">
-                                            Введите для поиска
+                                                Введите для поиска
                                             </template>
                                             <template slot="option" slot-scope="option">
                                                 <div class="d-center">
                                                     {{ option.label }}
-                                                    </div>
+                                                </div>
                                             </template>
                                             <template slot="selected-option" slot-scope="option">
                                                 <div class="selected d-center">
@@ -123,68 +122,70 @@
                     </span>
                 </div>
             </div>
-<!--            <div v-if="queryParams.status == 'trial'" style="flex: 0 1 auto; margin-left: 14px; line-height: 28px; margin-top: 14px;">-->
-<!--                <label for="one">Карта привязана</label>-->
-<!--                <input type="radio" id="one" value="yes" v-model="picked">-->
-<!--                &nbsp  &nbsp  &nbsp <label for="two">Карта не привязана</label>-->
-<!--                <input type="radio" id="two" value="no" v-model="picked">-->
-<!--                <br>-->
-<!--                <span>Выбрано: {{ picked }}</span>-->
-<!--            </div>-->
+            <!--            <div v-if="queryParams.status == 'trial'" style="flex: 0 1 auto; margin-left: 14px; line-height: 28px; margin-top: 14px;">-->
+            <!--                <label for="one">Карта привязана</label>-->
+            <!--                <input type="radio" id="one" value="yes" v-model="picked">-->
+            <!--                &nbsp  &nbsp  &nbsp <label for="two">Карта не привязана</label>-->
+            <!--                <input type="radio" id="two" value="no" v-model="picked">-->
+            <!--                <br>-->
+            <!--                <span>Выбрано: {{ picked }}</span>-->
+            <!--            </div>-->
         </div>
         <div v-if="prefix == 'products'" style="padding: 15px 0">
-        <select class="select col-4 custom-select" v-model="selected">
+            <select class="select col-4 custom-select" v-model="selected">
                 <option value="1">Подписки</option>
                 <option value="2">Разовые услуги</option>
-        </select>
+            </select>
+
         </div>
+        <div v-if="prefix == 'users'" class="col-2 float-right btn btn-outline-info" style="margin:10px 15px"><a href="users/changeSubscriptions/">Перенос абонементов</a> </div>
         <div class="table-responsive bg-white">
             <pulse-loader class="spinner" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
             <table style="overflow: hidden" class="table table-striped table-sm">
                 <thead>
-                    <tr>
-                        <th scope="col">
+                <tr>
+                    <th scope="col">
                             <span>
                                 #
                             </span>
-                        </th>
-                        <th scope="col" v-for="(item, dataTitlesIndex) in dataTitles" :key="dataTitlesIndex" :style="{width: item.width, 'text-align': item.textAlign, display: item.display}">
-                            <a v-if="item.key" class="thead-title" @click="changeSortQueryParams(item.key)">
-                                {{ item.title }}
-                            </a>
-                            <span v-else>{{ item.title }}</span>
-                        </th>
-                        <th scope="col">
-                            <!-- <i class="fa fa-cog"></i> -->
-                        </th>
-                    </tr>
+                    </th>
+                    <th scope="col" v-for="(item, dataTitlesIndex) in dataTitles" :key="dataTitlesIndex" :style="{width: item.width, 'text-align': item.textAlign, display: item.display}">
+                        <a v-if="item.key" class="thead-title" @click="changeSortQueryParams(item.key)">
+                            {{ item.title }}
+                        </a>
+                        <span v-else>{{ item.title }}</span>
+                    </th>
+                    <th scope="col">
+                        <!-- <i class="fa fa-cog"></i> -->
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(items, itemsIndex) in data" :key="itemsIndex" :data-id="itemsIndex">
-<!--                        <td>-->
-<!--                            <div>-->
-<!--                                <div class="custom-text">-->
-<!--                                    {{ itemsIndex + pagination.from }}-->
-<!--                                    <div v-if="prefix == 'subscriptions' && items.status.value == 'trial'">-->
-<!--                                  <span v-if="items.card && items.card.length" style="color: forestgreen; font-size: 88%">-->
-<!--                                    Карта привязана-->
-<!--                                  </span>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </td>-->
-                        <td>
-                            <div>
-                                <div class="custom-text">
-                                    {{ itemsIndex + pagination.from }}
-                                </div>
+                <tr v-for="(items, itemsIndex) in data" :key="itemsIndex" :data-id="itemsIndex">
+                    <!--                        <td>-->
+                    <!--                            <div>-->
+                    <!--                                <div class="custom-text">-->
+                    <!--                                    {{ itemsIndex + pagination.from }}-->
+                    <!--                                    <div v-if="prefix == 'subscriptions' && items.status.value == 'trial'">-->
+                    <!--                                  <span v-if="items.card && items.card.length" style="color: forestgreen; font-size: 88%">-->
+                    <!--                                    Карта привязана-->
+                    <!--                                  </span>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </td>-->
+                    <td>
+                        <div>
+                            <div class="custom-text">
+                                {{ itemsIndex + pagination.from }}
                             </div>
-                        </td>
-                        <td v-for="(item, name) in items" :key="name" :class="{ editable: item.type, link: item.type == 'link', tdhidden: item.type == 'hidden' }" :style="{'text-align': item.textAlign}">
-                            <div v-if="item.type == 'hidden'">
-                            </div>
-                            <div v-else-if="item.type == 'select'">
-                                <select :name="name" v-model="item.value" class="form-control form-control-custom" :class="{
+                        </div>
+                    </td>
+                    <td v-for="(item, name) in items" :key="name" :class="{ editable: item.type, link: item.type == 'link', tdhidden: item.type == 'hidden' }" :style="{'text-align': item.textAlign}">
+                        <div v-if="item.type == 'hidden'">
+                        </div>
+                        <div v-else-if="item.type == 'select'">
+                            <select :name="name" v-model="item.value" class="form-control form-control-custom" :class="{
                                     'status-tries': item.value == 'tries' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-waiting': item.value == 'waiting' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-paid': item.value == 'paid' && (prefix == 'subscriptions' || prefix == 'notifications'),
@@ -192,7 +193,7 @@
                                     'status-frozen': item.value == 'frozen' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                     'status-rejected': item.value == 'rejected' && (prefix == 'subscriptions' || prefix == 'notifications')
                                 }">
-                                    <option :class="{
+                                <option :class="{
                                         'status-tries': collectionIndex == 'tries' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                         'status-waiting': collectionIndex == 'waiting' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                         'status-paid': collectionIndex == 'paid' && (prefix == 'subscriptions' || prefix == 'notifications'),
@@ -200,37 +201,37 @@
                                         'status-frozen': collectionIndex == 'frozen' && (prefix == 'subscriptions' || prefix == 'notifications'),
                                         'status-rejected': collectionIndex == 'rejected' && (prefix == 'subscriptions' || prefix == 'notifications')
                                     }" v-for="(collection, collectionIndex) in others[item.collection]" :key="collectionIndex" :value="collectionIndex">
-                                        {{ collection }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div v-else-if="item.type == 'input'">
-                                <input type="text" class="form-control form-control-sm" v-model="item.value" />
-                            </div>
-                            <div v-else-if="item.type == 'customer-link'">
-                                <a class="custom-link" role="button" @click="openModal(item.id, item.subscriptionId)">{{ item.title }}</a>
-                            </div>
-                            <div v-else-if="item.type == 'link'">
-                                <a class="custom-link" :href="item.value" role="button">{{ item.title }}</a>
-                            </div>
-                            <div v-else-if="item.type == 'date'">
-                                <datetime
-                                    type="date"
-                                    v-model="item.value"
-                                    input-class="my-class form-control"
-                                    valueZone="Asia/Almaty"
-                                    zone="Asia/Almaty"
-                                    format="dd LLLL"
-                                ></datetime>
-                            </div>
-                            <div v-else-if="item.type == 'checkbox'">
-                                <input type="checkbox"
-                                    :name="name"
-                                    v-model="item.value"
-                                    @change="saveItem(items, items.id.value, itemsIndex)">
-                            </div>
-                            <div v-else>
-                                <div class="custom-text" v-if="name == 'status'">
+                                    {{ collection }}
+                                </option>
+                            </select>
+                        </div>
+                        <div v-else-if="item.type == 'input'">
+                            <input type="text" class="form-control form-control-sm" v-model="item.value" />
+                        </div>
+                        <div v-else-if="item.type == 'customer-link'">
+                            <a class="custom-link" role="button" @click="openModal(item.id, item.subscriptionId)">{{ item.title }}</a>
+                        </div>
+                        <div v-else-if="item.type == 'link'">
+                            <a class="custom-link" :href="item.value" role="button">{{ item.title }}</a>
+                        </div>
+                        <div v-else-if="item.type == 'date'">
+                            <datetime
+                                type="date"
+                                v-model="item.value"
+                                input-class="my-class form-control"
+                                valueZone="Asia/Almaty"
+                                zone="Asia/Almaty"
+                                format="dd LLLL"
+                            ></datetime>
+                        </div>
+                        <div v-else-if="item.type == 'checkbox'">
+                            <input type="checkbox"
+                                   :name="name"
+                                   v-model="item.value"
+                                   @change="saveItem(items, items.id.value, itemsIndex)">
+                        </div>
+                        <div v-else>
+                            <div class="custom-text" v-if="name == 'status'">
                                     <span class="status" :class="{
                                         'status-tries': item.value == 'Пробует' && prefix == 'subscriptions',
                                         'status-waiting': item.value == 'Жду оплату' && prefix == 'subscriptions',
@@ -241,33 +242,33 @@
                                     }">
                                         {{ item.value }}
                                     </span>
-                                </div>
-                                <div class="custom-text" v-else-if="item.type == 'html'" v-html="item.value">
-                                </div>
-                                <div class="custom-text" v-else>
-                                    {{ item.value }}
-                                </div>
                             </div>
-                        </td>
-                        <td class="text-right" v-if="prefix != 'payments'">
-                            <button v-if="prefix == 'subscriptions' || prefix == 'notifications'" @click="saveItem(items, items.id.value, itemsIndex)" type="button" class="btn btn-danger btn-sm save-button" title="Сохранить">
-                                <i class="fa fa-save"></i>
+                            <div class="custom-text" v-else-if="item.type == 'html'" v-html="item.value">
+                            </div>
+                            <div class="custom-text" v-else>
+                                {{ item.value }}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-right" v-if="prefix != 'payments'">
+                        <button v-if="prefix == 'subscriptions' || prefix == 'notifications'" @click="saveItem(items, items.id.value, itemsIndex)" type="button" class="btn btn-danger btn-sm save-button" title="Сохранить">
+                            <i class="fa fa-save"></i>
+                        </button>
+                        <div class="dropdown btn-group" role="group" v-if="prefix != 'subscriptions' && prefix != 'notifications' && prefix != 'teams' && prefix != 'products'">
+                            <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" :id="'dropdownMenuButton' + itemsIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-cog"></i>
                             </button>
-                            <div class="dropdown btn-group" role="group" v-if="prefix != 'subscriptions' && prefix != 'notifications' && prefix != 'teams' && prefix != 'products'">
-                                <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" :id="'dropdownMenuButton' + itemsIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-cog"></i>
-                                </button>
-                                <div class="dropdown-menu" :aria-labelledby="'dropdownMenuButton' + itemsIndex">
-                                    <a v-if="prefix != 'payments'" :href="'/'+ prefix +'/'+ items.id.value +'/edit'" class="dropdown-item" title="Редактировать">
-                                        Редактировать
-                                    </a>
-                                    <a v-if="prefix != 'users'" :href="'/'+ prefix +'/'+ items.id.value" class="dropdown-item" title="Подробнее">
-                                        Подробнее
-                                    </a>
-                                </div>
+                            <div class="dropdown-menu" :aria-labelledby="'dropdownMenuButton' + itemsIndex">
+                                <a v-if="prefix != 'payments'" :href="'/'+ prefix +'/'+ items.id.value +'/edit'" class="dropdown-item" title="Редактировать">
+                                    Редактировать
+                                </a>
+                                <a v-if="prefix != 'users'" :href="'/'+ prefix +'/'+ items.id.value" class="dropdown-item" title="Подробнее">
+                                    Подробнее
+                                </a>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -334,11 +335,10 @@
 </template>
 
 <script>
-import CustomerComponent from './CustomerComponent.vue';
-import moment from "moment";
-
-export default {
-  components: { CustomerComponent },
+    import CustomerComponent from './CustomerComponent.vue';
+    import moment from "moment";
+    export default {
+        components: { CustomerComponent },
         props: [
             'prefixProp',
             'createLinkProp',
@@ -384,11 +384,10 @@ export default {
             selected: function(value) {
                 this.getData();
             }
-       },
+        },
         methods: {
             showCrad(customerId){
                 //console.log(customerId);
-
                 axios.post('/customers/get-customer-card', {
                     customerId: customerId
                 })
@@ -396,13 +395,11 @@ export default {
                         if(response.data[0]){
                             this.customerCard = response.data[0];
                         }
-
                     })
                     .catch(function (error) {
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
-
             },
             existsReasons() {
                 if (this.others && this.others.reasons && this.others.reasons[this.reasonProductId]) {
@@ -453,9 +450,7 @@ export default {
                 Object.keys(items).forEach(function(name) {
                     data[name] = items[name].value;
                 });
-
                 this.spinnerData.loading = true;
-
                 if ((this.prefixProp == 'subscriptions' || this.prefixProp == 'notifications')
                     && data.status == 'refused'
                     && data.reason_id === null) {
@@ -465,7 +460,6 @@ export default {
                 } else {
                     this.$bvModal.hide('reason-modal');
                 }
-
                 axios.put(`/${this.prefix}/${id}`, data)
                     .then(response => {
                         this.spinnerData.loading = false;
@@ -498,12 +492,10 @@ export default {
             },
             resetFilter() {
                 this.queryParams = {},
-                this.setAddressBar();
+                    this.setAddressBar();
                 this.getData();
-
                 let multipleSelects = $(".select-multiple");
                 [].forEach.call(multipleSelects, function (select) {
-
                     let element = select.options;
                     for(var i = 0; i < element.length; i++){
                         element[i].selected = false;
@@ -518,7 +510,6 @@ export default {
                         sortType = matches[1];
                     }
                     let sortKey = this.queryParams.sort.replace(/\([^)]+\)/, '');
-
                     if (sortType == 'asc') {
                         this.queryParams['sort'] = key + '(desc)';
                     } else {
@@ -527,7 +518,6 @@ export default {
                 } else {
                     this.queryParams['sort'] = key + '(asc)';
                 }
-
                 this.setAddressBar();
                 this.getData();
             },
@@ -548,7 +538,6 @@ export default {
             },
             setQueryParams() {
                 const params = new URLSearchParams(window.location.search);
-
                 const paramsObj = Array.from(params.keys()).reduce(
                     (acc, val) => ({ ...acc, [val]: params.get(val) }),
                     {}
@@ -567,7 +556,6 @@ export default {
                     } else {
                         value = data[key];
                     }
-
                     if (typeof value === 'string' && selectMultipleNames.includes(key)) {
                         value = [value];
                     }
@@ -579,9 +567,7 @@ export default {
                 this.spinnerData.loading = true;
                 if(this.prefix == 'products'){
                     axios.get('/products/list/'+this.selected, { params: this.queryParams }).then(response => {
-
                         console.log( this.queryParams);
-
                         this.data = response.data.data;
                         this.dataTitles = response.data.dataTitles;
                         this.others = response.data.others;
@@ -591,9 +577,7 @@ export default {
                 }
                 else{
                     axios.get(`/${this.prefixProp}/list`, { params: this.queryParams }).then(response => {
-
                         console.log( this.queryParams);
-
                         this.data = response.data.data;
                         this.dataTitles = response.data.dataTitles;
                         this.others = response.data.others;
@@ -601,7 +585,6 @@ export default {
                         this.spinnerData.loading = false;
                     });
                 }
-
             }, 500),
             getFilters() {
                 this.spinnerData.loading = true;
@@ -627,95 +610,89 @@ export default {
                             return data;
                         });
                     }
-
                 })])
-                .then((allResults) => {
-                    // После выполнении функции setQueryParams() выполняется this.getData()
-                    Promise.resolve(this.setQueryParams()).then(this.getData())
-                });
+                    .then((allResults) => {
+                        // После выполнении функции setQueryParams() выполняется this.getData()
+                        Promise.resolve(this.setQueryParams()).then(this.getData())
+                    });
             }
         }
     }
 </script>
 
 <style scoped>
-.thead-title {
-    cursor: pointer;
-}
-.table-responsive {
-    position: relative;
-}
-.v-spinner {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    position: absolute;
-    background: #00000017;
-}
-.custom-link {
-    padding: 5px 0px;
-    display: inline-block;
-    text-decoration: underline;
-}
-.custom-text {
-    /* text-align: center; */
-    display: block;
-    padding: 5px 0;
-}
-
-.vs__search::placeholder,
-  .vs__dropdown-toggle,
-  .vs__dropdown-menu {
-    background: #dfe5fb;
-    border: none;
-    color: #afb7e4;
-    text-transform: lowercase;
-    font-variant: small-caps;
-  }
-
-  .vs__clear,
-  .vs__open-indicator {
-    fill: #394066;
-  }
-.tdhidden {
-    display: none;
-}
-.page-link {
-    cursor: pointer;
-}
-
-.table .custom-link {
-    font-size: 15px;
-}
-
-.table .custom-text {
-    font-size: 15px;
-}
-
-.status-tries {
-    background: #b3f7de;
-}
-.status-waiting {
-    background: #91c7ff;
-}
-.status-paid {
-    background: #FFFFFF;
-}
-.status-refused {
-    background: #f9f578;
-}
-.status-frozen {
-    background: #e44361ab;
-}
-.status-rejected {
-    background: #e665658f;
-}
-.status {
-    padding: 2px 6px;
-}
-.form-control-custom {
-    width: 110px;
-    padding: 3px;
-    font-size: 15px;
-}
+    .thead-title {
+        cursor: pointer;
+    }
+    .table-responsive {
+        position: relative;
+    }
+    .v-spinner {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        position: absolute;
+        background: #00000017;
+    }
+    .custom-link {
+        padding: 5px 0px;
+        display: inline-block;
+        text-decoration: underline;
+    }
+    .custom-text {
+        /* text-align: center; */
+        display: block;
+        padding: 5px 0;
+    }
+    .vs__search::placeholder,
+    .vs__dropdown-toggle,
+    .vs__dropdown-menu {
+        background: #dfe5fb;
+        border: none;
+        color: #afb7e4;
+        text-transform: lowercase;
+        font-variant: small-caps;
+    }
+    .vs__clear,
+    .vs__open-indicator {
+        fill: #394066;
+    }
+    .tdhidden {
+        display: none;
+    }
+    .page-link {
+        cursor: pointer;
+    }
+    .table .custom-link {
+        font-size: 15px;
+    }
+    .table .custom-text {
+        font-size: 15px;
+    }
+    .status-tries {
+        background: #b3f7de;
+    }
+    .status-waiting {
+        background: #91c7ff;
+    }
+    .status-paid {
+        background: #FFFFFF;
+    }
+    .status-refused {
+        background: #f9f578;
+    }
+    .status-frozen {
+        background: #e44361ab;
+    }
+    .status-rejected {
+        background: #e665658f;
+    }
+    .status {
+        padding: 2px 6px;
+    }
+    .form-control-custom {
+        width: 110px;
+        padding: 3px;
+        font-size: 15px;
+    }
 </style>

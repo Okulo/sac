@@ -30,6 +30,18 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label for="exampleFormControlSelect1" class="col-sm-2 col-form-label">Категория услуги</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="exampleFormControlSelect1" name="category">
+                        @if (isset($category->id))
+                            <option value="{{$category->id}}">{{$category->title}}</option>
+                        @endif
+                        <option value="1">Подписки</option>
+                        <option value="2">Разовые услуги</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
                 <label for="prices" class="col-sm-2 col-form-label">Цена по акции</label>
                 <div class="col-sm-10">
                     <product-price-component :prices-prop="{{ json_encode(old('prices') ?? []) }}"></product-price-component>

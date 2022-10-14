@@ -684,7 +684,7 @@
                 }
             },
             isDisabled(subscription) {
-                if (this.userRole == 'head' || this.userRole == 'host') {
+                if (this.userRole == 'head' || this.userRole == 'host' || this.userRole == 'operator') {
                     return false;
                 }
 

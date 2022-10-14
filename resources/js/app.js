@@ -38,7 +38,6 @@ $(document)
     });
 })(jQuery);
 
-
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('check-pay', require('./components/CheckPayComponent.vue').default);
 Vue.component('refused-list', require('./components/RefusedList.vue').default);
