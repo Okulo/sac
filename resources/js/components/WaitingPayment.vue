@@ -120,18 +120,10 @@
                                     <option value="debtor">Должник</option>
                                 </select>
                             </td>
-                            <td style="text-align: center">
-
-                            <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
-                                 <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
-                                 -->
-                             <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
-                                <div v-for="status in processedStatus">
-                                    <span v-if="item.id == status.subscription_id">
-                                        <input v-if="status.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
-                                    </span>
-                                </div>
+                            <td >
+                                {{item.report_type}}
+                                <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <td data-v-754b2df6="" class="text-right">
@@ -181,11 +173,11 @@
             period: '',
             products: {},
             product: '',
+            proc: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
-            this.getProcessedStatus();
           //  this.getSubscriptionlist();
         },
 
@@ -222,21 +214,21 @@
 
             },
             goProcess: function(id) {
-                    axios.post('/reports/set-processed-status',{
-                        subId: id,
-                        report_type: 5,
-                        status: 1
+                axios.post('/reports/set-processed-status',{
+                    subId: id,
+                    report_type: 5,
+                    status: 1
+                })
+                    .then(response => {
+                        // this.waitingPayList();
+                        Vue.$toast.success('Статус успешно изменен');
+                        console.log(response);
                     })
-                        .then(response => {
-                           // this.waitingPayList();
-                            Vue.$toast.success('Статус успешно изменен');
-
-                        })
-                        .catch(function (error) {
-                            console.log('err');
-                            console.log(error);
-                            Vue.$toast.error('error - '+ error);
-                        });
+                    .catch(function (error) {
+                        console.log('err');
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
 
             },
             unprocess: function(id) {
@@ -248,7 +240,6 @@
                     .then(response => {
                         // this.waitingPayList();
                         Vue.$toast.success('Статус успешно изменен');
-                        console.log('unprocess');
                         console.log(response);
                     })
                     .catch(function (error) {
@@ -259,7 +250,6 @@
 
             },
             waitingPayList(){
-                this.getProcessedStatus();
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
@@ -274,6 +264,7 @@
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
+                         //  console.log(elem);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
@@ -334,31 +325,6 @@
                 this.customerId = customerId;
                 this.subscriptionId = subscriptionId;
                 this.$bvModal.show('modal-customer-edit');
-            },
-            getProcessedStatus(){
-                axios.post('/reports/get-processed-status', {
-                    period: this.period,
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product,
-                    type: 5
-                })
-                    .then(response => {
-                        response.data.forEach(elem =>{
-                             //console.log(elem.subscription_id);
-                            this.processedStatus.push({
-                                process_status:elem.process_status,
-                                report_type: elem.report_type,
-                                subscription_id: elem.subscription_id
-                            });
-
-                        });
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error('error - '+ error);
-                    });
             },
             getSubscriptionlist(){
                 this.items = [];

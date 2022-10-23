@@ -182,12 +182,12 @@
                                         <option v-for="(reason, reasonIndex) in subscription.reasons" :key="reasonIndex" :value="reason.id">{{ reason.title }}</option>
                                     </select>
                                 </div>
-<!--                                <div class="form-group col-sm-6" v-if="userRole != 'operator' || userTeamIds.length > 1">-->
-<!--                                    <label for="team_id" class="col-form-label">Команда</label>-->
-<!--                                    <select v-model="subscription.team_id" :name="'subscriptions.' + subIndex + '.team_id'" id="team_id" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">-->
-<!--                                        <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>-->
-<!--                                    </select>-->
-<!--                                </div>-->
+                                <div class="form-group col-sm-6" v-if="userRole != 'operator' || userTeamIds.length > 1">
+                                    <label for="team_id" class="col-form-label">Команда</label>
+                                    <select v-model="subscription.team_id" :name="'subscriptions.' + subIndex + '.team_id'" id="team_id" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">
+                                        <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
+                                    </select>
+                                </div>
                                 <div class="col-sm-6" id="change-price" v-if="currentPrice && subscription.status != 'trial' && subscription.payment_type == 'cloudpayments'">
                                     <hr>
                                     <label class="col-form-label">Изменить цену подписки</label>

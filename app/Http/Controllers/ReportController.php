@@ -66,7 +66,14 @@ class ReportController extends Controller
             return view('reports.debtors');
         }
         elseif ($type == 11) {
-            return view('reports.operators-bonuses');
+            if(Auth::user()->role->code != 'operator'){
+                return view('reports.operators-bonuses');
+            }
+            else {
+                echo "Отказано в доступе";
+            }
+
+
         }
         else {
             return view('reports.index');
@@ -240,24 +247,24 @@ class ReportController extends Controller
             ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
             ->where('subscriptions.status', 'waiting');
 
-              if ($request->product != null) {
-                  $query->where('subscriptions.product_id', $request->product );
-              }
-              if ($request->product == null) {
-                  $query->where('category', 1);
-              }
-              if ($request->user != null) {
-                  $query->where('subscriptions.user_id', $request->user );
-              }
+            if ($request->product != null) {
+                $query->where('subscriptions.product_id', $request->product );
+            }
+            if ($request->product == null) {
+                $query->where('category', 1);
+            }
+            if ($request->user != null) {
+                $query->where('subscriptions.user_id', $request->user );
+            }
 
-              if ($request->tries != 1) {
+            if ($request->tries != 1) {
                 $query->where('subscriptions.tries_at','<', $today);
-                }
-              if ($request->tries == 1) {
-                  $query->where('subscriptions.tries_at','>', $today );
-                }
+            }
+            if ($request->tries == 1) {
+                $query->where('subscriptions.tries_at','>', $today );
+            }
 
-            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle');
+           $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle');
 
               if ($request->tries != 1) {
                   $query->orderBy('subscriptions.ended_at', 'asc');
@@ -266,9 +273,32 @@ class ReportController extends Controller
                   $query->orderBy('subscriptions.tries_at', 'asc');
               }
 
+            $subscriptions = $query->limit(150)->get();
 
-            $subscriptions = $query->limit(250)->get();
-            return $subscriptions;
+            $setStatus = \DB::table('processed_subscription')
+            ->where('report_type', $request->reportType)
+            ->get();
+
+
+//            foreach ($setStatus as $item){
+//                $status[] = $item;
+//            }
+
+
+              foreach ($subscriptions as $subscription){
+                  foreach ($setStatus as $item){
+                    //  $status[] = $item;
+                      if ($subscription->id == $item->subscription_id) {
+        //                  $subscription->s = $item->status;
+//                        $subscription->report_type = $item->report_type;
+                        $subscription->process_status = $item->process_status;
+                         // echo $item->subscription_id;
+                      }
+                  }
+
+              }
+
+           return $subscriptions;
 
     }
     public function getDebtorsList( Request $request)
@@ -475,7 +505,6 @@ class ReportController extends Controller
                                         users.name,
                                         SUM(product_bonuses.amount) as summa
                                 FROM payments
-                              payments
                                     INNER JOIN users ON (payments.user_id = users.id)
                                     INNER JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
                                 WHERE payments.`status` = 'Completed'
@@ -534,6 +563,7 @@ class ReportController extends Controller
 
     public function myBonuses(){
         $user = Auth::id();
+        print_r(Auth::user()->getRole());
         return view('reports.operator-detail', [
             'id' => $user,
             'name' => ''
