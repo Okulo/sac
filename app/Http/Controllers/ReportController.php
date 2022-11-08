@@ -475,7 +475,6 @@ class ReportController extends Controller
                                         users.name,
                                         SUM(product_bonuses.amount) as summa
                                 FROM payments
-                              payments
                                     INNER JOIN users ON (payments.user_id = users.id)
                                     INNER JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
                                 WHERE payments.`status` = 'Completed'
