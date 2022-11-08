@@ -138,8 +138,7 @@
             </select>
 
         </div>
-        <div v-if="prefix == 'users'" class="col-2 float-right btn btn-outline-info" style="margin:10px 15px"><a href="users/changeSubscriptions/">Перенос абонементов</a> </div>
-        <div class="table-responsive bg-white">
+      <div class="table-responsive bg-white">
             <pulse-loader class="spinner" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
             <table style="overflow: hidden" class="table table-striped table-sm">
                 <thead>

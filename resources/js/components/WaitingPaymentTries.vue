@@ -52,7 +52,16 @@
                             ></datetime>
                         </div>
                         <div class="col-4"></div>
-
+                        <div class="col-4">
+                            <br>
+                            <b>Оператор</b>
+                            <p></p>
+                            <select v-model="user" class="custom-select">
+                                <option v-for="user in users" v-bind:value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
                         <div class="col-4">
                             <br>
                             <b>Услуги</b>
@@ -66,7 +75,7 @@
 
                         <div class="col-12">
                             &nbsp<br>
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            <button id="getlist" v-if="startDate && endDate || product || user"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
 
@@ -113,14 +122,8 @@
                                 <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
                                  <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
                                  -->
-
                                 <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
-                                <div v-for="status in processedStatus">
-                                    <span v-if="item.id == status.subscription_id">
-                                        <input v-if="status.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
-                                    </span>
-                                </div>
-
+                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
@@ -168,12 +171,14 @@
             period: '',
             products: {},
             product: '',
+            users:[],
+            user: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
-            this.getProcessedStatus();
           //  this.getSubscriptionlist();
+            this.getUserList();
         },
 
         created() {
@@ -184,31 +189,6 @@
 
         },
         methods: {
-            getProcessedStatus(){
-                axios.post('/reports/get-processed-status', {
-                    period: this.period,
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product,
-                    type: 6
-                })
-                    .then(response => {
-                        response.data.forEach(elem =>{
-                            //console.log(elem.subscription_id);
-                            this.processedStatus.push({
-                                process_status:elem.process_status,
-                                report_type: elem.report_type,
-                                subscription_id: elem.subscription_id
-                            });
-
-                        });
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        Vue.$toast.error('error - '+ error);
-                    });
-            },
             goProcess: function(id) {
                 axios.post('/reports/set-processed-status',{
                     subId: id,
@@ -245,8 +225,33 @@
                     });
 
             },
+            getUserList(){
+                axios.get('/users/list', {
+                    reportType: 11
+                })
+                    .then(response => {
+
+                        //   console.log(response);
+                        response.data.data.forEach(elem =>{
+                            if(elem.is_active.value == 'Активный'){
+                                console.log(elem);
+                                this.users.push({
+                                    id: elem.id.value,
+                                    account: elem.account.value,
+                                    name: elem.name.value,
+                                });
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
+            },
             waitingPayList(){
-                this.getProcessedStatus();
+             //   this.getProcessedStatus();
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
@@ -255,17 +260,17 @@
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
-                    tries: 1
+                    tries: 1,
+                    reportType: 6,
+                    userId: this.user
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
-                            //   console.log(elem.data);
                             var given = moment(elem.tries_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
-
 
                             this.items.push({
                                 id: elem.id,

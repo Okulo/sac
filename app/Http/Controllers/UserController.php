@@ -23,7 +23,6 @@ class UserController extends Controller
 
     public function getList(UserFilter $filters)
     {
-        access(['can-head', 'can-host']);
 
         $query = User::query();
         $users = $query->latest()->filter($filters)->paginate($this->perPage)->appends(request()->all());
@@ -33,7 +32,7 @@ class UserController extends Controller
 
     public function getFilters()
     {
-        access(['can-head', 'can-host']);
+       // access(['can-head', 'can-host']);
 
         $data['main'] = [];
 

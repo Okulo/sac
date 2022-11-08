@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="table-responsive bg-white">
+    <div class="col-2 float-right btn btn-outline-info" style="margin:10px 15px"><a href="/users/changeSubscriptions/">Перенос абонементов</a> </div>
     <index-component
         prefix-prop="users"
         create-link-prop="{{ route('users.create') }}"

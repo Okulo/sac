@@ -25,11 +25,20 @@
                         </a>
                     </small>
                     <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
-                        <br>
-                        <b>Услуги</b>
-                        <p></p>
                         <div class="col-4">
-                           <select v-model="product" class="select-multiple custom-select">
+                            <b>Оператор</b>
+                            <p></p>
+                            <select v-model="user" class="custom-select">
+                                <option v-for="user in users" v-bind:value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-4">
+                            <b>Услуги</b>
+                            <p></p>
+                            <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
                                     {{ product.title }}
                                 </option>
@@ -44,8 +53,10 @@
                             </select>
                         </div>
 -->
-                        <div class="col-3">
-                            <button id="getlist" v-if="product"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                        <div class="col-4">
+                            <br>
+                            <p></p>
+                            <button id="getlist" v-if="product || user"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
                 </div>
@@ -144,12 +155,15 @@
             products: {},
             product: '',
             paytype: '',
+            users:[],
+            user: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.getList();
             this.getProcessedStatus();
           //  this.getSubscriptionlist();
+            this.getUserList();
         },
 
         created() {
@@ -221,6 +235,30 @@
                     });
 
             },
+            getUserList(){
+                axios.get('/users/list', {
+                    reportType: 11
+                })
+                    .then(response => {
+
+                        response.data.data.forEach(elem =>{
+                            if(elem.is_active.value == 'Активный'){
+                                //   console.log(elem);
+                                this.users.push({
+                                    id: elem.id.value,
+                                    account: elem.account.value,
+                                    name: elem.name.value,
+                                });
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
+            },
             getList(){
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
@@ -228,10 +266,11 @@
                 //  this.spinnerData.loading = true;
                 axios.post('/reports/get-pay-error-list', {
                     product: this.product,
-                    paytype: this.paytype
+                    paytype: this.paytype,
+                    userId: this.user
                 })
                     .then(response => {
-                         console.log(response);
+                        console.log(response);
 
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
