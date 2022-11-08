@@ -32,7 +32,7 @@
             <div class="form-group row">
                 <label for="is_active" class="col-sm-2 col-form-label">Активен</label>
                 <div class="col-sm-10">
-                    <input type="checkbox" id="is_active" name="is_active" value="{{ old('is_active') }}">
+                    <input type="checkbox" id="is_active" name="is_active">
                 </div>
             </div>
             <div class="form-group row">

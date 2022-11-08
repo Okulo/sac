@@ -25,10 +25,19 @@
                         </a>
                     </small>
                     <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
-                        <br>
-                        <b>Услуги</b>
-                        <p></p>
                         <div class="col-4">
+                            <b>Оператор</b>
+                            <p></p>
+                            <select v-model="user" class="custom-select">
+                                <option v-for="user in users" v-bind:value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-4">
+                            <b>Услуги</b>
+                            <p></p>
                            <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
                                     {{ product.title }}
@@ -37,7 +46,9 @@
                         </div>
 
                         <div class="col-4">
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            <br>
+                            <p></p>
+                            <button id="getlist" v-if="product || user"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
                 </div>
@@ -135,11 +146,14 @@
             period: '',
             products: {},
             product: '',
+            users:[],
+            user: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.getList();
             this.getProcessedStatus();
+            this.getUserList();
           //  this.getSubscriptionlist();
         },
 
@@ -212,6 +226,30 @@
                     });
 
             },
+            getUserList(){
+                axios.get('/users/list', {
+                    reportType: 11
+                })
+                    .then(response => {
+
+                        response.data.data.forEach(elem =>{
+                            if(elem.is_active.value == 'Активный'){
+                               //   console.log(elem);
+                                this.users.push({
+                                    id: elem.id.value,
+                                    account: elem.account.value,
+                                    name: elem.name.value,
+                                });
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
+            },
             getList(){
                 this.getProcessedStatus();
                 this.items = [];
@@ -219,7 +257,8 @@
                 this.spinnerData.loading = true;
                 //  this.spinnerData.loading = true;
                 axios.post('/reports/simple-pay-ends-list', {
-                    product: this.product
+                    product: this.product,
+                    userId: this.user
                 })
                     .then(response => {
                         this.spinnerData.loading = false;

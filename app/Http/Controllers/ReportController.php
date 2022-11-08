@@ -244,6 +244,7 @@ class ReportController extends Controller
         $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->leftJoin('users', 'subscriptions.user_id', '=', 'users.id')
             ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
             ->where('subscriptions.status', 'waiting');
 
@@ -253,8 +254,8 @@ class ReportController extends Controller
             if ($request->product == null) {
                 $query->where('category', 1);
             }
-            if ($request->user != null) {
-                $query->where('subscriptions.user_id', $request->user );
+            if ($request->userId != null) {
+                $query->where('subscriptions.user_id', $request->userId );
             }
 
             if ($request->tries != 1) {
@@ -264,7 +265,7 @@ class ReportController extends Controller
                 $query->where('subscriptions.tries_at','>', $today );
             }
 
-           $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle');
+           $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','users.name AS user_name');
 
               if ($request->tries != 1) {
                   $query->orderBy('subscriptions.ended_at', 'asc');
@@ -273,7 +274,7 @@ class ReportController extends Controller
                   $query->orderBy('subscriptions.tries_at', 'asc');
               }
 
-            $subscriptions = $query->limit(150)->get();
+            $subscriptions = $query->limit(200)->get();
 
             $setStatus = \DB::table('processed_subscription')
             ->where('report_type', $request->reportType)
@@ -366,6 +367,9 @@ class ReportController extends Controller
         if ($request->product){
             $subscriptions->where('subscriptions.product_id', $request->product );
         }
+        if ($request->userId != null) {
+            $subscriptions->where('subscriptions.user_id', $request->userId );
+        }
 //        else{
 //            $subscriptions->whereIn('subscriptions.product_id',[1,3,27,26,25,22,23,24]);
 //        }
@@ -407,6 +411,28 @@ class ReportController extends Controller
       // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
       //  $logs = UserLog::limit(1000)->get();
         $today = Carbon::now();
+
+//        $subscriptions = \DB::table('payments')
+//            ->leftJoin('customers', 'payments.customer_id', '=', 'customers.id')
+//            ->leftJoin('products', 'payments.product_id', '=', 'products.id')
+//            ->leftJoin('subscriptions', 'payments.subscription_id', '=', 'subscriptions.id')
+//            ->whereIn('payments.id',function ($query) {
+//                $query->select('payments.id', \DB::raw('MAX(payments.id)'))->groupBy('payments.customer_id');
+//
+//            })
+//            ->where('payments.status', 'Declined')
+//            ->where('subscriptions.status', '!=', 'refused')
+//            ->where('subscriptions.status', '!=', 'debtor')
+//            ->whereNull('subscriptions.deleted_at')
+//            ->where('subscriptions.ended_at', '<', $today)
+//            ->where('payments.product_id', 3);
+//        $subscriptions->select('payments.id','payments.subscription_id','payments.customer_id','payments.type','payments.status','payments.amount',
+//            'payments.data','payments.paided_at','payments.created_at','customers.name','customers.phone','products.title','subscriptions.id as sub_id',
+//            'subscriptions.status','subscriptions.ended_at','subscriptions.payment_type')
+//            ->orderBy('payments.id', 'DESC')
+//            ->limit(700);
+//        $query = $subscriptions->get();
+//        return $query;
 
         if ($request->product){
             $logs = \DB::select('SELECT

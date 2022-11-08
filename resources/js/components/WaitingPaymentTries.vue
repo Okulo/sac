@@ -52,7 +52,16 @@
                             ></datetime>
                         </div>
                         <div class="col-4"></div>
-
+                        <div class="col-4">
+                            <br>
+                            <b>Оператор</b>
+                            <p></p>
+                            <select v-model="user" class="custom-select">
+                                <option v-for="user in users" v-bind:value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
                         <div class="col-4">
                             <br>
                             <b>Услуги</b>
@@ -66,7 +75,7 @@
 
                         <div class="col-12">
                             &nbsp<br>
-                            <button id="getlist" v-if="startDate && endDate || product"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            <button id="getlist" v-if="startDate && endDate || product || user"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
 
@@ -162,11 +171,14 @@
             period: '',
             products: {},
             product: '',
+            users:[],
+            user: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
           //  this.getSubscriptionlist();
+            this.getUserList();
         },
 
         created() {
@@ -213,6 +225,31 @@
                     });
 
             },
+            getUserList(){
+                axios.get('/users/list', {
+                    reportType: 11
+                })
+                    .then(response => {
+
+                        //   console.log(response);
+                        response.data.data.forEach(elem =>{
+                            if(elem.is_active.value == 'Активный'){
+                                console.log(elem);
+                                this.users.push({
+                                    id: elem.id.value,
+                                    account: elem.account.value,
+                                    name: elem.name.value,
+                                });
+                            }
+
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
+            },
             waitingPayList(){
              //   this.getProcessedStatus();
                 this.items = [];
@@ -224,7 +261,8 @@
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
                     tries: 1,
-                    reportType: 6
+                    reportType: 6,
+                    userId: this.user
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
