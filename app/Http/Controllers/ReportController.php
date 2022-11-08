@@ -274,7 +274,7 @@ class ReportController extends Controller
                   $query->orderBy('subscriptions.tries_at', 'asc');
               }
 
-            $subscriptions = $query->limit(200)->get();
+            $subscriptions = $query->limit(300)->get();
 
             $setStatus = \DB::table('processed_subscription')
             ->where('report_type', $request->reportType)

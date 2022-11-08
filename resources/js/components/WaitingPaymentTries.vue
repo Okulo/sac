@@ -20,14 +20,9 @@
            </div>
             <div class="card mt-3">
                 <div class="card-header">
-                    Фильтр
-                    <small class="float-right">
-                        <a id="filter-toggle"  @click="filterOpen = !filterOpen" class="btn btn-default btn-sm" title="Скрыть/показать">
-                            <i class="fa fa-toggle-off " :class="{'fa-toggle-on': filterOpen}"></i>
-                        </a>
-                    </small>
-                    <div class="row" style="padding-top: 20px; " v-show="filterOpen" :class="{slide: filterOpen}">
-                        <div class="col-4">
+                    <b>Фильтр</b>
+                    <div class="row" style="padding-top: 20px; ">
+                        <div class="col-2">
                             С даты окончания
                             <datetime
                                 type="date"
@@ -39,7 +34,7 @@
                                 :auto="true"
                             ></datetime>
                         </div>
-                        <div class="col-4">
+                        <div class="col-2">
                             По дату окончания
                             <datetime
                                 type="date"
@@ -51,21 +46,16 @@
                                 :auto="true"
                             ></datetime>
                         </div>
-                        <div class="col-4"></div>
-                        <div class="col-4">
-                            <br>
-                            <b>Оператор</b>
-                            <p></p>
+                        <div class="col-3">
+                           Оператор
                             <select v-model="user" class="custom-select">
                                 <option v-for="user in users" v-bind:value="user.id">
                                     {{ user.name }}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-4">
-                            <br>
-                            <b>Услуги</b>
-                            <p></p>
+                        <div class="col-3">
+                            Услуги
                             <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
                                     {{ product.title }}
@@ -73,7 +63,7 @@
                             </select>
                          </div>
 
-                        <div class="col-12">
+                        <div class="col-2">
                             &nbsp<br>
                             <button id="getlist" v-if="startDate && endDate || product || user"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
