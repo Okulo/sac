@@ -236,6 +236,7 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::post("/reports/get-subscriptions", [ReportController::class, "getSubscriptions"])->name("reports.getSubscriptions");
     Route::post("/reports/get-all-subscriptions", [ReportController::class, "getAllSubscriptions"])->name("reports.getAllSubscriptions");
     Route::get("/reports/my-bonuses", [ReportController::class, "myBonuses"])->name("reports.myBonuses");
+    Route::post("/reports/get-sales", [ReportController::class, "getSales"])->name("reports.getSales");
 
     Route::resources([
         'customers' => 'CustomerController',

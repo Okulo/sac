@@ -66,15 +66,21 @@ class ReportController extends Controller
             return view('reports.debtors');
         }
         elseif ($type == 11) {
-            if(Auth::user()->role->code != 'operator'){
-                return view('reports.operators-bonuses');
-            }
-            else {
-                echo "Отказано в доступе";
-            }
-
-
+            return view('reports.operators-bonuses');
         }
+        elseif ($type == 12) {
+            return view('reports.sales');
+        }
+//        elseif ($type == 11) {
+//            if(Auth::user()->role->code != 'operator'){
+//                return view('reports.operators-bonuses');
+//            }
+//            else {
+//                echo "Отказано в доступе";
+//            }
+//
+//
+//        }
         else {
             return view('reports.index');
         }
@@ -677,6 +683,36 @@ class ReportController extends Controller
 //        return $bonuses;
 //    }
 
+    public function getSales( Request $request)
+    {
 
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = Carbon::now()->subMonth();;
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
+
+        $subscription = \DB::select("SELECT  payments.user_id,
+                                        users.name,
+                                        SUM(product_bonuses.amount) as summa
+                                FROM payments
+                                    INNER JOIN users ON (payments.user_id = users.id)
+                                    INNER JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
+                                WHERE payments.`status` = 'Completed'
+                                AND payments.paided_at
+                                BETWEEN '".$startDate."'
+                                AND '".$endDate."'
+                                GROUP BY payments.user_id");
+
+
+//        $subscription = \DB::table('payments')
+//            ->leftJoin('products', 'payments.product_id', '=', 'products.id')
+//            ->leftJoin('users', 'payments.user_id', '=', 'users.id')
+//            // ->whereDate('subscriptions.ended_at', '>=', '2022-03-15 00:00:00')
+//            //  ->whereDate('subscriptions.updated_at', '<=', $endDate)
+//            ->whereBetween('payments.paided_at', [$startDate, $endDate])
+//            ->where('payments.status', 'Completed')
+//            ->select('payments.*', 'users.name', 'products.title')
+//            ->get();
+
+        return $subscription;
+    }
 
 }

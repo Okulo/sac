@@ -304,11 +304,11 @@ return [
             'text' => 'Абонементы',
             'url'  => '/subscriptions?sort=ended_at%28desc%29',
             'icon' => 'fa fa-calendar-check',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ]
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ]
         ],
 
         // payments
@@ -316,11 +316,11 @@ return [
             'text' => 'Платежи',
             'url'  => '/payments?sort=paided_at%28desc%29',
             'icon' => 'fa fa-money-check-alt',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ]
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ]
         ],
 
         // notifications
@@ -377,11 +377,23 @@ return [
         // бонусы операторов
         [
             'key'  => 'report_11',
+            'text' => 'Продажи операторов',
+            'url'  => 'reports/get-reports/12',
+            'icon' => 'fa fa-comment-dollar',
+            "can"  => [
+              //  'can-operator',
+                'can-head',
+                'can-host',
+            ],
+        ],
+        // Продажи операторов
+        [
+            'key'  => 'report_11',
             'text' => 'Бонусы операторов',
             'url'  => 'reports/get-reports/11',
             'icon' => 'fa fa-user-check',
             "can"  => [
-              //  'can-operator',
+                //  'can-operator',
                 'can-head',
                 'can-host',
             ],
@@ -392,11 +404,11 @@ return [
             'text' => 'Мои бонусы',
             'url'  => '/reports/my-bonuses/',
             'icon' => 'fa fa-check-circle',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ],
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ],
         ],
 
 
@@ -406,22 +418,22 @@ return [
             'text' => 'Стат отчеты',
             'url'  => '/reports',
             'icon' => 'fas fa-list-alt',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ]
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ]
         ],
         [
             'key'  => 'reports',
             'text' => 'Отчеты продаж',
             'url'  => '/reports',
             'icon' => 'fas fa-file-invoice-dollar',
-            "can"  => [
-                'can-operator',
-                'can-head',
-                'can-host',
-            ]
+//            "can"  => [
+//                'can-operator',
+//                'can-head',
+//                'can-host',
+//            ]
         ],
     ],
 
