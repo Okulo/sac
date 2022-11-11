@@ -687,19 +687,20 @@ class ReportController extends Controller
     {
 
         ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = Carbon::now()->subMonth();;
-        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now();
 
-        $subscription = \DB::select("SELECT  payments.user_id,
-                                        users.name,
-                                        SUM(product_bonuses.amount) as summa
-                                FROM payments
-                                    INNER JOIN users ON (payments.user_id = users.id)
-                                    INNER JOIN product_bonuses ON (payments.product_bonus_id = product_bonuses.id)
-                                WHERE payments.`status` = 'Completed'
-                                AND payments.paided_at
-                                BETWEEN '".$startDate."'
-                                AND '".$endDate."'
-                                GROUP BY payments.user_id");
+        $subscription = \DB::select("SELECT users.`name`,payments.`user_id`,payments.`type`, SUM(amount) as summa
+                                        FROM payments
+                                        LEFT JOIN users ON (payments.user_id = users.id)
+                                        WHERE payments.user_id > 0
+                                        AND `type` != 'frozen'
+                                        AND users.is_active = 1
+                                            AND payments.paided_at
+                                            BETWEEN '".$startDate."'
+                                            AND '".$endDate."'
+                                        GROUP BY `type`, `user_id`
+                                        ORDER BY user_id
+                                ");
 
 
 //        $subscription = \DB::table('payments')

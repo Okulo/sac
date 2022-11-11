@@ -49,23 +49,16 @@
                 </div>
                 <div class="card-body">
 
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Имя</th>
-                            <th scope="col">Сумма</th>
-                             <th scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(item, index) in operatorBonuses" :key="index">
-                            <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
-                            <td>{{item.name}}</td>
-                            <td>{{item.summa}}</td>
-                            <td style="width: 10%"><a class="custom-link" role="button" :href="'/reports/operator-bonus-details/'+ item.user_id">Подробнее</a></td>
-                        </tr>
-                        </tbody>
+
+
+                    <table class="table" v-for="group, userName in groups">
+
+                        <h4>{{userName}}</h4>
+
+                            <div  v-for="item, index in group">
+                                <div class="panel"> {{item.payType}} -  {{item.summa}}  </div>
+                            </div>
+
                     </table>
 
                 </div>
@@ -81,6 +74,7 @@
     import moment from 'moment';
      export default {
         data: () => ({
+            sales: [],
             startDate: '',
             endDate: '',
             customerId: null,
@@ -104,7 +98,8 @@
             product: '',
             users: [],
             weekStart: '',
-            weekEnd: ''
+            weekEnd: '',
+            type: ''
         }),
         mounted() {
             console.log('Component mounted.');
@@ -114,7 +109,11 @@
             this.getProcessedStatus();
             //  this.getSubscriptionlist();
         },
-
+         computed: {
+             groups(){
+                 return this.groupBy(this.sales, 'name')
+             }
+         },
         created() {
             this.getProductsWithPrices();
            // this.getUserList();
@@ -136,14 +135,53 @@
                 })
                     .then(response => {
                         response.data.forEach(elem =>{
-                            console.log(elem);
+                           // console.log(elem);
+
+                            switch (elem.type) {
+                                case "tries":
+                                    this.type = "Пробует бесплатно";
+                                    break;
+                                case "transfer":
+                                    this.type = "Прямой перевод";
+                                    break;
+                                case "cloudpayments":
+                                    this.type = "Подписка Cloudpayment";
+                                    break;
+                                case "simple_payment":
+                                    this.type = "Разовое списание";
+                                    break;
+                                case "pitech":
+                                    this.type = "Подписка Pitech";
+                                    break;
+                                default:
+                                    this.type = ""
+                            }
+
+                            this.sales.push({
+                                name: elem.name,
+                                summa: elem.summa,
+                                user_id: elem.user_id,
+                                payType: this.type
+                            });
+
                         });
+                        this.spinnerData.loading = false;
                     })
                     .catch(function (error) {
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
             },
+              groupBy(array, key){
+                const result = {}
+                array.forEach(item => {
+                    if (!result[item[key]]){
+                        result[item[key]] = []
+                    }
+                    result[item[key]].push(item)
+                })
+                return result
+                  },
             modifedDate(date){
                 return moment(date).locale('ru').format('DD MMM ');
             },
