@@ -17,7 +17,7 @@
                 <div class="card-header">
                     <b>Выберите дату</b> (по умолчанию выводится инфо за последний месяц)
                     <div class="row" style="padding-top: 20px; ">
-                        <div class="col-2">
+                        <div class="col-3">
                             С
                             <datetime
                                 type="date"
@@ -51,14 +51,15 @@
 
 
 
-                    <table class="table" v-for="group, userName in groups">
+                    <table class="table table table-condensed table-bordered" >
 
-                        <h4>{{userName}}</h4>
 
-                            <div  v-for="item, index in group">
-                                <div class="panel"> {{item.payType}} -  {{item.summa}}  </div>
-                            </div>
-
+                            <tr  v-for="group, userName in groups" >
+                                <th><b>{{userName}}</b></th>
+                                    <td v-for="item, index in group">
+                                        {{item.payType}} -  {{item.summa}}
+                                    </td>
+                            </tr>
                     </table>
 
                 </div>
