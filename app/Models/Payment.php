@@ -141,11 +141,7 @@ class Payment extends Model
             if (! $payment->subscription) {
                 \Log::error('Отсутствует абонемент. Payment ID: ' . $payment->id);
             } else {
-                if (! $payment->subscription->team_id) {
-                    \Log::error('Отсутствует team_id. Payment ID: ' . $payment->id);
-                } else {
                     $payment->team_id = $payment->subscription->team_id;
-                }
             }
 
             // Присвоение бонуса к платежу

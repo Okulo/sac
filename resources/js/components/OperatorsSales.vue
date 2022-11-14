@@ -49,18 +49,15 @@
                 </div>
                 <div class="card-body">
 
+                    <div class="card col-4"  v-for="group, userName in groups">
+                        <div class="card-header"  >
+                            <b>{{userName}}</b>
+                        </div>
+                        <ul class="list-group list-group-flush" v-for="item, index in group">
+                            <li class="list-group-item"> {{item.payType}} -  {{item.summa}}</li>
+                        </ul>
+                    </div>
 
-
-                    <table class="table table table-condensed table-bordered" >
-
-
-                            <tr  v-for="group, userName in groups" >
-                                <th><b>{{userName}}</b></th>
-                                    <td v-for="item, index in group">
-                                        {{item.payType}} -  {{item.summa}}
-                                    </td>
-                            </tr>
-                    </table>
 
                 </div>
             </div>
