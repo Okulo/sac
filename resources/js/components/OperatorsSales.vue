@@ -17,7 +17,7 @@
                 <div class="card-header">
                     <b>Выберите дату</b> (по умолчанию выводится инфо за последний месяц)
                     <div class="row" style="padding-top: 20px; ">
-                        <div class="col-3">
+                        <div class="col-2">
                             С
                             <datetime
                                 type="date"
@@ -43,24 +43,21 @@
                         </div>
                         <div class="col-2">
                             &nbsp<br>
-                            <button id="getlist" @click="showSales()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            <button id="getlist" @click="showSales()" type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
 
+                    <div class="card col-4"  v-for="group, userName in groups">
+                        <div class="card-header"  >
+                            <b>{{userName}}</b>
+                        </div>
+                        <ul class="list-group list-group-flush" v-for="item, index in group">
+                            <li class="list-group-item"> {{item.payType}} -  {{item.summa}}</li>
+                        </ul>
+                    </div>
 
-
-                    <table class="table table table-condensed table-bordered" >
-
-
-                            <tr  v-for="group, userName in groups" >
-                                <th><b>{{userName}}</b></th>
-                                    <td v-for="item, index in group">
-                                        {{item.payType}} -  {{item.summa}}
-                                    </td>
-                            </tr>
-                    </table>
 
                 </div>
             </div>
@@ -130,6 +127,7 @@
         methods: {
             showSales(){
                 this.spinnerData.loading = true;
+                if(this.sales.length > 0 ){ this.sales = [] }
                 axios.post('/reports/get-sales', {
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59')
@@ -137,7 +135,6 @@
                     .then(response => {
                         response.data.forEach(elem =>{
                            // console.log(elem);
-
                             switch (elem.type) {
                                 case "tries":
                                     this.type = "Пробует бесплатно";

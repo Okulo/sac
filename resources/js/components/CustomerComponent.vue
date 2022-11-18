@@ -76,13 +76,19 @@
                                     </select>
                                     <input v-else :value="getSubscriptionTitle(subscription.product_id)" id="product_id" class="col-sm-10 form-control" type="text" disabled>
                                 </div>
-                                <div class="form-group col-sm-6">
+                                <div class="col-2">
                                     <label for="price" class="col-form-label">Цена</label>
                                     <select v-model="subscription.price" :name="'subscriptions.' + subIndex + '.price'" id="price" class="col-sm-10 form-control" @change="selectPrice($event)" :disabled="isDisabled(subscription)">
                                         <option v-if="subscription.price != null" :value="subscription.price" selected>{{ subscription.price }}</option>
                                         <option v-for="(option, optionIndex) in getPrices(subscription.product_id)" :key="optionIndex" :value="option" v-if="option != subscription.price">{{ option }}</option>
                                     </select>
                                 </div>
+
+                                <div class="col-4" id="change-price" v-if="currentPrice && subscription.status != 'trial' && subscription.payment_type == 'cloudpayments'">
+                                    <label class="col-form-label">Изменить цену подписки</label><br>
+                                        <button @click="changeAmount(subscription.cp_subscription_id, subscription.id, subscription.product.title)" class="btn btn-warning mb-2">Сохранить изменения</button>
+                                </div>
+
                             </div>
                             <div class="row">
                                 <div class="form-group col-sm-6">
@@ -188,17 +194,7 @@
                                         <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-6" id="change-price" v-if="currentPrice && subscription.status != 'trial' && subscription.payment_type == 'cloudpayments'">
-                                    <hr>
-                                    <label class="col-form-label">Изменить цену подписки</label>
 
-                                    <div class="form-inline">
-                                        <div class="form-group mb-2" style="margin-right: 45px">
-                                            {{currentPrice}}
-                                        </div>
-                                        <button @click="changeAmount(subscription.cp_subscription_id, subscription.id, subscription.product.title)" class="btn btn-warning mb-2">Изменить</button>
-                                    </div>
-                                </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null &&  customer.cards">
                                 <div v-for="(card,index) in customer.cards">
