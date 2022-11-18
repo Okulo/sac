@@ -6,6 +6,8 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Schema;
+use Session;
 
 class RedirectIfAuthenticated
 {
@@ -23,7 +25,16 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect('/subscriptions?sort=ended_at%28desc%29');
+
+                if(Auth::user()->is_active > 0){
+                    return redirect('/subscriptions?sort=ended_at%28desc%29');
+                }
+                else{
+                    Session::flush();
+                    return redirect('/login');
+                }
+
+
             }
         }
 

@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/subscriptions?sort=ended_at%28desc%29';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -42,7 +42,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->url('/subscriptions?sort=ended_at%28desc%29');
+            return redirect()->url('/home');
         }
         return view('vendor.adminlte.auth.login');
     }

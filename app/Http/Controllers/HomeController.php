@@ -10,6 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Schema;
+use Session;
 
 class HomeController extends Controller
 {
@@ -48,7 +51,17 @@ class HomeController extends Controller
 
     public function dashboard()
     {
-        return view('dashboard');
+        if(Auth::user() && Auth::user()->is_active > 0){
+            access(['can-operator', 'can-head', 'can-host']);
+            return redirect('/subscriptions');
+        }
+        else{
+            Session::flush();
+            return redirect('/login');
+
+            //return view('dashboard');
+        }
+
     }
 
     public function pull(Request $request)
