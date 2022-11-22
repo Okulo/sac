@@ -266,6 +266,7 @@
 
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
+                            console.log(elem);
 
                             var st = JSON.parse(elem.data);
                             var given = moment(elem.ended_at, "YYYY-MM-DD");

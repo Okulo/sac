@@ -71,6 +71,9 @@ class ReportController extends Controller
         elseif ($type == 12) {
             return view('reports.sales');
         }
+        elseif ($type == 13) {
+            return view('reports.waitingDelay');
+        }
 //        elseif ($type == 11) {
 //            if(Auth::user()->role->code != 'operator'){
 //                return view('reports.operators-bonuses');
@@ -287,12 +290,22 @@ class ReportController extends Controller
             ->get();
 
 
+
+
 //            foreach ($setStatus as $item){
 //                $status[] = $item;
 //            }
 
 
               foreach ($subscriptions as $subscription){
+                  $payments = Payment::where('subscription_id', $subscription->id)->get();
+                  if($payments->count()){
+                      $subscription->payments = $payments;
+                  }
+                  else{
+                      $subscription->payments = '';
+                  }
+
                   foreach ($setStatus as $item){
                     //  $status[] = $item;
                       if ($subscription->id == $item->subscription_id) {

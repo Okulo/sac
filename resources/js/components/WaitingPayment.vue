@@ -296,27 +296,26 @@
                             var given = moment(elem.ended_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
-
-                            this.items.push({
-                                id: elem.id,
-                                calcDate:  diff,
-                                started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
-                                tries_at: moment(elem.tries_at).locale('ru').format('DD MMM YY'),
-                                ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
-                                updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
-                                status: elem.status,
-                                payment_type: elem.payment_type,
-                                name: elem.name,
-                                phone: elem.phone,
-                                customer_id: elem.customer_id,
-                                reason: elem.title,
-                                ptitle: elem.ptitle,
-                                process_status: elem.process_status,
-                                report_type: elem.report_type,
-                                paymentsCount: ''
-                            });
-
-
+                            if(elem.payments != '') {
+                                this.items.push({
+                                    id: elem.id,
+                                    calcDate: diff,
+                                    started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
+                                    tries_at: moment(elem.tries_at).locale('ru').format('DD MMM YY'),
+                                    ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
+                                    updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
+                                    status: elem.status,
+                                    payment_type: elem.payment_type,
+                                    name: elem.name,
+                                    phone: elem.phone,
+                                    customer_id: elem.customer_id,
+                                    reason: elem.title,
+                                    ptitle: elem.ptitle,
+                                    process_status: elem.process_status,
+                                    report_type: elem.report_type,
+                                    paymentsCount: ''
+                                });
+                            }
                         });
 
                     })
