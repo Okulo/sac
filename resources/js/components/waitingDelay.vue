@@ -82,7 +82,7 @@
                             <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
-                            <th>Пробные дни</th>
+                            <th>Просрочено <br>  дней </th>
                             <th scope="col">Дата<br> старта</th>
                             <th>Пробный до</th>
                             <!--  <th>Кол-во <br> платежей</th>
@@ -299,7 +299,7 @@
                           console.log(elem);
                             var given = moment(elem.tries_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
-                            var diff = moment.duration(given.diff(current)).asDays();
+                            var diff = moment.duration(current.diff(given)).asDays();
 
                             if(elem.payments == ''){
                                 this.items.push({
