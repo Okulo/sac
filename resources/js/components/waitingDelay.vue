@@ -82,10 +82,12 @@
                             <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
-                            <th >Ост. дней</th>
-                            <!--  <th>Кол-во <br> платежей</th> -->
+                            <th>Пробные дни</th>
                             <th scope="col">Дата<br> старта</th>
-                            <th scope="col">Дата <br> окончания</th>
+                            <th>Пробный до</th>
+                            <!--  <th>Кол-во <br> платежей</th>
+
+                            <th scope="col">Дата <br> окончания</th>-->
                             <th scope="col">Статус </th>
                             <th scope="col">В <br>процессе</th>
                             <td></td>
@@ -103,9 +105,11 @@
                             <td>{{item.phone}}</td>
                             <td>{{ item.ptitle}}</td>
                             <td>{{ item.calcDate }}</td>
-                            <!--   <td>{{item.paymentsCount}}</td> -->
-                             <td>{{ item.started_at }}</td>
-                             <td>{{ item.ended_at}}</td>
+                            <td>{{ item.started_at }}</td>
+                            <td>{{ item.tries_at}}</td>
+                            <!--   <td>{{item.paymentsCount}}</td>
+
+                             <td>{{ item.ended_at}}</td> -->
                          <!--    <td>{{item.payment_type}}</td>
                              <td>{{item.status}}</td>-->
                             <td>
@@ -293,7 +297,7 @@
                         response.data.forEach(elem =>{
 
                           console.log(elem);
-                            var given = moment(elem.ended_at, "YYYY-MM-DD");
+                            var given = moment(elem.tries_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
 
