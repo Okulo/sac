@@ -107,13 +107,10 @@
                              <td>{{ item.ended_at}}</td>
                          <!--    <td>{{item.payment_type}}</td>
                              <td>{{item.status}}</td>-->
-                            <td>
-                            <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
-                                 <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
-                                 -->
-                                <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
-                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                            <td >
+                                {{item.report_type}}
+                                <input v-model="item.process_status" v-if="item.process_status == 0" type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->

@@ -393,10 +393,26 @@ class ReportController extends Controller
 //            $subscriptions->whereIn('subscriptions.product_id',[1,3,27,26,25,22,23,24]);
 //        }
 
-            $subscriptions->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
+        $subscriptions->select('subscriptions.*', 'customers.phone', 'customers.name','products.title AS ptitle')
             ->orderBy('subscriptions.ended_at', 'ASC')
             ->limit(200);
         $query = $subscriptions->get();
+
+        $setStatus = \DB::table('processed_subscription')
+            ->where('report_type', 8)
+            ->get();
+
+        foreach ($query as $subscription){
+
+            foreach ($setStatus as $item){
+
+                if ($subscription->id == $item->subscription_id) {
+                    $subscription->process_status = $item->process_status;
+                }
+            }
+
+        }
+
         return $query;
         //return json_decode($subscriptions);
     }
@@ -427,8 +443,8 @@ class ReportController extends Controller
     }
 
     public function getPayErrorList( Request $request){
-      // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
-      //  $logs = UserLog::limit(1000)->get();
+        // $logs = UserLog::where('type',2)->limit(200)->groupBy('subscription_id')->orderBy('id','desc')->get();
+        //  $logs = UserLog::limit(1000)->get();
         $today = Carbon::now();
 
 //        $subscriptions = \DB::table('payments')
@@ -454,6 +470,11 @@ class ReportController extends Controller
 //        return $query;
 
         if ($request->product){
+
+            $procesStatus = \DB::table('processed_subscription')
+                ->where('report_type', 9)
+                ->get();
+
             $logs = \DB::select('SELECT
                             payments.id,
                             payments.subscription_id,
@@ -491,6 +512,10 @@ class ReportController extends Controller
                           LIMIT 700');
         }
         else{
+            $procesStatus = \DB::table('processed_subscription')
+                ->where('report_type', 9)
+                ->get();
+
             $logs = \DB::select('SELECT
                             payments.id,
                             payments.subscription_id,
@@ -527,8 +552,22 @@ class ReportController extends Controller
                           LIMIT 700');
         }
 
+        foreach ($logs as $subscription){
+            foreach ($procesStatus as $item){
+                //  $status[] = $item;
+                if ($subscription->id == $item->subscription_id) {
+                    //                  $subscription->s = $item->status;
+//                        $subscription->report_type = $item->report_type;
+                    $subscription->process_status = $item->process_status;
+                    // echo $item->subscription_id;
+                }
+            }
+
+        }
+
         return $logs;
     }
+
 
     public function setProcessedStatus( Request $request){
         $setStatus = \DB::table('processed_subscription')

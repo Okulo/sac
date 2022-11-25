@@ -11,11 +11,11 @@
         <div class="col-md-12">
             <h2>Ошибки оплат</h2>
 
-           <div class="intro">
-               Сюда попадают абонементы у которых возникли ошибки при попытке оплаты
-            <p></p>
-            Список обновляется при обновлении страницы
-           </div>
+            <div class="intro">
+                Сюда попадают абонементы у которых возникли ошибки при попытке оплаты
+                <p></p>
+                Список обновляется при обновлении страницы
+            </div>
             <div class="card mt-3">
                 <div class="card-header">
                     <b>Фильтр</b>
@@ -37,15 +37,15 @@
                                 </option>
                             </select>
                         </div>
-                  <!--      <b>Платежная</b>
-                        <p></p>
-                        <div class="col-2">
-                            <select v-model="paytype" class="select-multiple custom-select">
-                                <option>Pitech</option>
-                                <option>Cloudpayments</option>
-                            </select>
-                        </div>
--->
+                        <!--      <b>Платежная</b>
+                              <p></p>
+                              <div class="col-2">
+                                  <select v-model="paytype" class="select-multiple custom-select">
+                                      <option>Pitech</option>
+                                      <option>Cloudpayments</option>
+                                  </select>
+                              </div>
+      -->
                         <div class="col-2">
                             &nbsp<br>
                             <button id="getlist" v-if="product || user"  @click="getList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
@@ -74,15 +74,15 @@
                         <tbody>
                         <tr v-for="(item, index) in items" :key="index">
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
-                              <td>
+                            <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.subscription_id)">{{item.name}}</a>
                             </td>
                             <td>{{ item.phone}}</td>
-                           <!--   <td>{{item.subscription_id}}</td>
-                              <td>{{item.id}}</td>
-                             <td></td>
-                            <td>{{ item.status}}</td>
-                            -->
+                            <!--   <td>{{item.subscription_id}}</td>
+                               <td>{{item.id}}</td>
+                              <td></td>
+                             <td>{{ item.status}}</td>
+                             -->
                             <td>{{ item.title}}</td>
                             <td>{{ item.type}}</td>
                             <td>{{ item.amount}}</td>
@@ -90,17 +90,10 @@
                             <td>{{ item.ended_at }}</td>
                             <!--    <td>{{item.payment_type}}</td>
                                 <td>{{item.status}}</td>-->
-                            <td>
-                            <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
-                                 <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
-                                 -->
-                                <input type="checkbox" :value="item.subscription_id" id="item.id" class="form-check-input" @change="goProcess(item.subscription_id)">
-                                <div v-for="status in processedStatus">
-                                    <span v-if="item.subscription_id == status.subscription_id">
-                                        <input v-if="status.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.subscription_id)">
-                                    </span>
-                                </div>
+                            <td >
+                                {{item.report_type}}
+                                <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
@@ -153,8 +146,7 @@
         mounted() {
             console.log('Component mounted.');
             this.getList();
-            this.getProcessedStatus();
-          //  this.getSubscriptionlist();
+            //  this.getSubscriptionlist();
             this.getUserList();
         },
 
@@ -166,47 +158,22 @@
 
         },
         methods: {
-            getProcessedStatus(){
-                axios.post('/reports/get-processed-status', {
-                    period: this.period,
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product,
-                    type: 9
+            goProcess: function(id) {
+                axios.post('/reports/set-processed-status',{
+                    subId: id,
+                    report_type: 9,
+                    status: 1
                 })
                     .then(response => {
-                        response.data.forEach(elem =>{
-                            //console.log(elem.subscription_id);
-                            this.processedStatus.push({
-                                process_status:elem.process_status,
-                                report_type: elem.report_type,
-                                subscription_id: elem.subscription_id
-                            });
-
-                        });
-
+                        // this.waitingPayList();
+                        Vue.$toast.success('Статус успешно изменен');
+                        console.log('processed');
                     })
                     .catch(function (error) {
+                        console.log('err');
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
-            },
-            goProcess: function(id) {
-                    axios.post('/reports/set-processed-status',{
-                        subId: id,
-                        report_type: 9,
-                        status: 1
-                    })
-                        .then(response => {
-                           // this.waitingPayList();
-                            Vue.$toast.success('Статус успешно изменен');
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-                            console.log('err');
-                            console.log(error);
-                            Vue.$toast.error('error - '+ error);
-                        });
 
             },
             unprocess: function(id) {
@@ -218,7 +185,7 @@
                     .then(response => {
                         // this.waitingPayList();
                         Vue.$toast.success('Статус успешно изменен');
-                        console.log(response);
+                        console.log('unprocess');
                     })
                     .catch(function (error) {
                         console.log('err');
@@ -273,24 +240,25 @@
                             var current = moment().startOf('day');
                             var diff = moment.duration(given.diff(current)).asDays();
 
-                                this.items.push({
+                            this.items.push({
 
-                                    created_at: moment(elem.created_at).locale('ru').format('DD MMM YY HH:mm'),
-                                    customer_id: elem.customer_id,
-                                    status: 'Ошибка оплаты',
-                                    name: elem.name,
-                                    phone: elem.phone,
-                                    id: elem.id,
-                                    title: elem.title,
-                                    subscription_id:  elem.subscription_id,
-                                    type: elem.type,
-                                    ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY HH:mm'),
-                                    updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
-                                    user_id: null,
-                                    amount: elem.amount,
-                                    data: elem.data,
-                                    paided_at: elem.paided_at
-                                });
+                                created_at: moment(elem.created_at).locale('ru').format('DD MMM YY HH:mm'),
+                                customer_id: elem.customer_id,
+                                status: 'Ошибка оплаты',
+                                name: elem.name,
+                                phone: elem.phone,
+                                id: elem.id,
+                                title: elem.title,
+                                subscription_id:  elem.subscription_id,
+                                type: elem.type,
+                                ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY HH:mm'),
+                                updated_at: moment(elem.updated_at).locale('ru').format('DD MMM YY HH:mm'),
+                                user_id: null,
+                                amount: elem.amount,
+                                data: elem.data,
+                                process_status: elem.process_status,
+                                paided_at: elem.paided_at
+                            });
 
                         });
 
@@ -305,7 +273,7 @@
                     subId: subId//elem.customer_id
                 })
                     .then(response => {
-                       // console.log(response.data);
+                        // console.log(response.data);
                         return response.data;
                         //     this.items.map(item => {
                         //     item.paymentsCount = response.data;

@@ -11,18 +11,18 @@
         <div class="col-md-12">
             <h2>Заканчиваются по прямым переводам</h2>
 
-           <div class="intro">
-               Сюда попадают абонементы у которых осталось 5 и менее дней до окончания абонемента по прямому переводу
-            <p></p>
-            Список обновляется при обновлении страницы
-           </div>
+            <div class="intro">
+                Сюда попадают абонементы у которых осталось 5 и менее дней до окончания абонемента по прямому переводу
+                <p></p>
+                Список обновляется при обновлении страницы
+            </div>
             <div class="card mt-3">
                 <div class="card-header">
-                   <b> Фильтр</b>
+                    <b> Фильтр</b>
 
                     <div class="row" style="padding-top: 20px; ">
                         <div class="col-3">
-                          Оператор
+                            Оператор
                             <select v-model="user" class="custom-select">
                                 <option v-for="user in users" v-bind:value="user.id">
                                     {{ user.name }}
@@ -31,8 +31,8 @@
                         </div>
 
                         <div class="col-3">
-                           Услуги
-                           <select v-model="product" class="select-multiple custom-select">
+                            Услуги
+                            <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
                                     {{ product.title }}
                                 </option>
@@ -62,7 +62,7 @@
                             <th scope="col">Дата <br> окончания</th>
                             <th scope="col">В <br>процессе</th>
                             <td></td>
-                          <!--  <th scope="col"></th> -->
+                            <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
 
@@ -77,21 +77,14 @@
                             <td>{{ item.ptitle}}</td>
                             <td>{{ item.calcDate }}</td>
                             <!--   <td>{{item.paymentsCount}}</td> -->
-                             <td>{{ item.started_at }}</td>
-                             <td>{{ item.ended_at}}</td>
-                         <!--    <td>{{item.payment_type}}</td>
-                             <td>{{item.status}}</td>-->
-                            <td>
-                            <!--    <input  v-model="processed"  v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked">
-                                <input  v-model="processed"  v-if="item.process_status == null" class="form-check-input" type="checkbox" value="item.phone" id="item.phone">
-                                 <button v-if="item.process_status == null" type="button" class="btn btn-outline-info btn-sm">В процессе</button>
-                                 -->
-                                <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
-                                <div v-for="status in processedStatus">
-                                    <span v-if="item.id == status.subscription_id">
-                                        <input v-if="status.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
-                                    </span>
-                                </div>
+                            <td>{{ item.started_at }}</td>
+                            <td>{{ item.ended_at}}</td>
+                            <!--    <td>{{item.payment_type}}</td>
+                                <td>{{item.status}}</td>-->
+                            <td >
+                                {{item.report_type}}
+                                <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
@@ -145,9 +138,8 @@
         mounted() {
             console.log('Component mounted.');
             this.getList();
-            this.getProcessedStatus();
             this.getUserList();
-          //  this.getSubscriptionlist();
+            //  this.getSubscriptionlist();
         },
 
         created() {
@@ -158,47 +150,22 @@
 
         },
         methods: {
-            getProcessedStatus(){
-                axios.post('/reports/get-processed-status', {
-                    period: this.period,
-                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
-                    endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
-                    product: this.product,
-                    type: 8
+            goProcess: function(id) {
+                axios.post('/reports/set-processed-status',{
+                    subId: id,
+                    report_type: 8,
+                    status: 1
                 })
                     .then(response => {
-                        response.data.forEach(elem =>{
-                            //console.log(elem.subscription_id);
-                            this.processedStatus.push({
-                                process_status:elem.process_status,
-                                report_type: elem.report_type,
-                                subscription_id: elem.subscription_id
-                            });
-
-                        });
-
+                        // this.waitingPayList();
+                        Vue.$toast.success('Статус успешно изменен');
+                        console.log(response);
                     })
                     .catch(function (error) {
+                        console.log('err');
                         console.log(error);
                         Vue.$toast.error('error - '+ error);
                     });
-            },
-            goProcess: function(id) {
-                    axios.post('/reports/set-processed-status',{
-                        subId: id,
-                        report_type: 8,
-                        status: 1
-                    })
-                        .then(response => {
-                           // this.waitingPayList();
-                            Vue.$toast.success('Статус успешно изменен');
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-                            console.log('err');
-                            console.log(error);
-                            Vue.$toast.error('error - '+ error);
-                        });
 
             },
             unprocess: function(id) {
@@ -221,13 +188,13 @@
             },
             getUserList(){
                 axios.get('/users/list', {
-                    reportType: 11
+                    reportType: 8
                 })
                     .then(response => {
 
                         response.data.data.forEach(elem =>{
                             if(elem.is_active.value == 'Активный'){
-                               //   console.log(elem);
+                                //   console.log(elem);
                                 this.users.push({
                                     id: elem.id.value,
                                     account: elem.account.value,
@@ -244,7 +211,6 @@
                     });
             },
             getList(){
-                this.getProcessedStatus();
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
@@ -295,7 +261,7 @@
                     subId: subId//elem.customer_id
                 })
                     .then(response => {
-                       // console.log(response.data);
+                        // console.log(response.data);
                         return response.data;
                         //     this.items.map(item => {
                         //     item.paymentsCount = response.data;

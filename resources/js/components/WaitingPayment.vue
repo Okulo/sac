@@ -121,8 +121,8 @@
                             </td>
                             <td >
                                 {{item.report_type}}
-                                <input type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
-                                <input v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <td data-v-754b2df6="" class="text-right">
@@ -224,7 +224,7 @@
                     .then(response => {
                         // this.waitingPayList();
                         Vue.$toast.success('Статус успешно изменен');
-                        console.log(response);
+                        console.log('checked');
                     })
                     .catch(function (error) {
                         console.log('err');
@@ -242,7 +242,7 @@
                     .then(response => {
                         // this.waitingPayList();
                         Vue.$toast.success('Статус успешно изменен');
-                        console.log(response);
+                        console.log('unchecked');
                     })
                     .catch(function (error) {
                         console.log('err');
