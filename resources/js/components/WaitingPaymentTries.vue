@@ -86,8 +86,9 @@
                             <th>Пробный до</th>
                             <th scope="col">Дата<br> старта</th>
                             <th scope="col">Дата <br> окончания</th>
+                            <th scope="col">Статус <br>  абонемента</th>
                             <th scope="col">В <br>процессе</th>
-                            <td></td>
+                            <th></th>
                           <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
@@ -107,9 +108,13 @@
                              <td>{{ item.ended_at}}</td>
                          <!--    <td>{{item.payment_type}}</td>
                              <td>{{item.status}}</td>-->
+                            <td>
+                                Пробует
+
+                            </td>
                             <td >
                                 {{item.report_type}}
-                                <input v-model="item.process_status" v-if="item.process_status == 0" type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 0  || !item.process_status" type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                                 <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>

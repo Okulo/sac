@@ -257,7 +257,7 @@
             },
             getUserList(){
                 axios.get('/users/list', {
-                    reportType: 11
+                    reportType: 5
                 })
                     .then(response => {
 

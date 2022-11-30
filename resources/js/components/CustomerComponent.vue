@@ -115,7 +115,7 @@
                                         valueZone="Asia/Almaty"
                                         value-zone="Asia/Almaty"
                                         zone="Asia/Almaty"
-                                        format="dd LLLL"
+                                        format="dd LLLL yy"
                                         :auto="true"
                                         :disabled="isDisabled(subscription)"
                                     ></datetime>

@@ -254,8 +254,8 @@ class ReportController extends Controller
             ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
             ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
             ->leftJoin('users', 'subscriptions.user_id', '=', 'users.id')
-            ->whereBetween('subscriptions.ended_at', [$startDate, $endDate])
-            ->where('subscriptions.status', 'waiting');
+            ->whereBetween('subscriptions.ended_at', [$startDate, $endDate]);
+
 
             if ($request->product != null) {
                 $query->where('subscriptions.product_id', $request->product );
@@ -268,10 +268,10 @@ class ReportController extends Controller
             }
 
             if ($request->tries != 1) {
-                $query->where('subscriptions.tries_at','<', $today);
+                $query->where('subscriptions.status', 'waiting');
             }
             if ($request->tries == 1) {
-                $query->where('subscriptions.tries_at','>', $today );
+                $query->where('subscriptions.status', 'tries');
             }
 
            $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','users.name AS user_name');
