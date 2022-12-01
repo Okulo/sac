@@ -23,6 +23,10 @@
                     <b>Фильтр</b>
 
                     <div class="row" style="padding-top: 20px; ">
+                        <div class="col-1">
+                            &nbsp<br>
+                            <button id="getDelay"  @click="getDelay()"  type="button" class="btn btn-outline-danger  btn-sm">Просрочка</button>
+                        </div>
                         <div class="col-2">
                             С даты окончания
                             <datetime
@@ -47,7 +51,7 @@
                                 :auto="true"
                             ></datetime>
                         </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             Оператор
                             <select v-model="user" class="custom-select">
                                 <option v-for="user in users" v-bind:value="user.id">
@@ -55,7 +59,7 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             Услуги
                             <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
@@ -114,8 +118,8 @@
                                 <td>{{item.status}}</td>-->
                             <td>
                                 <select id="status" name="status" :class="'status-'+item.id">
-                                    <option selected disabled="disabled" value="waiting">Жду оплату</option>
-                                    <option value="tries">Пробует</option>
+                                    <option selected disabled="disabled" value="tries">Пробует</option>
+                                    <option value="waiting">Жду оплату</option>
                                     <option value="paid">Оплачено</option>
                                     <option value="rejected">Отклонена (3 раза)</option>
                                     <option value="refused">Отказался</option>
@@ -179,6 +183,7 @@
             proc: '',
             users:[],
             user: '',
+            delay: '',
         }),
         mounted() {
             console.log('Component mounted.');
@@ -195,7 +200,10 @@
 
         },
         methods: {
-
+            getDelay() {
+                this.delay = 1;
+                this.waitingPayList();
+            },
             saveStatus(id){
 
                 if( $(".status-"+id).val()){
@@ -285,11 +293,12 @@
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
                 //  this.spinnerData.loading = true;
-                axios.post('/reports/get-waiting-pay-list', {
+                axios.post('/reports/get-delay-list', {
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
                     reportType: 13,
+                    delay: this.delay,
                     userId: this.user
                 })
                     .then(response => {
@@ -301,7 +310,6 @@
                             var current = moment().startOf('day');
                             var diff = moment.duration(current.diff(given)).asDays();
 
-                            if(elem.payments == ''){
                                 this.items.push({
                                     id: elem.id,
                                     calcDate:  diff,
@@ -320,10 +328,6 @@
                                     report_type: elem.report_type,
                                     paymentsCount: ''
                                 });
-                            }
-
-
-
                         });
 
                     })

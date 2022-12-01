@@ -321,6 +321,75 @@ class ReportController extends Controller
            return $subscriptions;
 
     }
+
+    public function getDelaylist( Request $request){
+        $today  = Carbon::now();
+        $tommorow =  Carbon::now()->addDays(1);
+        ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2020-01-01 00:00:01';
+        ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
+
+        $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')
+            ->leftJoin('reasons', 'subscriptions.reason_id', '=', 'reasons.id')
+            ->leftJoin('products', 'subscriptions.product_id', '=', 'products.id')
+            ->leftJoin('users', 'subscriptions.user_id', '=', 'users.id')
+            ->whereBetween('subscriptions.ended_at', [$startDate, $endDate]);
+
+
+        if ($request->product != null) {
+            $query->where('subscriptions.product_id', $request->product );
+        }
+        if ($request->product == null) {
+            $query->where('category', 1);
+        }
+        if ($request->userId != null) {
+            $query->where('subscriptions.user_id', $request->userId );
+        }
+        if ($request->delay == 1) {
+            $query->where('subscriptions.tries_at', '<', $tommorow);
+        }
+        if ($request->delay != 1) {
+            $query->where('subscriptions.tries_at', '>', $today);
+        }
+
+
+            $query->where('subscriptions.status', 'tries');
+
+        $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','users.name AS user_name');
+
+        $query->orderBy('subscriptions.tries_at', 'asc');
+
+
+        $subscriptions = $query->limit(300)->get();
+
+        $setStatus = \DB::table('processed_subscription')
+            ->where('report_type', $request->reportType)
+            ->get();
+
+        foreach ($subscriptions as $subscription){
+            $payments = Payment::where('subscription_id', $subscription->id)->get();
+            if($payments->count()){
+                $subscription->payments = $payments;
+            }
+            else{
+                $subscription->payments = '';
+            }
+
+            foreach ($setStatus as $item){
+                //  $status[] = $item;
+                if ($subscription->id == $item->subscription_id) {
+                    //                  $subscription->s = $item->status;
+//                        $subscription->report_type = $item->report_type;
+                    $subscription->process_status = $item->process_status;
+                    // echo $item->subscription_id;
+                }
+            }
+
+        }
+
+        return $subscriptions;
+
+    }
+
     public function getDebtorsList( Request $request)
     {
         $today  = Carbon::now();
