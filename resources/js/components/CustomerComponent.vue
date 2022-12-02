@@ -125,7 +125,7 @@
                                     <div v-if="subscription.payment_type == 'tries' && subscription.status != 'trial'">
                                         <div v-show="!subscription.is_edit_ended_at">
                                             <span class="ended_at-span">{{ showDate(subscription.tries_at) }}</span>
-                                            <button class="btn btn-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
+                                            <button class="btn btn-outline-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
                                         </div>
                                         <datetime
                                             v-show="subscription.is_edit_ended_at"
@@ -144,7 +144,7 @@
                                     <div v-if="subscription.payment_type == 'tries' && subscription.status == 'trial'">
                                         <div v-show="!subscription.is_edit_ended_at">
                                             <span class="ended_at-span">{{ showDateWithTrial(subscription.started_at, products[subscription.product_id].trial_period) }}</span>
-                                            <button class="btn btn-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
+                                            <button class="btn btn-outline-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
                                         </div>
                                         <datetime
                                             v-show="subscription.is_edit_ended_at"
@@ -163,7 +163,7 @@
                                     <div v-else-if="subscription.payment_type == 'transfer' || subscription.payment_type == 'cloudpayments' || subscription.payment_type == 'pitech'">
                                         <div v-show="!subscription.is_edit_ended_at">
                                             <span class="ended_at-span">{{ showDate(subscription.ended_at) }}</span>
-                                            <button class="btn btn-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
+                                            <button class="btn btn-outline-info" @click="subscription.is_edit_ended_at = !subscription.is_edit_ended_at" :disabled="isDisabled(subscription)">Изменить</button>
                                         </div>
                                         <datetime
                                             v-show="subscription.is_edit_ended_at"
@@ -179,6 +179,7 @@
                                             :disabled="isDisabled(subscription)"
                                         ></datetime>
                                     </div>
+
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 15px">
@@ -188,14 +189,31 @@
                                         <option v-for="(reason, reasonIndex) in subscription.reasons" :key="reasonIndex" :value="reason.id">{{ reason.title }}</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-sm-6" v-if="userRole != 'operator' || userTeamIds.length > 1">
-                                    <label for="team_id" class="col-form-label">Команда</label>
-                                    <select v-model="subscription.team_id" :name="'subscriptions.' + subIndex + '.team_id'" id="team_id" class="col-sm-10 form-control" :disabled="isDisabled(subscription)">
-                                        <option v-for="(team, teamIndex) in teamsProp" :key="teamIndex" :value="team.id">{{ team.name }}</option>
-                                    </select>
+                                <div v-if="subscription.status == 'tries'" class="form-group col-md-6 offset-sm-6">
+                                    <label for="tries_priod" class="col-form-label">Дата окончания пробного периода</label>
+                                    <div>
+                                        <div  v-show="!subscription.is_edit_tries_at">
+                                            <span class="ended_at-span">{{ showDate(subscription.tries_at) }}</span>
+                                            <button class="btn btn-outline-success" @click="subscription.is_edit_tries_at = !subscription.is_edit_tries_at" :disabled="isDisabled(subscription)">Изменить</button>
+                                        </div>
+                                        <datetime
+                                            v-show="subscription.is_edit_tries_at"
+                                            :name="'subscriptions.' + subIndex + '.tries_at'"
+                                            type="date"
+                                            v-model="subscription.tries_at"
+                                            input-class="col-sm-10 my-class form-control"
+                                            valueZone="Asia/Almaty"
+                                            value-zone="Asia/Almaty"
+                                            zone="Asia/Almaty"
+                                            format="dd LLLL"
+                                            :auto="true"
+                                            :disabled="isDisabled(subscription)"
+                                        ></datetime>
+                                    </div>
                                 </div>
 
                             </div>
+                            <hr>
                             <div class="row" style="margin-bottom: 15px" v-if="subscription.payment_type == 'cloudpayments' && type == 'edit' && subscription.cp_subscription_id != null &&  customer.cards">
                                 <div v-for="(card,index) in customer.cards">
 

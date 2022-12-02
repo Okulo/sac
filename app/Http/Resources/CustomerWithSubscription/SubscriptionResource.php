@@ -21,6 +21,7 @@ class SubscriptionResource extends JsonResource
             'user_id'    => $this->user_id,
             'product_id'    => $this->product_id,
             'is_edit_ended_at'  => false,
+            'is_edit_tries_at'  => false,
             'price'         => $this->price,
             'payment_type'  => $this->payment_type,
             'payment_types' => $this->product->paymentTypes()->pluck('name'),
