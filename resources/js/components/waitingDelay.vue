@@ -9,7 +9,7 @@
 
 
         <div class="col-md-12">
-            <h2>Просрочка (пробники)</h2>
+            <h2>Пробники</h2>
 
             <div class="intro">
                 Сюда попадают те обонементы, за которые клиенты пообещали оплатить, но нужно проконтролировать, что оплата прошла удачно. Также здесь могут быть пробники у которых закончился тестовый период но их еще не отключили.
@@ -25,7 +25,8 @@
                     <div class="row" style="padding-top: 20px; ">
                         <div class="col-1">
                             &nbsp<br>
-                            <button id="getDelay"  @click="getDelay()"  type="button" class="btn btn-outline-danger  btn-sm">Просрочка</button>
+                            <button id="getDelay" v-if="!this.delay"  @click="getDelay()"  type="button" class="btn btn-outline-danger  btn-sm">Просрочка</button>
+                            <button id="get" v-else  @click="getTries()"  type="button" class="btn btn-outline-success  btn-sm">Пробуют</button>
                         </div>
                         <div class="col-2">
                             С даты окончания
@@ -76,7 +77,9 @@
 
                 </div>
                 <div class="card-body">
-                    <strong>Всего записей -      {{items.length}}</strong><p><br></p>
+                    <h3 v-if="!this.delay" >Пробуют</h3>
+                    <h3 v-else>Просрочка</h3>
+                    <strong>Всего записей -      {{items.length}}</strong><br>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
                     <table class="table">
@@ -86,7 +89,7 @@
                             <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
-                            <th>Просрочено <br>  дней </th>
+                            <th>{{ daysHeader }}</th>
                             <th scope="col">Дата<br> старта</th>
                             <th>Пробный до</th>
                             <!--  <th>Кол-во <br> платежей</th>
@@ -184,6 +187,7 @@
             users:[],
             user: '',
             delay: '',
+            daysHeader: 'Осталось дн',
         }),
         mounted() {
             console.log('Component mounted.');
@@ -202,6 +206,12 @@
         methods: {
             getDelay() {
                 this.delay = 1;
+                this.daysHeader = 'Просрочено дн.';
+                this.waitingPayList();
+            },
+            getTries() {
+                this.delay = '';
+                this.daysHeader = 'Осталось дн.';
                 this.waitingPayList();
             },
             saveStatus(id){
@@ -312,7 +322,7 @@
 
                                 this.items.push({
                                     id: elem.id,
-                                    calcDate:  diff,
+                                    calcDate:  Math.abs(diff),
                                     started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
                                     tries_at: moment(elem.tries_at).locale('ru').format('DD MMM YY'),
                                     ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),

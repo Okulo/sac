@@ -324,7 +324,7 @@ class ReportController extends Controller
 
     public function getDelaylist( Request $request){
         $today  = Carbon::now();
-        $tommorow =  Carbon::now()->addDays(1);
+        $tommorow =  Carbon::now()->subDay();
         ($request->startDate != 'Invalid date') ? $startDate = $request->startDate :  $startDate = '2020-01-01 00:00:01';
         ($request->endDate != 'Invalid date') ? $endDate = $request->endDate : $endDate = Carbon::now()->addMonth();
 
@@ -366,13 +366,6 @@ class ReportController extends Controller
             ->get();
 
         foreach ($subscriptions as $subscription){
-            $payments = Payment::where('subscription_id', $subscription->id)->get();
-            if($payments->count()){
-                $subscription->payments = $payments;
-            }
-            else{
-                $subscription->payments = '';
-            }
 
             foreach ($setStatus as $item){
                 //  $status[] = $item;

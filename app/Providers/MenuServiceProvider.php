@@ -138,15 +138,15 @@ class MenuServiceProvider extends ServiceProvider
                 "url" => "reports/get-reports/5",
             ]);
             $event->menu->addIn('reports', [
-                "key" => "report_11",
-                "text" => 'Просрочка (пробники)',
+                "key" => "report_13",
+                "text" => 'Пробники',
                 "url" => "reports/get-reports/13",
             ]);
-            $event->menu->addIn('reports', [
-                "key" => "report_6",
-                "text" => 'Пробники',
-                "url" => "reports/get-reports/6",
-            ]);
+//            $event->menu->addIn('reports', [
+//                "key" => "report_6",
+//                "text" => 'Пробники (жду оплату)',
+//                "url" => "reports/get-reports/6",
+//            ]);
             $event->menu->addIn('reports', [
                 "key" => "report_9",
                 "text" => 'Ошибки оплат',
