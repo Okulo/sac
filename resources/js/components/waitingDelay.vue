@@ -23,11 +23,11 @@
                     <b>Фильтр</b>
 
                     <div class="row" style="padding-top: 20px; ">
-                        <div class="col-1">
-                            &nbsp<br>
-                            <button id="getDelay" v-if="!this.delay"  @click="getDelay()"  type="button" class="btn btn-outline-danger  btn-sm">Просрочка</button>
-                            <button id="get" v-else  @click="getTries()"  type="button" class="btn btn-outline-success  btn-sm">Пробуют</button>
-                        </div>
+<!--                        <div class="col-1">-->
+<!--                            &nbsp<br>-->
+<!--                            <button id="getDelay" v-if="!this.delay"  @click="getDelay()"  type="button" class="btn btn-outline-danger  btn-sm">Просрочка</button>-->
+<!--                            <button id="get" v-else  @click="getTries()"  type="button" class="btn btn-outline-success  btn-sm">Пробуют</button>-->
+<!--                        </div>-->
                         <div class="col-2">
                             С даты окончания
                             <datetime
@@ -60,7 +60,7 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             Услуги
                             <select v-model="product" class="select-multiple custom-select">
                                 <option v-for="product in products" v-bind:value="product.id">
@@ -77,8 +77,6 @@
 
                 </div>
                 <div class="card-body">
-                    <h3 v-if="!this.delay" >Пробуют</h3>
-                    <h3 v-else>Просрочка</h3>
                     <strong>Всего записей -      {{items.length}}</strong><br>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
@@ -89,7 +87,7 @@
                             <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
-                            <th>{{ daysHeader }}</th>
+                            <th>Осталось <br> дней</th>
                             <th scope="col">Дата<br> старта</th>
                             <th>Пробный до</th>
                             <!--  <th>Кол-во <br> платежей</th>
@@ -186,8 +184,6 @@
             proc: '',
             users:[],
             user: '',
-            delay: '',
-            daysHeader: 'Осталось дн',
         }),
         mounted() {
             console.log('Component mounted.');
@@ -308,7 +304,6 @@
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
                     reportType: 13,
-                    delay: this.delay,
                     userId: this.user
                 })
                     .then(response => {

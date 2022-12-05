@@ -9,18 +9,19 @@
 
 
         <div class="col-md-12">
-            <h2>Пробники (жду оплату)</h2>
+            <h2>Просрочка (пробники)</h2>
 
-           <div class="intro">
-               Здесь полный список пробников с указанием количества дней которые они могут заниматься бесплатно.
-               <br>
-               Если оплата по абонементу выполнена, то статус поменяется на оплачено автоматически и пробника уже не будет в этом списке после обновления страницы.
-            <p></p>
-            Список обновляется при обновлении страницы
-           </div>
+            <div class="intro">
+                Сюда попадают те обонементы, за которые клиенты пообещали оплатить, но нужно проконтролировать, что оплата прошла удачно. Также здесь могут быть пробники у которых закончился тестовый период но их еще не отключили.
+                <br>
+                Если оплата по абонементу выполнена, то статус поменяется на оплачено автоматически и клиента уже не будет в этом списке после обновления страницы.хрх
+                <p></p>
+                Список обновляется при обновлении страницы
+            </div>
             <div class="card mt-3">
                 <div class="card-header">
                     <b>Фильтр</b>
+
                     <div class="row" style="padding-top: 20px; ">
                         <div class="col-2">
                             С даты окончания
@@ -46,8 +47,8 @@
                                 :auto="true"
                             ></datetime>
                         </div>
-                        <div class="col-3">
-                           Оператор
+                        <div class="col-2">
+                            Оператор
                             <select v-model="user" class="custom-select">
                                 <option v-for="user in users" v-bind:value="user.id">
                                     {{ user.name }}
@@ -61,8 +62,7 @@
                                     {{ product.title }}
                                 </option>
                             </select>
-                         </div>
-
+                        </div>
                         <div class="col-2">
                             &nbsp<br>
                             <button id="getlist" v-if="startDate && endDate || product || user"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
@@ -72,7 +72,7 @@
 
                 </div>
                 <div class="card-body">
-                    <strong>Всего записей -      {{items.length}}</strong><p><br></p>
+                    <strong>Всего записей - {{items.length}}</strong><br>
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
                     <table class="table">
@@ -82,14 +82,16 @@
                             <th scope="col">Клиенты</th>
                             <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
-                            <th >Ост. дней</th>
-                            <th>Пробный до</th>
+                            <th>Дней <br>просрочено</th>
                             <th scope="col">Дата<br> старта</th>
-                            <th scope="col">Дата <br> окончания</th>
-                            <th scope="col">Статус <br>  абонемента</th>
+                            <th>Пробный до</th>
+                            <!--  <th>Кол-во <br> платежей</th>
+
+                            <th scope="col">Дата <br> окончания</th>-->
+                            <th scope="col">Статус </th>
                             <th scope="col">В <br>процессе</th>
-                            <th></th>
-                          <!--  <th scope="col"></th> -->
+                            <td></td>
+                            <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
 
@@ -103,26 +105,37 @@
                             <td>{{item.phone}}</td>
                             <td>{{ item.ptitle}}</td>
                             <td>{{ item.calcDate }}</td>
-                             <td>{{item.tries_at}}</td>
-                             <td>{{ item.started_at }}</td>
-                             <td>{{ item.ended_at}}</td>
-                         <!--    <td>{{item.payment_type}}</td>
-                             <td>{{item.status}}</td>-->
-                            <td>
-                                Пробует
+                            <td>{{ item.started_at }}</td>
+                            <td>{{ item.tries_at}}</td>
+                            <!--   <td>{{item.paymentsCount}}</td>
 
+                             <td>{{ item.ended_at}}</td> -->
+                            <!--    <td>{{item.payment_type}}</td>
+                                <td>{{item.status}}</td>-->
+                            <td>
+                                <select id="status" name="status" :class="'status-'+item.id">
+                                    <option selected disabled="disabled" value="tries">Пробует</option>
+                                    <option value="waiting">Жду оплату</option>
+                                    <option value="paid">Оплачено</option>
+                                    <option value="rejected">Отклонена (3 раза)</option>
+                                    <option value="refused">Отказался</option>
+                                    <option value="trial">Триал период</option>
+                                    <option value="debtor">Должник</option>
+                                </select>
                             </td>
                             <td >
                                 {{item.report_type}}
-                                <input v-model="item.process_status" v-if="item.process_status == 0  || !item.process_status" type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
+                                <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                                 <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
-                            <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
+                            <td data-v-754b2df6="" class="text-right">
+                                <button type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"  @click="saveStatus(item.id)">
+                                    <i class="fa fa-save"></i></button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
-
 
                 </div>
             </div>
@@ -148,7 +161,7 @@
             customerId: null,
             subscriptionId: null,
             filterOpen: false,
-            processed: [],
+            processed: '',
             items: [],
             processedStatus: [],
             cpData: '',
@@ -163,13 +176,15 @@
             period: '',
             products: {},
             product: '',
+            proc: '',
             users:[],
             user: '',
+            delay: '',
         }),
         mounted() {
             console.log('Component mounted.');
             this.waitingPayList();
-          //  this.getSubscriptionlist();
+            //  this.getSubscriptionlist();
             this.getUserList();
         },
 
@@ -181,6 +196,39 @@
 
         },
         methods: {
+            getDelay() {
+                this.delay = 1;
+                this.daysHeader = 'Просрочено дн.';
+                this.waitingPayList();
+            },
+            getTries() {
+                this.delay = '';
+                this.daysHeader = 'Осталось дн.';
+                this.waitingPayList();
+            },
+            saveStatus(id){
+
+                if( $(".status-"+id).val()){
+                    var val = $(".status-"+id).val();
+
+                    axios.post('/reports/save-status',{
+                        subId: id,
+                        status: val
+                    })
+                        .then(response => {
+                            // this.waitingPayList();
+                            console.log(response);
+                            Vue.$toast.success('Статус успешно изменен');
+
+                        })
+                        .catch(function (error) {
+                            console.log('err');
+                            console.log(error);
+                            Vue.$toast.error('error - '+ error);
+                        });
+                }
+
+            },
             goProcess: function(id) {
                 axios.post('/reports/set-processed-status',{
                     subId: id,
@@ -219,14 +267,14 @@
             },
             getUserList(){
                 axios.get('/users/list', {
-                    reportType: 11
+                    reportType: 6
                 })
                     .then(response => {
 
                         //   console.log(response);
                         response.data.data.forEach(elem =>{
                             if(elem.is_active.value == 'Активный'){
-                                console.log(elem);
+                                //  console.log(elem);
                                 this.users.push({
                                     id: elem.id.value,
                                     account: elem.account.value,
@@ -243,30 +291,30 @@
                     });
             },
             waitingPayList(){
-             //   this.getProcessedStatus();
                 this.items = [];
                 // $("#exampleModalCenter").modal("show");
                 this.spinnerData.loading = true;
                 //  this.spinnerData.loading = true;
-                axios.post('/reports/get-waiting-pay-list', {
+                axios.post('/reports/get-delay-list', {
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD 00:00:01'),
                     endDate: moment(this.endDate).locale('ru').format('YYYY-MM-DD 23:59:59'),
                     product: this.product,
-                    tries: 1,
                     reportType: 6,
+                    delay: 1,
                     userId: this.user
                 })
                     .then(response => {
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
+                            //   console.log(elem);
                             var given = moment(elem.tries_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
-                            var diff = moment.duration(given.diff(current)).asDays();
+                            var diff = moment.duration(current.diff(given)).asDays();
 
                             this.items.push({
                                 id: elem.id,
-                                calcDate:  diff,
+                                calcDate:  Math.abs(diff),
                                 started_at: moment(elem.started_at).locale('ru').format('DD MMM YY'),
                                 tries_at: moment(elem.tries_at).locale('ru').format('DD MMM YY'),
                                 ended_at: moment(elem.ended_at).locale('ru').format('DD MMM YY'),
@@ -279,10 +327,9 @@
                                 reason: elem.title,
                                 ptitle: elem.ptitle,
                                 process_status: elem.process_status,
+                                report_type: elem.report_type,
                                 paymentsCount: ''
                             });
-
-
                         });
 
                     })
@@ -296,7 +343,7 @@
                     subId: subId//elem.customer_id
                 })
                     .then(response => {
-                       // console.log(response.data);
+                        // console.log(response.data);
                         return response.data;
                         //     this.items.map(item => {
                         //     item.paymentsCount = response.data;
