@@ -562,6 +562,8 @@
                                 <div class="t338 t-align_left" style="">
                                     <div data-hook-content="covercontent">
                                         <div class="t339__wrapper">
+                                            <div style="color: white; font-size: 24px; font-family: Arial;"><img style="width: 22px" src="/images/WhatsApp.png" ><a style="color: #4cfc8e; margin-bottom: 8px; display: inline-block; margin-left: 12px;" href="https://wa.me/+77773235777" target="_blank" rel="nofollow noopener">+7 (747) 592-03-44 </a><br>
+                                            Связаться с администратором по WhatsApp</div><br><br>
                                             <div class="t338__title t-title t-title_xxs t-animate" data-animate-style="fadeinup" data-animate-group="yes" style="" field="title">
                                                 <div style="font-size:42px;line-height:40px;" data-customstyle="yes">
                                                     <strong>ОНЛАЙН СПОРТЗАЛ<br /><br /> ЗАНИМАЙТЕСЬ С ТРЕНЕРОМ <br />ПО
