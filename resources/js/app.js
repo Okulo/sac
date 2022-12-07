@@ -46,6 +46,7 @@ Vue.component('simple-pay-ends', require('./components/SimplePayEnds.vue').defau
 Vue.component('pay-errors', require('./components/PayErrors.vue').default);
 Vue.component('waiting-payment', require('./components/WaitingPayment.vue').default);
 Vue.component('waiting-delay', require('./components/WaitingDelay.vue').default);
+Vue.component('refund-payments', require('./components/RefundPayments.vue').default);
 Vue.component('operators-bonuses', require('./components/OperatorsBonuses.vue').default);
 Vue.component('operators-sales', require('./components/OperatorsSales.vue').default);
 Vue.component('operator-detail', require('./components/OperatorDetail.vue').default);
