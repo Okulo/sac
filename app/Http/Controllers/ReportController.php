@@ -74,6 +74,9 @@ class ReportController extends Controller
         elseif ($type == 13) {
             return view('reports.waitingDelay');
         }
+        elseif ($type == 14) {
+            return view('reports.refundPayments');
+        }
 //        elseif ($type == 11) {
 //            if(Auth::user()->role->code != 'operator'){
 //                return view('reports.operators-bonuses');
