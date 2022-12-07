@@ -9,7 +9,7 @@
 
 
         <div class="col-md-12">
-            <h2>Возарвт средств</h2>
+            <h2>Возарат средств</h2>
 
             <div class="intro">
               CloudPayments
@@ -76,37 +76,21 @@
                             <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
                             </td>
-                            <td>{{item.phone}}</td>
-                            <td>{{ item.ptitle}}</td>
-                            <td>{{ item.calcDate }}</td>
-                            <td>{{ item.started_at }}</td>
-                            <td>{{ item.tries_at}}</td>
-                            <!--   <td>{{item.paymentsCount}}</td>
-
-                             <td>{{ item.ended_at}}</td> -->
-                            <!--    <td>{{item.payment_type}}</td>
-                                <td>{{item.status}}</td>-->
-                            <td>
-                                <select id="status" name="status" :class="'status-'+item.id">
-                                    <option selected disabled="disabled" value="tries">Пробует</option>
-                                    <option value="waiting">Жду оплату</option>
-                                    <option value="paid">Оплачено</option>
-                                    <option value="rejected">Отклонена (3 раза)</option>
-                                    <option value="refused">Отказался</option>
-                                    <option value="trial">Триал период</option>
-                                    <option value="debtor">Должник</option>
-                                </select>
-                            </td>
-                            <td >
-                                {{item.report_type}}
-                                <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
-                                <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
-                            </td>
+                            <td>{{item.AccountId}}</td>
+                            <td>{{ item.Amount}}</td>
+                            <td>{{ item.Type}}</td>
+                            <td>{{ item.CreatedDate }}</td>
+                            <td>{{ item.PayoutAmount }}</td>
+                            <td>{{ item.Reason}}</td>
+                            <td>{{item.Status}}</td>
+                            <td>{{ item.StatusCode}}</td>
+                            <td>{{ item.TransactionId }}</td>
+                            <td>{{ item.Refunded }}</td>
+                            <td>{{ item.Description}}</td>
+                            <td>{{item.GatewayName}}</td>
+                            <td>{{ item.CardHolderMessage}}</td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
-                            <td data-v-754b2df6="" class="text-right">
-                                <button type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"  @click="saveStatus(item.id)">
-                                    <i class="fa fa-save"></i></button>
-                            </td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -156,7 +140,6 @@
         }),
         mounted() {
             console.log('Component mounted.');
-            this.waitingPayList();
             //  this.getSubscriptionlist();
             this.getUserList();
         },
@@ -264,18 +247,40 @@
                     });
             },
             waitingPayList(){
-                var settings = {
-                    "url": "https://api.cloudpayments.ru/payments/list?date=2022-12-05",
-                    "method": "POST",
-                    "timeout": 0,
-                    "headers": {
-                        "Authorization": "Basic cGtfYzgwYjk3ODUwYTcxN2E5MzFiNTk1YjdhNmI2ODg6ODRjNDZmZWVjMTAxZDQ5YTA5ZTA5MDBjNTA3OWZkNWI="
-                    },
-                };
+                axios.post('/reports/get-refunds',{
+                    subId: 'cloudpayments',
+                })
+                    .then(response => {
+                        //console.log(response.data.Model);
+                        response.data.Model.forEach(elem =>{
 
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                });
+                                  console.log(elem);
+
+                                  if(elem.Type == 1) {
+                                      this.items.push({
+                                          AccountId: elem.AccountId,
+                                          Amount: elem.Amount,
+                                          CreatedDate: moment(elem.CreatedDate).locale('ru').format('DD MMM YY'),
+                                          PayoutAmount: elem.PayoutAmount,
+                                          Reason: elem.Reason,
+                                          Type: elem.Type,
+                                          Status: elem.Status,
+                                          StatusCode: elem.StatusCode,
+                                          TransactionId: elem.TransactionId,
+                                          Refunded: elem.Refunded,
+                                          Description: elem.Description,
+                                          GatewayName: elem.GatewayName,
+                                          CardHolderMessage: elem.CardHolderMessage,
+                                      });
+                                  }
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log('err');
+                        console.log(error);
+                        Vue.$toast.error('error - '+ error);
+                    });
             },
             getUserPayments(subId){
                 axios.post('/reports/get-user-payments', {

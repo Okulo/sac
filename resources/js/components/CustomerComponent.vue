@@ -189,28 +189,28 @@
                                         <option v-for="(reason, reasonIndex) in subscription.reasons" :key="reasonIndex" :value="reason.id">{{ reason.title }}</option>
                                     </select>
                                 </div>
-                                <div v-if="subscription.status == 'tries'" class="form-group col-md-6 offset-sm-6">
-                                    <label for="tries_priod" class="col-form-label">Дата окончания пробного периода</label>
-                                    <div>
-                                        <div  v-show="!subscription.is_edit_tries_at">
-                                            <span class="ended_at-span">{{ showDate(subscription.tries_at) }}</span>
-                                            <button class="btn btn-outline-success" @click="subscription.is_edit_tries_at = !subscription.is_edit_tries_at" :disabled="isDisabled(subscription)">Изменить</button>
-                                        </div>
-                                        <datetime
-                                            v-show="subscription.is_edit_tries_at"
-                                            :name="'subscriptions.' + subIndex + '.tries_at'"
-                                            type="date"
-                                            v-model="subscription.tries_at"
-                                            input-class="col-sm-10 my-class form-control"
-                                            valueZone="Asia/Almaty"
-                                            value-zone="Asia/Almaty"
-                                            zone="Asia/Almaty"
-                                            format="dd LLLL"
-                                            :auto="true"
-                                            :disabled="isDisabled(subscription)"
-                                        ></datetime>
-                                    </div>
-                                </div>
+<!--                                <div v-if="subscription.status == 'tries'" class="form-group col-md-6 offset-sm-6">-->
+<!--                                    <label for="tries_priod" class="col-form-label">Дата окончания пробного периода</label>-->
+<!--                                    <div>-->
+<!--                                        <div  v-show="!subscription.is_edit_tries_at">-->
+<!--                                            <span class="ended_at-span">{{ showDate(subscription.tries_at) }}</span>-->
+<!--                                            <button class="btn btn-outline-success" @click="subscription.is_edit_tries_at = !subscription.is_edit_tries_at" :disabled="isDisabled(subscription)">Изменить</button>-->
+<!--                                        </div>-->
+<!--                                        <datetime-->
+<!--                                            v-show="subscription.is_edit_tries_at"-->
+<!--                                            :name="'subscriptions.' + subIndex + '.tries_at'"-->
+<!--                                            type="date"-->
+<!--                                            v-model="subscription.tries_at"-->
+<!--                                            input-class="col-sm-10 my-class form-control"-->
+<!--                                            valueZone="Asia/Almaty"-->
+<!--                                            value-zone="Asia/Almaty"-->
+<!--                                            zone="Asia/Almaty"-->
+<!--                                            format="dd LLLL"-->
+<!--                                            :auto="true"-->
+<!--                                            :disabled="isDisabled(subscription)"-->
+<!--                                        ></datetime>-->
+<!--                                    </div>-->
+<!--                                </div>-->
 
                             </div>
                             <hr>

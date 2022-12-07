@@ -833,4 +833,30 @@ class ReportController extends Controller
         return $subscription;
     }
 
+    public function getRefunds(){
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.cloudpayments.ru/payments/list',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array('date' => '2022-12-07'),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Basic cGtfYzgwYjk3ODUwYTcxN2E5MzFiNTk1YjdhNmI2ODg6ODRjNDZmZWVjMTAxZDQ5YTA5ZTA5MDBjNTA3OWZkNWI='
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
+
+    }
+
 }
