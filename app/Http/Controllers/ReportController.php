@@ -833,7 +833,10 @@ class ReportController extends Controller
         return $subscription;
     }
 
-    public function getRefunds(){
+    public function getRefunds(Request $request){
+
+        $date = $request->startDate;
+        $type = $request->type;
 
         $curl = curl_init();
 
@@ -846,7 +849,7 @@ class ReportController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array('date' => '2022-12-07'),
+            CURLOPT_POSTFIELDS => array('date' => $date),
             CURLOPT_HTTPHEADER => array(
                 'Authorization: Basic cGtfYzgwYjk3ODUwYTcxN2E5MzFiNTk1YjdhNmI2ODg6ODRjNDZmZWVjMTAxZDQ5YTA5ZTA5MDBjNTA3OWZkNWI='
             ),

@@ -47,50 +47,45 @@
                 </div>
                 <div class="card-body">
                     <strong>Всего записей -      {{items.length}}</strong><br>
+                    <h5 style="margin-top: 15px; color: #0069d9;">{{info}}</h5><br>
+
                     <pulse-loader  class="spinner" style="text-align: center" :loading="spinnerData.loading" :color="spinnerData.color" :size="spinnerData.size"></pulse-loader>
 
                     <table class="table">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Клиенты</th>
-                            <th scope="col">Телефон</th>
-                            <th scope="col">Услуги</th>
-                            <th>Осталось <br> дней</th>
-                            <th scope="col">Дата<br> старта</th>
-                            <th>Пробный до</th>
-                            <!--  <th>Кол-во <br> платежей</th>
-
-                            <th scope="col">Дата <br> окончания</th>-->
-                            <th scope="col">Статус </th>
-                            <th scope="col">В <br>процессе</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Транзакция</th>
+                            <th scope="col">Услуга</th>
+                            <th scope="col">Банк </th>
+                            <th scope="col">Процесс</th>
                             <td></td>
-                            <!--  <th scope="col"></th> -->
                         </tr>
                         </thead>
 
                         <tbody>
                         <tr v-for="(item, index) in items" :key="index">
-
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
-                            <td>
-                                <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
-                            </td>
                             <td>{{item.AccountId}}</td>
-                            <td>{{ item.Amount}}</td>
-                            <td>{{ item.Type}}</td>
-                            <td>{{ item.CreatedDate }}</td>
+<!--                            <td>{{ item.Amount}}</td>-->
                             <td>{{ item.PayoutAmount }}</td>
+<!--                            <td>{{ item.Type}}</td>-->
+                            <td>{{ item.CreatedDate }}</td>
                             <td>{{ item.Reason}}</td>
-                            <td>{{item.Status}}</td>
-                            <td>{{ item.StatusCode}}</td>
+<!--                            <td>{{item.Status}}</td>-->
+<!--                            <td>{{ item.StatusCode}}</td>-->
                             <td>{{ item.TransactionId }}</td>
-                            <td>{{ item.Refunded }}</td>
+<!--                            <td>{{ item.Refunded }}</td>-->
                             <td>{{ item.Description}}</td>
                             <td>{{item.GatewayName}}</td>
                             <td>{{ item.CardHolderMessage}}</td>
-                            <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
-
+                            <td>
+                                <a target="_blank" :href="'/userlogs?subscription_id=' + item.AccountId">Логи</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -120,6 +115,7 @@
             subscriptionId: null,
             filterOpen: false,
             processed: '',
+            info: '',
             items: [],
             processedStatus: [],
             cpData: '',
@@ -247,8 +243,12 @@
                     });
             },
             waitingPayList(){
+
+                this.items = [];
+                this.spinnerData.loading = true;
                 axios.post('/reports/get-refunds',{
-                    subId: 'cloudpayments',
+                    type: 'cloudpayments',
+                    startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD'),
                 })
                     .then(response => {
                         //console.log(response.data.Model);
@@ -257,6 +257,7 @@
                                   console.log(elem);
 
                                   if(elem.Type == 1) {
+                                      this.info = '';
                                       this.items.push({
                                           AccountId: elem.AccountId,
                                           Amount: elem.Amount,
@@ -272,7 +273,14 @@
                                           GatewayName: elem.GatewayName,
                                           CardHolderMessage: elem.CardHolderMessage,
                                       });
+                                      this.spinnerData.loading = false;
                                   }
+
+                                  if(this.items.length < 1){
+                                      this.info = 'Нет данных на выбраную дату!';
+                                      this.spinnerData.loading = false;
+                                  }
+
                         });
 
                     })
