@@ -12,7 +12,7 @@
             <h2>Возарат средств</h2>
 
             <div class="intro">
-              CloudPayments
+            Выберите дату и платежную систему, с которой будут получены данные по возвратам
             </div>
             <div class="card mt-3">
                 <div class="card-header">
@@ -24,6 +24,13 @@
 <!--                            <button id="getDelay" v-if="!this.delay"  @click="getDelay()"  type="button" class="btn btn-outline-danger  btn-sm">Просрочка</button>-->
 <!--                            <button id="get" v-else  @click="getTries()"  type="button" class="btn btn-outline-success  btn-sm">Пробуют</button>-->
 <!--                        </div>-->
+                        <div class="col-2">
+                            Платежная система
+                            <select class="form-control" v-model="paysystem">
+                                <option >CloudPayments</option>
+                                <option >Pitech</option>
+                            </select>
+                        </div>
                         <div class="col-2">
                             Дата
                             <datetime
@@ -39,7 +46,7 @@
 
                         <div class="col-2">
                             &nbsp<br>
-                            <button id="getlist" v-if="startDate"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
+                            <button id="getlist" v-if="startDate && paysystem"  @click="waitingPayList()"  type="button" class="btn btn-success btn-sm">Получить данные</button>
                         </div>
                     </div>
 
@@ -109,6 +116,7 @@
             'createLinkProp',
         ],
         data: () => ({
+            paysystem: '',
             startDate: '',
             endDate: '',
             customerId: null,
@@ -247,7 +255,7 @@
                 this.items = [];
                 this.spinnerData.loading = true;
                 axios.post('/reports/get-refunds',{
-                    type: 'cloudpayments',
+                    paysystem: this.paysystem,
                     startDate: moment(this.startDate).locale('ru').format('YYYY-MM-DD'),
                 })
                     .then(response => {
