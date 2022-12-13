@@ -742,20 +742,55 @@
             manualWriteOffPayment(subscriptionId, cardId) {
                 document.getElementById('subscription-' + subscriptionId).disabled = true;
                 this.spinnerData.loading = true;
+                var dateNow = new Date();
 
-                axios.post('/subscriptions/manualWriteOffPayment', {
-                    subscriptionId: subscriptionId,
-                    cardId: cardId
-                }).then(response => {
-                    this.spinnerData.loading = false;
-                    document.getElementById('subscription-' + subscriptionId).disabled = false;
-                    Vue.$toast.success(response.data.message);
-                })
-                    .catch(err => {
+                if(localStorage.getItem(this.subscriptionIdProp, dateNow) != null ){
+
+                    var manualDate =  localStorage.getItem(this.subscriptionIdProp)
+                    var given = moment(manualDate);
+                    var current = moment();
+                    var diff = moment.duration(current.diff(given)).asMinutes();
+
+                    if(diff > 5){
+                        localStorage.setItem(this.subscriptionIdProp, dateNow);
+
+                        axios.post('/subscriptions/manualWriteOffPayment', {
+                            subscriptionId: subscriptionId,
+                            cardId: cardId
+                        }).then(response => {
+                            this.spinnerData.loading = false;
+                            document.getElementById('subscription-' + subscriptionId).disabled = false;
+                            Vue.$toast.success(response.data.message);
+                        }).catch(err => {
+                            this.spinnerData.loading = false;
+                            document.getElementById('subscription-' + subscriptionId).disabled = false;
+                            Vue.$toast.error(err.response.data.message);
+                        });
+                    }
+                    else{
+                        // console.log(localStorage.getItem(this.subscriptionIdProp));
+                        this.spinnerData.loading = false;
+                        Vue.$toast.error('Повторите попытку позже!');
+                    }
+
+                }
+                else{
+                    localStorage.setItem(this.subscriptionIdProp, dateNow);
+
+                    axios.post('/subscriptions/manualWriteOffPayment', {
+                        subscriptionId: subscriptionId,
+                        cardId: cardId
+                    }).then(response => {
+                        this.spinnerData.loading = false;
+                        document.getElementById('subscription-' + subscriptionId).disabled = false;
+                        Vue.$toast.success(response.data.message);
+                    }).catch(err => {
                         this.spinnerData.loading = false;
                         document.getElementById('subscription-' + subscriptionId).disabled = false;
                         Vue.$toast.error(err.response.data.message);
                     });
+                }
+
             },
             manualPitech(customer, subId, product, price){
                 if (confirm('Вы действительно хотите списать средства')) {
