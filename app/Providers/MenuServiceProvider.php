@@ -105,11 +105,11 @@ class MenuServiceProvider extends ServiceProvider
                 "text" => 'Разовые услуги',
                 "url" => "/products/2",
             ]);
-            $event->menu->addIn('statistics', [
-                "key" => "statistic_type_1",
-                "text" => 'Количественные',
-                "url" => "statistics/quantitative",
-            ]);
+//            $event->menu->addIn('statistics', [
+//                "key" => "statistic_type_1",
+//                "text" => 'Количественные',
+//                "url" => "statistics/quantitative",
+//            ]);
 
             $event->menu->addIn('statistics', [
                 "key" => "statistic_type_2",
@@ -134,7 +134,7 @@ class MenuServiceProvider extends ServiceProvider
             ]);
             $event->menu->addIn('stat-reports', [
                 "key" => "report_14",
-                "text" => 'Возарвт средств',
+                "text" => 'Возврат средств',
                 "url" => "reports/get-reports/14",
             ]);
             $event->menu->addIn('reports', [
@@ -156,11 +156,6 @@ class MenuServiceProvider extends ServiceProvider
                 "key" => "report_9",
                 "text" => 'Ошибки оплат',
                 "url" => "reports/get-reports/9",
-            ]);
-            $event->menu->addIn('reports', [
-                "key" => "report_9",
-                "text" => 'Возараты',
-                "url" => "reports/get-reports/14",
             ]);
             $event->menu->addIn('stat-reports', [
                 "key" => "report_10",

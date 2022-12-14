@@ -7,7 +7,6 @@
             Следующий платеж {{ cpData.NextTransactionDateIso }}
         </b-modal>
 
-
         <div class="col-md-12">
             <h2>Бонусы операторов</h2>
             <div class="intro">
@@ -25,7 +24,7 @@
                         </div>
                     </div>
 
-<p><br></p>
+                    <p><br></p>
                     <table class="table">
                         <thead>
                         <tr>

@@ -751,7 +751,7 @@
                     var current = moment();
                     var diff = moment.duration(current.diff(given)).asMinutes();
 
-                    if(diff > 5){
+                    if(diff > 10){
                         localStorage.setItem(this.subscriptionIdProp, dateNow);
 
                         axios.post('/subscriptions/manualWriteOffPayment', {
@@ -770,7 +770,7 @@
                     else{
                         // console.log(localStorage.getItem(this.subscriptionIdProp));
                         this.spinnerData.loading = false;
-                        Vue.$toast.error('Повторите попытку позже!');
+                        Vue.$toast.error('Запрос уже был отправлен. Повторите попытку через 10 минут!');
                     }
 
                 }

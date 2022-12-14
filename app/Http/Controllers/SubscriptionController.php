@@ -273,7 +273,7 @@ class SubscriptionController extends Controller
         $now = Carbon::now();
         if ($manualWriteOffPlusMinutes > $now) {
             $diffSeconds = $manualWriteOffPlusMinutes->diffInSeconds($now);
-            throw new \Exception('Попробуйте через ' . $diffSeconds . ' секунд.', 500);
+            throw new \Exception('Попробуйте через ' . $diffSeconds . ' секунд.', 600);
         }
 
         $cloudpaymentService = new CloudPaymentsService();
