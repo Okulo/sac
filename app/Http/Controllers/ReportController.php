@@ -833,7 +833,7 @@ class ReportController extends Controller
         return $subscription;
     }
 
-    public function getRefunds(Request $request){
+    public function getCpRefunds(Request $request){
 
         $date = $request->startDate;
         $type = $request->type;
@@ -852,6 +852,36 @@ class ReportController extends Controller
             CURLOPT_POSTFIELDS => array('date' => $date),
             CURLOPT_HTTPHEADER => array(
                 'Authorization: Basic cGtfYzgwYjk3ODUwYTcxN2E5MzFiNTk1YjdhNmI2ODg6ODRjNDZmZWVjMTAxZDQ5YTA5ZTA5MDBjNTA3OWZkNWI='
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
+
+    }
+
+    public function getPitechRefunds(Request $request){
+
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
+        $type = $request->type;
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://cards.pitech.kz/gw/orders?states=REFUND,REVERSE',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_POSTFIELDS => array('endDate' => $endDate,'startDate' => $startDate),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Basic NjBQWS1MWnluZGNQVl9LQzhjTm5tZW9oLTg2c2Y1MHA6VVA3WWxEa3pzZ3pYS2p2T2dMNjQxdEpOOFpnTUhEWXY='
             ),
         ));
 

@@ -239,7 +239,9 @@ Route::middleware(["auth", 'auth.user'])->group(function () {
     Route::get("/reports/my-bonuses", [ReportController::class, "myBonuses"])->name("reports.myBonuses");
     Route::post("/reports/get-sales", [ReportController::class, "getSales"])->name("reports.getSales");
     Route::post("/reports/get-delay-list", [ReportController::class, "getDelaylist"])->name("reports.getDelaylist");
-    Route::post("/reports/get-refunds", [ReportController::class, "getRefunds"])->name("reports.getRefunds");
+    Route::post("/reports/get-cp-refunds", [ReportController::class, "getCpRefunds"])->name("reports.getCpRefunds");
+    Route::post("/reports/get-pitech-refunds", [ReportController::class, "getPitechRefunds"])->name("reports.getPitechRefunds");
+
 
 
     Route::resources([
