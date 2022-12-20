@@ -357,7 +357,7 @@ class ReportController extends Controller
 
             $query->where('subscriptions.status', 'tries');
 
-        $query->select('subscriptions.*', 'customers.phone', 'customers.name','reasons.title','products.title AS ptitle','users.name AS user_name');
+        $query->select('subscriptions.*', 'customers.phone', 'customers.name','customers.comments','reasons.title','products.title AS ptitle','users.name AS user_name');
 
         $query->orderBy('subscriptions.tries_at', 'asc');
 

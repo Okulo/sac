@@ -80,7 +80,6 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Клиенты</th>
-                            <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
                             <th>Дней <br>просрочено</th>
                             <th scope="col">Дата<br> старта</th>
@@ -90,6 +89,7 @@
                             <th scope="col">Дата <br> окончания</th>-->
                             <th scope="col">Статус </th>
                             <th scope="col">В <br>процессе</th>
+                            <th scope="col">Примечания</th>
                             <td></td>
                             <!--  <th scope="col"></th> -->
                         </tr>
@@ -101,9 +101,9 @@
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
                             <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
+                                <br>{{item.phone}}
                             </td>
-                            <td>{{item.phone}}</td>
-                            <td>{{ item.ptitle}}</td>
+                            <td style="width: 220px">{{ item.ptitle}}</td>
                             <td>{{ item.calcDate }}</td>
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.tries_at}}</td>
@@ -113,7 +113,7 @@
                             <!--    <td>{{item.payment_type}}</td>
                                 <td>{{item.status}}</td>-->
                             <td>
-                                <select id="status" name="status" :class="'status-'+item.id">
+                                <select id="status" style="width: 100px" name="status" :class="'status-'+item.id">
                                     <option selected disabled="disabled" value="tries">Пробует</option>
                                     <option value="waiting">Жду оплату</option>
                                     <option value="paid">Оплачено</option>
@@ -123,11 +123,12 @@
                                     <option value="debtor">Должник</option>
                                 </select>
                             </td>
-                            <td >
+                            <td style="text-align: center">
                                 {{item.report_type}}
                                 <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                                 <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
+                            <td style="width: 250px">{{ item.comments}}</td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <td data-v-754b2df6="" class="text-right">
                                 <button type="button" title="Сохранить" class="btn btn-danger btn-sm save-button"  @click="saveStatus(item.id)">
@@ -307,7 +308,7 @@
                         this.spinnerData.loading = false;
                         response.data.forEach(elem =>{
 
-                            //   console.log(elem);
+                            // console.log(elem);
                             var given = moment(elem.tries_at, "YYYY-MM-DD");
                             var current = moment().startOf('day');
                             var diff = moment.duration(current.diff(given)).asDays();
@@ -328,7 +329,8 @@
                                 ptitle: elem.ptitle,
                                 process_status: elem.process_status,
                                 report_type: elem.report_type,
-                                paymentsCount: ''
+                                paymentsCount: '',
+                                comments: elem.comments,
                             });
                         });
 
