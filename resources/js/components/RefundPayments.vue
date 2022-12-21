@@ -22,26 +22,26 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-4">
-                            <div class="card" style="height: 8rem">
+                            <div class="card" style="height: 7rem">
                                 <div class="card-body">
-                                    <h5 class="card-title">Общее количество возвратов<p></p></h5>
-                                    <p class="card-text"><h2><b class="text-info">{{pitechItems.length + items.length}}</b></h2></p>
+                                    <h5 class="card-title">Общее количество возвратов</h5>
+                                    <p class="card-text"><h2><b class="text-danger">{{pitechItems.length + items.length}}</b></h2></p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="card" style="height: 8rem">
+                            <div class="card" style="height: 7rem">
                                 <div class="card-body">
                                     <h5 class="card-title">Возвраты CloudPayments</h5>
-                                    <p class="card-text"><h2><b class="text-indigo">{{items.length}}</b></h2></p>
+                                    <p class="card-text"><h2><b class="text-maroon">{{items.length}}</b></h2></p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="card" style="height: 8rem">
+                            <div class="card" style="height: 7rem">
                                 <div class="card-body">
                                     <h5 class="card-title ">Возвраты Pitech</h5>
-                                    <p class="card-text "><h2><b class="text-primary">{{pitechItems.length}}</b></h2></p>
+                                    <p class="card-text "><h2><b class="text-maroon">{{pitechItems.length}}</b></h2></p>
                                 </div>
                             </div>
                         </div>

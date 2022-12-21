@@ -54,7 +54,6 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Клиенты</th>
-                            <th scope="col">Телефон</th>
                             <th scope="col">Услуги</th>
                             <th >Ост. дней</th>
                             <!--  <th>Кол-во <br> платежей</th> -->
@@ -72,20 +71,18 @@
                             <td>{{ index+1 }}  </td> <!--- {{item.customer_id}} -->
                             <td>
                                 <a class="custom-link" role="button" @click="openModal(item.customer_id, item.id)">{{item.name}}</a>
+                                <br>{{item.phone}}
                             </td>
-                            <td>{{item.phone}}</td>
-                            <td>{{ item.ptitle}}</td>
+                            <td style="width: 220px">{{ item.ptitle}}</td>
                             <td>{{ item.calcDate }}</td>
-                            <!--   <td>{{item.paymentsCount}}</td> -->
                             <td>{{ item.started_at }}</td>
                             <td>{{ item.ended_at}}</td>
-                            <!--    <td>{{item.payment_type}}</td>
-                                <td>{{item.status}}</td>-->
                             <td >
                                 {{item.report_type}}
                                 <input v-model="item.process_status" v-if="item.process_status == 0 || !item.process_status"  type="checkbox" :value="item.id" id="item.id" class="form-check-input" @change="goProcess(item.id)">
                                 <input v-model="item.process_status" v-if="item.process_status == 1" class="form-check-input" type="checkbox" value="1" checked="true" id="checked" @change="unprocess(item.id)">
                             </td>
+                            <td style="width: 250px">{{ item.comments}}</td>
                             <td>    <a target="_blank" :href="'/userlogs?subscription_id=' + item.id">Логи</a></td>
                             <!-- <td><button data-v-9097e738=""  @click="cheked(item.id)" class="btn btn-outline-info">Обработано</button></td> -->
                         </tr>
@@ -244,7 +241,8 @@
                                 reason: elem.title,
                                 ptitle: elem.ptitle,
                                 process_status: elem.process_status,
-                                paymentsCount: ''
+                                paymentsCount: '',
+                                comments: elem.comments,
                             });
 
 

@@ -84,9 +84,6 @@
                             <th>Дней <br>просрочено</th>
                             <th scope="col">Дата<br> старта</th>
                             <th>Пробный до</th>
-                            <!--  <th>Кол-во <br> платежей</th>
-
-                            <th scope="col">Дата <br> окончания</th>-->
                             <th scope="col">Статус </th>
                             <th scope="col">В <br>процессе</th>
                             <th scope="col">Примечания</th>
