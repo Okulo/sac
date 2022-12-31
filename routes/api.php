@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::post('upload-file', 'FileController@uploadFile');
 // Route::post('cloudpayments/post3ds', 'CloudPaymentsController@post3ds')->name('cloudpayments.post3ds');
 // Route::post('cloudpayments/change-status', 'CloudPaymentsController@changeStatus')->name('cloudpayments.changeStatus');
 
-
+Route::get("pitech/pay-fail", [HomeController::class, "cardSaved"])->name("cardSaved");
 Route::post('pitech/pay-success', 'PitechController@paySuccess')->name('pitech.paySuccess');
 Route::post('pitech/save-success', 'PitechController@saveCardSuccess')->name('pitech.saveCardSuccess');
 Route::post('cloudpayments/check', 'CloudPaymentsController@checkNotification')->name('cloudpayments.notifications.check');

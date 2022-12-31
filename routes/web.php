@@ -157,7 +157,7 @@ Route::get("/test6", function () {
 
 Route::get("/", [HomeController::class, "homepage"])->name("homepage");
 Route::get("/home", [HomeController::class, "dashboard"])->name("dashboard");
-Route::get("/thank-you", [HomeController::class, "thankYou"])->name("thankYou");
+Route::get("/thank-you", [HomeController::class, "cardSaved"])->name("cardSaved");
 Route::get("/card-saved", [HomeController::class, "cardSaved"])->name("cardSaved");
 Route::get("/card-save-fail", [HomeController::class, "cardSaveFail"])->name("cardSaveFail");
 Route::get("/failure", [HomeController::class, "failure"])->name("failure");

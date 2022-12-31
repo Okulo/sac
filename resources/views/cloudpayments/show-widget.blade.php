@@ -75,12 +75,12 @@ $( "#cloudpayment-widget-form" ).submit(function( event ) {
     var data = JSON.parse('<?php echo $data; ?>');
     //тут поставить параметр auth для отмены платежа
     widget.charge(data,
-    function (options) { // success
-        window.location.href = "{{ route('cloudpayments.thank_you', [$payment->subscription->product->id]) }}";
-    },
-    function (reason, options) { // fail
-        window.location.href = "{{ route('cloudpayments.show_widget', [$payment->subscription->id]) }}";
-    });
+        function (options) { // success
+            window.location.href = "{{ route('cardSaved') }}";
+        },
+        function (reason, options) { // fail
+            window.location.href = "{{ route('cardSaveFail') }}";
+        });
 });
 </script>
 @endsection

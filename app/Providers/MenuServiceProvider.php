@@ -136,6 +136,10 @@ class MenuServiceProvider extends ServiceProvider
                 "key" => "report_14",
                 "text" => 'Возврат средств',
                 "url" => "reports/get-reports/14",
+                            "can"  => [
+                'can-head',
+                'can-host',
+            ]
             ]);
             $event->menu->addIn('reports', [
                 "key" => "report_5",
